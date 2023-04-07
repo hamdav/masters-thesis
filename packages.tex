@@ -1,0 +1,61 @@
+%encoding
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+
+%language
+\usepackage[english]{babel}
+
+%paper and text body handling
+\usepackage{geometry}
+\usepackage{fancyhdr} %Headers and footers
+\usepackage{setspace}
+\usepackage{lettrine}
+\usepackage{glossaries}
+
+%graphics
+\usepackage{graphicx}
+\graphicspath{{Images/}{./}}
+\usepackage[format = plain, labelfont = {bf, it}, textfont = it]{caption}%font settings for captions
+\usepackage{xcolor}
+\usepackage{pdfpages}
+\usepackage{subcaption}
+\usepackage{tikz}
+
+%code
+%\usepackage{minted}
+
+%math
+\usepackage{amsmath}%math
+\usepackage{amssymb}%
+\usepackage{amsfonts}%
+\usepackage{amsthm}%theorems
+\usepackage{aligned-overset}
+\usepackage{siunitx}
+\usepackage{cancel}
+\usepackage{braket}
+\usepackage{bm}
+\usepackage{diffcoeff}
+% Use the correct ds in diffs
+\difdef{f,s,c}{}{
+  op-symbol = \mathrm{d},
+}
+\difdef{f,s}{f}{
+	op-symbol = \delta,
+}
+
+%bibliography
+\usepackage{csquotes}%for biblatex
+\usepackage[
+   style = numeric,
+   sorting = none,
+   date = iso,
+   seconds = true
+]{biblatex}
+
+%links
+\usepackage[colorlinks=true,
+            linkcolor=red,
+            urlcolor=blue,
+            citecolor=gray]{hyperref}
+

@@ -1,0 +1,121 @@
+\documentclass[11pt]{article}
+
+\input{packages}
+\input{mathCommands}
+\input{textSettings}
+
+\newacronym{pml}{PML}{Perfectly Matched Layer}
+
+%bibliography
+\addbibresource{sources.bib}
+
+\title{Intresseväckande titel}
+\author{David Hambr\ae us}
+\date{\textit{\today}}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+
+\printglossaries{}
+
+\section{Introduction}
+
+Something something ``small things are cool''
+
+or something something quantum computers are cool, and they need small
+components
+
+Conventionally, when designing these components, the designer comes up with a
+design through intuition and parametrizes it with a couple of parameters.
+For example she may believe that a structure with periodically placed circular
+holes should yield a device that performs the desired function.
+% TODO: She? I wrote he first but that will only reinforce the stereotype that
+% the are no women in nano science.
+The parameters that are unknown might then be the distance between neighbouring
+holes and the radius of the holes.
+To find the optimal device she would then systematically test parameter values
+to see which give the best performance in a simulation of the device.
+This brute force method of design limits the possible number of parameters to a
+very small number.
+If there are 10 different values to test for each parameter, the even 6
+parameters would require 1,000,000 simulations.
+One can of course use smarter optimization algorithms like bayesian optimization
+(cite something, check idas report maybe) or particle swarm optimization (cite the thing the danish guys
+cited)
+to decrease the number of simulations needed, but it will still be of the same
+order.
+
+A different approach that has been gaining some popularity is
+\emph{inverse design}. The idea is that if the gradient of the figure of merit
+with respect to the parameters can be calculated, then we can use gradient based
+optimization methods, which converge much faster, even if the number of
+parameters is very large. With these methods, one hopes to be able to search
+among a much more general class of designs for the optimal one.
+\citeauthor{spins2019} has developed software that successfully uses inverse design for
+nanophotonic devices \cite{spins2019}.
+
+With this thesis, we explore the possibility of extending this paradigm to
+phononic devices. In order to do so, we attempt to design a phononic beam
+splitter.
+
+\subsection{Thesis outline}
+
+\section{Theory}
+
+Maybe some mechanics theory? Linear elastic material etc.
+Maybe also mode shape and what the waveguides / mode that we are designing for
+is? should that be here? It doesn't really fit in the method section I think...
+And more generally how waveguides work?
+
+\subsection{Acoustic waves and waveguides}
+
+\subsection{Adjoint Simulation}
+
+\subsection{Optimization Algorithms}
+
+\section{Methods}
+
+The aim of this thesis is to use inverse design to find a phononic beamsplitter,
+a task that can be divided into three parts: First, some definitions of what
+should be designed and what constitutes a ``good'' design needs to be made.
+Second, we need a way to calculate the gradient of the ``goodness'' with respect
+to the design.
+And lastly, we need a gradient based optimization algorithm to find the optimal
+design.
+All of this will be described in this chapter.
+
+\subsection{Design}
+
+The device design to be optimized can be seen in figure~\ref{fig:bs-design}
+
+\begin{figure}[htpb]
+	\centering
+	\input{bs-design.tex}
+	\caption{
+		Device design to be optimized.
+		On the red unit cell, a body load is
+		applied that drives a wave traveling right.
+		On the blue unit cells is where the output is measured.
+		The dashed unit cells are \gls{pml}
+	}
+	\label{fig:bs-design}
+\end{figure}
+
+\subsubsection{Level-set}
+
+Should this section be here?
+
+
+\subsubsection{Objective function}
+
+\subsection{Adjoint Simulation}
+
+\subsection{Optimization Algorithm}
+
+\section{Conclusions}
+
+\printbibliography{}
+
+\end{document}
