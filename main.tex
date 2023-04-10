@@ -16,16 +16,25 @@
 \begin{document}
 \maketitle
 
+\todo[inline]{Todonotes are organized as follows:}
+\todo[inline]{General comment / question}
+\todowrt{Things that could be done now, no further
+simulations/consultation needed}
+\tododec{Things that could be done now but I am not sure if I should, or
+how to do it}
+\todoblk{Things that can't be done yet because they depend on other
+things, e.g.\ results}
+\todocit[inline]{Citation needed}
+\listoftodos
+
 \tableofcontents
 
 \printglossaries{}
 
 \section{Introduction}
 
-Something something ``small things are cool''
-
-or something something quantum computers are cool, and they need small
-components
+\tododec{Introduction to quantum acoustics\ldots I need to read more
+literature I think}
 
 Conventionally, when designing these components, the designer comes up with a
 design through intuition and parametrizes it with a couple of parameters.
@@ -42,13 +51,16 @@ very small number.
 If there are 10 different values to test for each parameter, the even 6
 parameters would require 1,000,000 simulations.
 One can of course use smarter optimization algorithms like bayesian optimization
-(cite something, check idas report maybe) or particle swarm optimization (cite the thing the danish guys
-cited)
+\todocit{cite something, check Idas report maybe}
+or particle swarm optimization
+\todocit{cite the thing the danish guys cited}
 to decrease the number of simulations needed, but it will still be of the same
 order.
 
 A different approach that has been gaining some popularity is
-\emph{inverse design}. The idea is that if the gradient of the figure of merit
+\emph{inverse design}.
+\todocit{maybe cite \emph{inverse design in nanophotonics}}
+The idea is that if the gradient of the figure of merit
 with respect to the parameters can be calculated, then we can use gradient based
 optimization methods, which converge much faster, even if the number of
 parameters is very large. With these methods, one hopes to be able to search
@@ -57,7 +69,7 @@ among a much more general class of designs for the optimal one.
 nanophotonic devices \cite{spins2019}.
 
 With this thesis, we explore the possibility of extending this paradigm to
-phononic devices. In order to do so, we attempt to design a phononic beam
+acoustic devices. In order to do so, we attempt to design a phononic beam
 splitter.
 
 \subsection{Thesis outline}
@@ -71,14 +83,79 @@ And more generally how waveguides work?
 
 \subsection{Acoustic waves and waveguides}
 
+In order to efficiently model the deformation and stresses in a solid material,
+a linear elasticity model is often assumed.
+For small deformations, solid materials obey Hooke's law which in it's full form
+looks like
+\[
+	\sigma_{ij} = C_{ijkl} \epsilon_{jl}
+\]
+where $\sigma$ is the stress tensor, $C$ the elasticity tensor which is a
+property of the material, and 
+$\epsilon \defeq \nabla \vec u + (\nabla \vec u)^T$
+is the strain tensor.
+This equation is linear in $\vec u$, hence the name \emph{linear} elasticity.
+Using this and newtons equations of motion, the equation governing the dynamics
+is obtained:
+\[
+	\rho \ddot{\vec{u}} = \nabla \cdot \sigma + \vec F.
+\]
+where $\rho$ is the density, $\vec{u}$ is the displacement and $\vec F$ is the
+externally applied force.
+\tododec{Proper derivation for equation below? It is relatively
+straightforward but requires some effort}
+Assuming a time harmonic solution
+$\vec u(\vec x, t) = \vec u(x) e^{i \omega t}$ and plugging this into
+the governing equations yields
+\todo[inline]{
+	Minus sign here? Inconsistent with 3.21 in Chan's PhD thesis, but that is
+	not consistent with itself... (3.19). Comsol has the minus sign, so probably
+	Chan's equation has a typo.
+}
+\begin{equation}\label{eq:gov_eq}
+	-\rho \omega^2 u_i = \partial_j C_{ijkl} \partial_k u_l + F_i
+\end{equation}
+written in index notation for clarity. 
+
+\todowrt{
+With no external forces we get traveling modes=eigenvalues.
+Explain how and why periodicity means only certain modes can propagate.
+Good resource in Chan's thesis, or maybe solid state physics book?
+% Bloch state / Bloch's theorem
+}
+
 \subsection{Adjoint Simulation}
 
+\todowrt{Introduce the point of inverse design, that there is an objective
+function / figure of merit and that we want to find the derivative of it w.r.t
+the material parameters.}
+
+\tododec{Derive the general case: governing eq $Au = b$}
+
+\tododec{Derive specific case (with functional analysis):
+	borrowing heavily from the mathy notes is possible.
+	Derivation is theoretically possible without specifying that the objective function
+	is an overlap integral, only
+	using equation~\eqref{eq:gov_eq},
+	but the equations would be \emph{a lot} longer and more abstruse,
+	so I don't think that it is a good idea.
+}
+
 \subsection{Optimization Algorithms}
+
+\tododec{General paragraph on the benefits of gradient based
+optimization algorithms vs other algorithms? And general overview of the
+optimization process: simulate -- compute gradient -- step}
+
+\todowrt{Paragraph describing regular gradient descent}
+
+\todowrt{Paragraph describing the ADAM algorithm}
 
 \section{Methods}
 
 The aim of this thesis is to use inverse design to find a phononic beamsplitter,
-a task that can be divided into three parts: First, some definitions of what
+a task that can be divided into three parts: 
+First, some definitions of what
 should be designed and what constitutes a ``good'' design needs to be made.
 Second, we need a way to calculate the gradient of the ``goodness'' with respect
 to the design.
@@ -95,8 +172,7 @@ The device design to be optimized can be seen in figure~\ref{fig:bs-design}
 	\input{bs-design.tex}
 	\caption{
 		Device design to be optimized.
-		On the red unit cell, a body load is
-		applied that drives a wave traveling right.
+		At the red line, a wave traveling right is excited.
 		On the blue unit cells is where the output is measured.
 		The dashed unit cells are \gls{pml}
 	}
@@ -105,10 +181,18 @@ The device design to be optimized can be seen in figure~\ref{fig:bs-design}
 
 \subsubsection{Level-set}
 
-Should this section be here?
+\todowrt{Description of what level-set is: A way of storing a boundary between
+two regions; and how it works: Signed distance function}
 
+\todowrt{Description of it's advantages: Easily evolved (level-set equation), no
+connectivity issues, see level-set book}
+
+\tododec{Write about how I use it? This feels like it should come after I've
+talked about computing the derivative.}
 
 \subsubsection{Objective function}
+
+
 
 \subsection{Adjoint Simulation}
 
