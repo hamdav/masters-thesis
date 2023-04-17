@@ -1,0 +1,49 @@
+\chapter{Introduction}
+
+\tododec{Introduction to quantum acoustics\ldots I need to read more
+literature I think}
+\tododec{Restructure a little... I would like to talk about inverse design first
+and quantum acoustics second. Talk about how inverse design is a concept that
+has been applied to nanophotonics but not to quantum acoustics yet. Then talk
+about why we care about quantum acoustics. It feels a little bit forced to do it
+in that order though, talking about quantum acoustics first might be a better
+idea, since that would naturally lead one to introduce the problem of design.}
+
+Conventionally, when designing these components, the designer comes up with a
+design through intuition and parametrizes it with a couple of parameters.
+For example they may believe that a structure with periodically placed circular
+holes should yield a device that performs the desired function.
+% TODO: She? I wrote he first but that will only reinforce the stereotype that
+% the are no women in nano science.
+The parameters that are unknown might then be the distance between neighbouring
+holes and the radius of the holes.
+To find the optimal device they would then systematically test parameter values
+to see which give the best performance in a simulation of the device.
+This brute force method of design limits the possible number of parameters to a
+very small number.
+If there are 10 different values to test for each parameter, the even 6
+parameters would require 1,000,000 simulations.
+One can of course use smarter optimization algorithms like bayesian optimization
+\todocit{cite something, check Ida's thesis maybe}
+or particle swarm optimization
+\todocit{cite the thing the danish guys cited}
+to decrease the number of simulations needed, but it will still be of the same
+order.
+
+A different approach that has been gaining some popularity is
+\emph{inverse design with adjoint simulation}.
+\todocit{maybe cite \emph{inverse design in nanophotonics}}
+The idea is that if the gradient of the figure of merit
+with respect to the parameters can be calculated, then we can use gradient based
+optimization methods, which converge much faster, even if the number of
+parameters is very large. With these methods, one hopes to be able to search
+among a much more general class of designs for the optimal one.
+% Su? Isn't it Jelena?
+\citeauthor{spins2019} has developed software that successfully uses inverse design for
+nanophotonic devices \cite{spins2019}.
+
+With this thesis, we explore the possibility of extending this paradigm to
+acoustic devices. In order to do so, we attempt to design a phononic beam
+splitter.
+
+\section{Thesis outline}

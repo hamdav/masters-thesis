@@ -1,0 +1,153 @@
+\chapter{Theory}
+
+\section{Acoustic waves and waveguides}
+
+In order to efficiently model the deformation and stresses in a solid material,
+a linear elasticity model is often assumed.
+For small deformations, solid materials obey Hooke's law which in it's full form
+looks like
+\[
+	\sigma_{ij} = C_{ijkl} \epsilon_{jl}
+\]
+where $\sigma$ is the stress tensor, $C$ the elasticity tensor which is a
+property of the material, and 
+$\epsilon \defeq \nabla \vec u + (\nabla \vec u)^T$
+is the strain tensor.
+This equation is linear in $\vec u$, hence the name \emph{linear} elasticity.
+Using this and newtons equations of motion, the equation governing the dynamics
+is obtained:
+\[
+	\rho \ddot{\vec{u}} = \nabla \cdot \sigma + \vec F.
+\]
+where $\rho$ is the density, $\vec{u}$ is the displacement and $\vec F$ is the
+externally applied force.
+\tododec{Proper derivation for equation below? It is relatively
+straightforward but requires some effort}
+Assuming a time harmonic solution
+$\vec u(\vec x, t) = \vec u(x) e^{i \omega t}$ and plugging this into
+the governing equations yields
+\begin{equation}\label{eq:gov_eq}
+	-\rho \omega^2 u_i = \partial_j C_{ijkl} \partial_k u_l + F_i
+\end{equation}
+written in index notation for clarity. 
+
+\todowrt{
+With no external forces we get traveling modes=eigenvalues.
+Explain how and why periodicity means only certain modes can propagate.
+Good resource in Chan's thesis, or maybe solid state physics book?
+% Bloch state / Bloch's theorem
+}
+
+\tododec{At some point write about phonons? I haven't really had to care about
+phonons so if I talk about it it's just for applications...}
+
+\todowrt{Show our mode as example of this, and include band diagram}
+
+\todowrt{Write about PML design and why we need it: Simulating infinite
+	waveguides isn't possible because of the finite computing power. Also we
+don't care about stuff far away, just that there are no reflections that can
+interfere.}
+
+\section{Inverse Design}
+
+Inverse design is a design paradigm where the design of a device is guided fully by
+the desired characteristics.
+These desired characteristics are quantified through what is called an objective
+function%
+\footnote{
+	Also called \emph{figure of merit (FoM)} by some.%
+}%
+, which I will denote $\fobj$,
+that should be maximized.
+When coupled with \emph{adjoint simulation}, which is a clever way to compute
+gradients, and gradient based optimization
+algorithms, this is a very powerful methodology.
+
+An overview of the design process is as follows:
+\begin{enumerate}
+	\item Initialize a random device design.
+	\item\label{it:grad} Calculate the gradient of the design through the adjoint method.
+	\item Update the device design using the gradient according to the optimization algorithm.
+	\item If the device performance is good enough, terminate optimization, else
+		return to step~\ref{it:grad}.
+\end{enumerate}
+
+\subsection{Adjoint Simulation}
+
+Adjoint simulation is a way to compute the gradient of $\fobj$ with respect to
+the design, which in our case means with respect to the material parameters.
+I will in this section first give a general derivation, followed by the case of
+inverse design in acoustics.
+
+\subsubsection{General Derivation}
+
+Let $\fobj$ be a function which depends on some (large) vector $v$.
+The vector $v$ can be calculated by solving the linear equation
+$A v = b$, where $b$ is a fixed vector and $A$ is a matrix that depends on a
+vector of design parameters $p$.
+The overall goal is to find the parameters $p$ that maximize the objective
+function $\fobj$.
+The goal of adjoint simulation is to find $\diff{\fobj}{p}$.
+This can be expanded through the chain rule as
+\[
+	\diff{\fobj}{p} = \diff{\fobj}{v} \diff{v}{p}.
+\]
+To find the latter factor we do
+\begin{align*}
+	\diff{}{p} [Av = b] &\implies \diff{A}{p} v + A \diff{v}{p} = 0\\
+						&\implies \diff{v}{p} = -A^{-1} \diff{A}{p} v
+\end{align*}
+which gives
+\begin{align}
+	\diff{\fobj}{p} &= - \diff{\fobj}{v} A^{-1} \diff{A}{p}
+	v\label{eq:no_adj_sim}\\
+	&= - \left(A^{-T} \diff{\fobj}{v}^T \right)^T \diff{A}{p} v
+\end{align}
+The first factor of this product is the solution to the \emph{adjoint problem}
+\begin{equation}
+	A^T \tilde v = \diff{\fobj}{v}^T,
+\end{equation}
+hence the name adjoint simulation.
+As it turns out, $A$ is often symmetric which means that this is simply a normal
+simulation but with $\diff{\fobj}{v}^T$ as the source.
+Thus, to obtain the derivative we just need to run an additional
+simulation with a different input.
+
+Now you might be wondering: what have we gained by this?
+Let $n$ be the dimension of $v$, $m$ the dimension of $p$ and $l$ the dimension
+of $b$.
+This means that $A$ is a matrix with dimension $l\times n$ and $\diff{A}{p}$ is
+a three-tensor with dimension $m\times l\times n$.
+Thus calculating $A^{-1} \diff{A}{p}$ directly involves solving $Ax = w$ for a
+three-tensor, and calculating $A^{-1} \left(\diff{A}{p} v\right)$
+involves solving for a matrix, both of which are orders of magnitude more
+computationally expensive than solving for a vector.
+
+\subsubsection{Specific derivation with acoustics}
+
+Now we turn to the specific case of acoustic devices.
+Here $A v = b$ is replaced by the dynamic equation \todo{dynamic equation?
+Better name} of linear elasticity:
+\begin{equation}
+	-\left(\rho \omega \delta_{il} + \partial_j C_{ijkl} \partial_k\right) u_l =
+	F_i
+\end{equation}
+
+\tododec{Derive specific case (with functional analysis):
+	borrowing heavily from the mathy notes is possible.
+	Derivation is theoretically possible without specifying that the objective function
+	is an overlap integral, only
+	using equation~\eqref{eq:gov_eq},
+	but the equations would be \emph{a lot} longer and more abstruse,
+	so I don't think that it is a good idea.
+}
+
+\subsection{Optimization Algorithms}
+
+\tododec{General paragraph on the benefits of gradient based
+optimization algorithms vs other algorithms? And general overview of the
+optimization process: simulate -- compute gradient -- step}
+
+\todowrt{Paragraph describing regular gradient descent}
+
+\todowrt{Paragraph describing the ADAM algorithm}

@@ -1,0 +1,64 @@
+% GENERAL
+\newcommand{\thesisType}{M} % M - master, B - bachelor
+\newcommand{\thesisAuthor}{David Hambraeus}
+\newcommand{\thesisMonth}{\monthname}
+\newcommand{\thesisYear}{\the\year}
+
+% Controls e.g. todonotes, front matter, blank pages etc.
+\newcommand{\thesisStatus}{d} % d for draft, f for final
+
+% LAYOUT
+% One-sided (1) or two-sided (2) layout
+% Note: \cleardoublepage is redefed to \clearpage for one-sided layout
+\if\thesisStatus f
+    \newcommand{\thesisLayout}{2}
+\else
+    \newcommand{\thesisLayout}{1}
+\fi
+
+% TITLE (cover page & title page, imprint page; possibly different line breaks)
+\newcommand{\thesisTitle}{Inverse design in Quantum Acoustics}
+\newcommand{\thesisImprintTitle}{Inverse design in Quantum Acoustics}
+
+
+% SUBTITLE (cover page & title page, imprint page; possibly different line breaks)
+\newcommand{\thesisSubtitle}{Designing a Phononic Beamsplitter using Inverse
+Design with Adjoint Simulation}
+\newcommand{\thesisImprintSubtitle}{Designing a Phononic Beamsplitter using
+Inverse Design with Adjoint Simulation}
+% NOTE: Minor modifications are needed if there is no subtitle
+
+
+% PROGRAMME, DEPARTMENT, DIVISION, RESEARCH GROUP AND UNIVERSITY INFO
+\newcommand{\thesisMasterProgramme}{Physics}  % "Master's thesis in \thesisMasterProgramme"
+
+\newcommand{\thesisDepartment}{Department of Microtechnology and Nanoscience}
+\newcommand{\thesisDivision}{Quantum Technology Laboratory}
+\newcommand{\thesisGroup}{Quantum Photonics Laboratory}
+
+\newcommand{\thesisUniversity}{Chalmers University of Technology}
+\newcommand{\thesisUniversityURL}{www.chalmers.se}
+\newcommand{\thesisCity}{Gothenburg}
+\newcommand{\thesisCountry}{Sweden}
+\newcommand{\thesisLocation}{\thesisCity, \thesisCountry}
+
+
+% MORE IMPRINT PAGE INFO
+\newcommand{\thesisSupervisor}{Raphaël van Laer, QPL}
+\newcommand{\thesisExaminer}{Raphaël van Laer, QPL}
+\newcommand{\thesisPrintedBy}{Chalmers Digital Printing} % remove this line to remove it on the imprint page
+
+\newcommand{\thesisImprintLocation}{SE-412 96 Gothenburg}
+\newcommand{\thesisUniversityTel}{+46 31 772 1000}
+
+
+% COVER FIGURE
+% Remove the following line to remove the figure
+\newcommand{\thesisCoverFigure}{frontmatter/Wind.png}
+% Caption for cover page figure if used, possibly with reference to further information in the report:
+\newcommand{\thesisCoverFigureCaption}{Wind visualization constructed in Matlab showing a surface of constant wind speed along with streamlines of the flow.}
+
+% KEYWORDS
+% Comma-separated keywords to appear on abstract page and in pdf info
+\newcommand{\thesisKeywords}{lorem, ipsum, dolor, sit, amet, consectetur,
+adipisicing, elit, sed, do}

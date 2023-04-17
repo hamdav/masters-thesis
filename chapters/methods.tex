@@ -1,0 +1,66 @@
+\chapter{Methods}
+
+The aim of this thesis is to use inverse design to find a phononic beamsplitter,
+a task that can be divided into three parts: 
+First, some definitions of what
+should be designed and what constitutes a ``good'' design needs to be made.
+Second, we need a way to calculate the gradient of the ``goodness'' with respect
+to the design.
+And lastly, we need a gradient based optimization algorithm to find the optimal
+design.
+All of this will be described in this chapter.
+
+\section{Design}
+
+The device design to be optimized can be seen in figure~\ref{fig:bs-design}
+
+\begin{figure}[htpb]
+	\centering
+	\input{chapters/methods/bs-design.tex}
+	\caption{
+		Device design to be optimized.
+		At the red line, a wave traveling right is excited.
+		On the blue unit cells is where the output is measured.
+		The dashed unit cells are \gls{pml}
+	}
+	\label{fig:bs-design}
+\end{figure}
+
+\tododec{Write about why we use the mode we use, and why I clamp the bottom. Can
+reference Johan and Pauls paper}
+
+\subsection{Level-set}
+
+\todowrt{Description of what level-set is: A way of storing a boundary between
+two regions; and how it works: Signed distance function}
+
+\todowrt{Description of it's advantages: Easily evolved (level-set equation), no
+connectivity issues, see level-set book}
+
+\tododec{Write about how I use it? This feels like it should come after I've
+talked about computing the derivative.}
+
+\subsection{Objective function}
+
+\tododec{Maybe I'll only mention that $f$ is an integral of the displacement
+	field in the theory and here give the specific formula:
+}
+\begin{equation}
+	\fobj = \int_{\Omega_1} \vec{m_1}^*(\vec{x}) \vec{u}(\vec{x})
+	\dl{x} + \int_{\Omega_2} \vec{m_2}^*(\vec{x}) \vec{u}(\vec{x})
+\end{equation}
+
+\tododec{Paragraph about pure part of objective function, enforcing the minimum
+feature size}
+
+\section{Adjoint Simulation}
+
+\tododec{Give the explicit formula for the gradient now that the objective
+function has been fully defined}
+
+\section{Optimization}
+
+\tododec{Describe what optimization algorithm was used, as well as how this
+	changed during the simulation. E.g.\ first 200 iterations ADAM; next ADAM
+	but with sigmoid function application; sigmoid + feature size; and finally level-set.
+}

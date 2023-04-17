@@ -1,5 +1,12 @@
+
 % Temporary (as in for this document only) commands
 \newcommand{\fobj}{f_\text{obj}}
+
+\newcommand{\todowrt}[2][]{\todo[color=green,inline,#1]{#2}}
+\newcommand{\tododec}[2][]{\todo[color=yellow,inline,#1]{#2}}
+\newcommand{\todoblk}[2][]{\todo[color=red,inline, #1]{#2}}
+\newcommand{\todocit}[2][]{\todo[color=blue!30!white, #1]{#2}}
+
 
 
 %special letters
@@ -20,9 +27,6 @@
 \DeclareMathOperator{\Ker}{Ker} % Kernel
 \DeclareMathOperator{\tr}{tr} 	% Trace
 \newcommand{\scalprod}[2]{\left\langle#1, #2\right\rangle}
-
-\DeclarePairedDelimiter\abs{\lvert}{\rvert}%
-\DeclarePairedDelimiter\norm{\lVert}{\rVert}%
 
 % Swap the definition of \abs* and \norm*, so that \abs
 % and \norm resizes the size of the brackets, and the

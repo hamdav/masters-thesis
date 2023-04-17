@@ -1,21 +1,44 @@
-\documentclass[11pt]{article}
+% TEMPLATE INSTRUCTIONS
+% Fill in the information in template/information.tex
+% The front matter (abstract and acknowledgements) needs slight modification for Bachelor theses.
+% Template: https://github.com/kajoel/master_thesis_template
 
-\input{packages}
-\input{mathCommands}
-\input{textSettings}
+% IMPORT SETTINGS
+\documentclass[12pt, a4paper, twoside, openright]{report}
+\input{template/information}
+\input{template/settings/packages}
+\input{template/settings/commands}
+\input{template/settings/glossary}
 
-\newacronym{pml}{PML}{Perfectly Matched Layer}
-
-%bibliography
-\addbibresource{sources.bib}
-
-\title{Inverse design of quantum acoustic devices}
-\author{David Hambr\ae{}us}
-\date{\textit{\today}}
+% CHOOSE SUBSET OF FILES TO COMPILE (USES OLD .aux FILES)
+% Sometimes, this will cause a blank page at the beginning.
+% One way to fix this is to add \cleardoublepage at the end of every
+% included file.
+\if\thesisStatus d % only effective in draft mode
+    % \includeonly{chapters/methods}
+\fi
 
 \begin{document}
 
-\maketitle
+% COVER PAGE, TITLE PAGE AND IMPRINT PAGE
+\if\thesisStatus f
+    \include{template/pages/cover}
+\fi
+\pagenumbering{roman}
+\include{template/pages/title}
+\if\thesisStatus f
+    \include{template/pages/imprint}
+\fi
+
+% ABSTRACT & ACKNOWLEDGEMENTS
+\include{frontmatter/abstract}
+\include{frontmatter/acknowledgements}
+
+% CONTENTS LIST (TABLE OF CONTENTS, FIGURES, TABLES)
+\include{template/pages/contents}
+
+% BEGINNING OF MAIN DOCUMENT
+\pagenumbering{arabic}  % Arabic numbering starting from 1 (one)
 
 \todo[inline]{Todonotes are organized as follows:}
 \todo[inline]{General comment / question}
@@ -27,283 +50,26 @@ how to do it}
 things, e.g.\ results}
 \todocit[inline]{Citation needed}
 
-\listoftodos[List of Todos]
+% CHAPTERS
+\include{chapters/introduction}
+\include{chapters/theory}
+\include{chapters/methods}
+\include{chapters/results}
+\include{chapters/conclusion}
 
-\tableofcontents
+% REFERENCES / BIBLIOGRAPHY
+\include{template/pages/bibliography}
 
-\printglossaries{}
+% APPENDICES
+\cleardoublepage
+\appendix
+\pagenumbering{bychapter}
+\include{appendices/first_appendix}
+\include{appendices/second_appendix}
 
-\newpage
-
-\section{Introduction}
-
-\tododec{Introduction to quantum acoustics\ldots I need to read more
-literature I think}
-\tododec{Restructure a little... I would like to talk about inverse design first
-and quantum acoustics second. Talk about how inverse design is a concept that
-has been applied to nanophotonics but not to quantum acoustics yet. Then talk
-about why we care about quantum acoustics. It feels a little bit forced to do it
-in that order though, talking about quantum acoustics first might be a better
-idea, since that would naturally lead one to introduce the problem of design.}
-
-Conventionally, when designing these components, the designer comes up with a
-design through intuition and parametrizes it with a couple of parameters.
-For example they may believe that a structure with periodically placed circular
-holes should yield a device that performs the desired function.
-% TODO: She? I wrote he first but that will only reinforce the stereotype that
-% the are no women in nano science.
-The parameters that are unknown might then be the distance between neighbouring
-holes and the radius of the holes.
-To find the optimal device they would then systematically test parameter values
-to see which give the best performance in a simulation of the device.
-This brute force method of design limits the possible number of parameters to a
-very small number.
-If there are 10 different values to test for each parameter, the even 6
-parameters would require 1,000,000 simulations.
-One can of course use smarter optimization algorithms like bayesian optimization
-\todocit{cite something, check Ida's thesis maybe}
-or particle swarm optimization
-\todocit{cite the thing the danish guys cited}
-to decrease the number of simulations needed, but it will still be of the same
-order.
-
-A different approach that has been gaining some popularity is
-\emph{inverse design with adjoint simulation}.
-\todocit{maybe cite \emph{inverse design in nanophotonics}}
-The idea is that if the gradient of the figure of merit
-with respect to the parameters can be calculated, then we can use gradient based
-optimization methods, which converge much faster, even if the number of
-parameters is very large. With these methods, one hopes to be able to search
-among a much more general class of designs for the optimal one.
-% Su? Isn't it Jelena?
-\citeauthor{spins2019} has developed software that successfully uses inverse design for
-nanophotonic devices \cite{spins2019}.
-
-With this thesis, we explore the possibility of extending this paradigm to
-acoustic devices. In order to do so, we attempt to design a phononic beam
-splitter.
-
-\subsection{Thesis outline}
-
-\section{Theory}
-
-\subsection{Acoustic waves and waveguides}
-
-In order to efficiently model the deformation and stresses in a solid material,
-a linear elasticity model is often assumed.
-For small deformations, solid materials obey Hooke's law which in it's full form
-looks like
-\[
-	\sigma_{ij} = C_{ijkl} \epsilon_{jl}
-\]
-where $\sigma$ is the stress tensor, $C$ the elasticity tensor which is a
-property of the material, and 
-$\epsilon \defeq \nabla \vec u + (\nabla \vec u)^T$
-is the strain tensor.
-This equation is linear in $\vec u$, hence the name \emph{linear} elasticity.
-Using this and newtons equations of motion, the equation governing the dynamics
-is obtained:
-\[
-	\rho \ddot{\vec{u}} = \nabla \cdot \sigma + \vec F.
-\]
-where $\rho$ is the density, $\vec{u}$ is the displacement and $\vec F$ is the
-externally applied force.
-\tododec{Proper derivation for equation below? It is relatively
-straightforward but requires some effort}
-Assuming a time harmonic solution
-$\vec u(\vec x, t) = \vec u(x) e^{i \omega t}$ and plugging this into
-the governing equations yields
-\begin{equation}\label{eq:gov_eq}
-	-\rho \omega^2 u_i = \partial_j C_{ijkl} \partial_k u_l + F_i
-\end{equation}
-written in index notation for clarity. 
-
-\todowrt{
-With no external forces we get traveling modes=eigenvalues.
-Explain how and why periodicity means only certain modes can propagate.
-Good resource in Chan's thesis, or maybe solid state physics book?
-% Bloch state / Bloch's theorem
-}
-
-\tododec{At some point write about phonons? I haven't really had to care about
-phonons so if I talk about it it's just for applications...}
-
-\todowrt{Show our mode as example of this, and include band diagram}
-
-\todowrt{Write about PML design and why we need it: Simulating infinite
-	waveguides isn't possible because of the finite computing power. Also we
-don't care about stuff far away, just that there are no reflections that can
-interfere.}
-
-\subsection{Inverse Design}
-
-Inverse design is a design paradigm where the design of a device is guided fully by
-the desired characteristics.
-These desired characteristics are quantified through what is called an objective
-function%
-\footnote{
-	Also called \emph{figure of merit (FoM)} by some.%
-}%
-, which I will denote $\fobj$,
-that should be maximized.
-When coupled with \emph{adjoint simulation}, which is a clever way to compute
-gradients, and gradient based optimization
-algorithms, this is a very powerful methodology.
-
-An overview of the design process is as follows:
-\begin{enumerate}
-	\item Initialize a random device design.
-	\item\label{it:grad} Calculate the gradient of the design through the adjoint method.
-	\item Update the device design using the gradient according to the optimization algorithm.
-	\item If the device performance is good enough, terminate optimization, else
-		return to step~\ref{it:grad}.
-\end{enumerate}
-
-\subsubsection{Adjoint Simulation}
-
-Adjoint simulation is a way to compute the gradient of $\fobj$ with respect to
-the design, which in our case means with respect to the material parameters.
-I will in this section first give a general derivation, followed by the case of
-inverse design in acoustics.
-
-\paragraph{General Derivation}
-
-Let $\fobj$ be a function which depends on some (large) vector $v$.
-The vector $v$ can be calculated by solving the linear equation
-$A v = b$, where $b$ is a fixed vector and $A$ is a matrix that depends on a
-vector of design parameters $p$.
-The overall goal is to find the parameters $p$ that maximize the objective
-function $\fobj$.
-The goal of adjoint simulation is to find $\diff{\fobj}{p}$.
-This can be expanded through the chain rule as
-\[
-	\diff{\fobj}{p} = \diff{\fobj}{v} \diff{v}{p}.
-\]
-To find the latter factor we do
-\begin{align*}
-	\diff{}{p} [Av = b] &\implies \diff{A}{p} v + A \diff{v}{p} = 0\\
-						&\implies \diff{v}{p} = -A^{-1} \diff{A}{p} v
-\end{align*}
-which gives
-\begin{align}
-	\diff{\fobj}{p} &= - \diff{\fobj}{v} A^{-1} \diff{A}{p}
-	v\label{eq:no_adj_sim}\\
-	&= - \left(A^{-T} \diff{\fobj}{v}^T \right)^T \diff{A}{p} v
-\end{align}
-The first factor of this product is the solution to the \emph{adjoint problem}
-\begin{equation}
-	A^T \tilde v = \diff{\fobj}{v}^T,
-\end{equation}
-hence the name adjoint simulation.
-As it turns out, $A$ is often symmetric which means that this is simply a normal
-simulation but with $\diff{\fobj}{v}^T$ as the source.
-Thus, to obtain the derivative we just need to run an additional
-simulation with a different input.
-
-Now you might be wondering: what have we gained by this?
-Let $n$ be the dimension of $v$, $m$ the dimension of $p$ and $l$ the dimension
-of $b$.
-This means that $A$ is a matrix with dimension $l\times n$ and $\diff{A}{p}$ is
-a three-tensor with dimension $m\times l\times n$.
-Thus calculating $A^{-1} \diff{A}{p}$ directly involves solving $Ax = w$ for a
-three-tensor, and calculating $A^{-1} \left(\diff{A}{p} v\right)$
-involves solving for a matrix, both of which are orders of magnitude more
-computationally expensive than solving for a vector.
-
-\paragraph{Specific derivation with acoustics}
-
-\tododec{Derive specific case (with functional analysis):
-	borrowing heavily from the mathy notes is possible.
-	Derivation is theoretically possible without specifying that the objective function
-	is an overlap integral, only
-	using equation~\eqref{eq:gov_eq},
-	but the equations would be \emph{a lot} longer and more abstruse,
-	so I don't think that it is a good idea.
-}
-
-\subsubsection{Optimization Algorithms}
-
-\tododec{General paragraph on the benefits of gradient based
-optimization algorithms vs other algorithms? And general overview of the
-optimization process: simulate -- compute gradient -- step}
-
-\todowrt{Paragraph describing regular gradient descent}
-
-\todowrt{Paragraph describing the ADAM algorithm}
-
-\section{Methods}
-
-The aim of this thesis is to use inverse design to find a phononic beamsplitter,
-a task that can be divided into three parts: 
-First, some definitions of what
-should be designed and what constitutes a ``good'' design needs to be made.
-Second, we need a way to calculate the gradient of the ``goodness'' with respect
-to the design.
-And lastly, we need a gradient based optimization algorithm to find the optimal
-design.
-All of this will be described in this chapter.
-
-\subsection{Design}
-
-The device design to be optimized can be seen in figure~\ref{fig:bs-design}
-
-\begin{figure}[htpb]
-	\centering
-	\input{bs-design.tex}
-	\caption{
-		Device design to be optimized.
-		At the red line, a wave traveling right is excited.
-		On the blue unit cells is where the output is measured.
-		The dashed unit cells are \gls{pml}
-	}
-	\label{fig:bs-design}
-\end{figure}
-
-\tododec{Write about why we use the mode we use, and why I clamp the bottom. Can
-reference Johan and Pauls paper}
-
-\subsubsection{Level-set}
-
-\todowrt{Description of what level-set is: A way of storing a boundary between
-two regions; and how it works: Signed distance function}
-
-\todowrt{Description of it's advantages: Easily evolved (level-set equation), no
-connectivity issues, see level-set book}
-
-\tododec{Write about how I use it? This feels like it should come after I've
-talked about computing the derivative.}
-
-\subsubsection{Objective function}
-
-\tododec{Maybe I'll only mention that $f$ is an integral of the displacement
-	field in the theory and here give the specific formula:
-}
-\begin{equation}
-	\fobj = \int_{\Omega_1} \vec{m_1}^*(\vec{x}) \vec{u}(\vec{x})
-	\dl{x} + \int_{\Omega_2} \vec{m_2}^*(\vec{x}) \vec{u}(\vec{x})
-\end{equation}
-
-\tododec{Paragraph about pure part of objective function, enforcing the minimum
-feature size}
-
-\subsection{Adjoint Simulation}
-
-\tododec{Give the explicit formula for the gradient now that the objective
-function has been fully defined}
-
-\subsection{Optimization}
-
-\tododec{Describe what optimization algorithm was used, as well as how this
-	changed during the simulation. E.g.\ first 200 iterations ADAM; next ADAM
-	but with sigmoid function application; sigmoid + feature size; and finally level-set.
-}
-
-\section{Results}
-
-\section{Discussion}
-
-\section{Conclusions}
-
-\printbibliography{}
+% LAST PAGE
+\if\thesisStatus f
+    \include{template/pages/lastpage}
+\fi
 
 \end{document}

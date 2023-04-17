@@ -1,0 +1,370 @@
+% NOTE: Only include the packages you need/use!
+% The below is only a suggestion with some extras needed for examples.
+
+% BASIC SETTINGS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[english]{babel}         % Language settings
+\usepackage[utf8]{inputenc}         % Input settings
+\usepackage[T1]{fontenc}            % Output settings
+\usepackage{lmodern}                % Latin modern font
+\usepackage{textcomp}               % Fonts, symbols etc.
+\usepackage{microtype}              % Improved micro-typography
+\usepackage[top=3cm, bottom=3cm, inner=3cm, outer=3cm]{geometry}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MATHS
+\usepackage{amsmath}                % Mathematical expressions
+\usepackage{amssymb}                % Mathematical symbols
+\usepackage{mathtools}              % Moar maths, e.g. :=
+\usepackage{commath}                % E.g. \abs{} och \norm{}
+\usepackage{dsfont}                 % Double-stroke font, e.g. natural numbers
+\usepackage{bm}                     % Bold math symbols
+\usepackage{cancel}
+\usepackage{braket}
+\usepackage{diffcoeff}
+% Use the correct ds in diffs
+\difdef{f,s,c}{}{
+  op-symbol = \mathrm{d},
+}
+\difdef{f,s}{f}{
+	op-symbol = \delta,
+}
+% \usepackage{tensor}               % Index notation
+% \usepackage{accents}              % Math accents
+% \usepackage{braket}               % Dirac bra-ket notation
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FIGURES
+\usepackage{graphicx}               % Figures
+\usepackage{float}                  % Position enforcement using [H]
+% \usepackage{pdfpages}               % Include PDF-pages
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TABLES
+\usepackage{array}                  % (TODO)
+\usepackage{tabularx}               % (TODO)
+\usepackage{diagbox}                % Slash in tables
+\usepackage{booktabs}               % Improved rules in tables
+
+% Reduce weight of top and bottom rules
+\setlength{\heavyrulewidth}{0.075em}
+
+% TABLE LAYOUT (optional)
+%\newcommand{\PreserveBackslash}[1]{\let\temp=\\#1\let\\=\temp}
+%\newcolumntype{C}[1]{>{\PreserveBackslash\centering}p{#1}}
+%\newcolumntype{R}[1]{>{\PreserveBackslash\raggedleft}p{#1}}
+%\newcolumntype{L}[1]{>{\PreserveBackslash\raggedright}p{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CODE LISTING
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TIKZ
+\usepackage{tikz}                     % Tikz figures
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CAPTION LAYOUT
+\usepackage[
+	labelfont       = {bf, it},
+	textfont		= it,
+    font            = normalsize,
+    width           = 0.92\textwidth,
+    justification   = justified,
+    singlelinecheck = true
+]{caption}
+% NOTE: Consider matching the caption font size (normalsize above)
+% to the font size in the figure/table. \captionsetup can be used
+% to change settings locally.
+
+% Caption for subfigures (optional)
+% \usepackage{subcaption}
+
+% \DeclareCaptionLabelFormat{r-parens}{#2)} %Define our custom label
+% \captionsetup[subfigure]{font=scriptsize, textfont=sl,%
+% labelformat=r-parens, width=0.8\textwidth, position=b}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CITATIONS/BIBLIOGRAPHY
+\usepackage{silence}  % Suppress warnings (manually)
+\WarningFilter{biblatex}{File 'english-ieee.lbx'}
+
+\usepackage[
+    backend     = biber,
+    style       = ieee,
+    dashed      = false,
+    maxnames    = 6,
+    natbib      = true,
+    urldate     = iso,
+    seconds     = true,
+    isbn        = false
+]{biblatex}
+
+\DefineBibliographyStrings{english}{%
+  mathesis = {MSc thesis},
+}
+\renewcommand{\subtitlepunct}{\addcolon\addspace}
+
+\addbibresource{references.bib}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% SI UNITS
+\usepackage{siunitx}
+
+\sisetup{output-decimal-marker={.}}
+\sisetup{exponent-product={\cdot}}
+\sisetup{range-phrase=--}
+\sisetup{per-mode=symbol}
+% \sisetup{separate-uncertainty=true}
+%\sisetup{round-mode=places,round-precision=3}
+%\sisetup{parse-numbers = false}
+
+%Speed of light and eV per speed of light
+\DeclareSIUnit\clight{\text{\ensuremath{c}}}
+\DeclareSIUnit\eVperc{\eV\per\clight}
+\DeclareSIUnit\au{\text{a.u.}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% HEADER & FOOTER LAYOUT
+\usepackage{fancyhdr}
+\usepackage{chappg}
+
+\pagestyle{fancy}
+\setlength{\headheight}{15pt}  % Increase head height
+
+\renewcommand{\chaptermark}[1]{\markboth{\thechapter. \space#1}{\thechapter. \space#1}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection. \space#1}}
+
+\if\thesisLayout 1 % One-sided
+    \fancyhf{}
+    \fancyhead[L]{\nouppercase{ \leftmark}}
+    \fancyhead[R]{\nouppercase{ \rightmark}}
+    \fancyfoot[C]{\thepage}
+\fi
+
+\if\thesisLayout 2 % Two-sided
+      \fancyhf{}
+    \fancyhead[LE]{\nouppercase{ \leftmark}}
+    \fancyhead[RO]{\nouppercase{ \rightmark}}
+    \fancyfoot[LE,RO]{\thepage}
+    \fancypagestyle{plain}{% Redefine the plain page style
+    \fancyhf{}
+    \renewcommand{\headrulewidth}{0pt}
+    \fancyfoot[LE,RO]{\thepage}}
+\fi
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FOOTNOTE LAYOUT
+\usepackage[bottom, hang]{footmisc}
+% The multiple option does not seem to work. It should produce commas
+% between markers in cases like "Lipsum\footnote{Foo}\footnote{Bar}".
+% For now, use the following:
+\newcommand{\footnotemarksep}{\textsuperscript{,}}
+% A better approach might be: https://tex.stackexchange.com/a/62091
+
+% Change the width of the ruler above footnotes:
+\makeatletter
+\renewcommand*{\footnoterule}{\kern-3\p@ \hrule \kern2.6\p@}
+\makeatother
+
+% Space before footnote text (0pt for marker width):
+\setlength{\footnotemargin}{0pt}
+
+% Might be preferable for multi-paragraph footnotes:
+%\setlength{\footnotesep}{\baselineskip}
+
+% For footnote symbols instead of numbers, use options symbol*
+% and perpage with footmisc.
+% To change symbol set, use e.g.: \setfnsymbol{wiley}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% BLANK LINE AND SPACING
+\usepackage[raggedright]{titlesec}
+\usepackage{parskip}                % Enables vertical spaces correctly
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{\baselineskip}
+
+% Title spacing
+
+% Defaults:
+%\titlespacing*{\chapter} {0pt}{50pt}{40pt}
+%\titlespacing*{\section} {0pt}{3.5ex plus 1ex minus .2ex}{2.3ex plus .2ex}
+%\titlespacing*{\subsection} {0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+%\titlespacing*{\subsubsection}{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+%\titlespacing*{\paragraph} {0pt}{3.25ex plus 1ex minus .2ex}{1em}
+%\titlespacing*{\subparagraph} {\parindent}{3.25ex plus 1ex minus .2ex}{1em}
+
+\setlength{\belowdisplayskip}{0pt}
+\setlength{\belowdisplayshortskip}{0pt}
+\setlength{\abovedisplayskip}{0pt}
+\setlength{\abovedisplayshortskip}{0pt}
+
+\raggedbottom % does not fill the entire page if not necessary
+
+% Line spacing:
+% NOTE: setspace must be loaded before footmisc if both are used!
+%\usepackage{setspace}              % (TODO)
+%\setstretch{1.2}
+%\linespread{1.2}
+
+% Modify tolerances
+%\pretolerance=1100
+%\tolerance=8000
+%\emergencystretch=0pt
+%\righthyphenmin=4
+%\lefthyphenmin=4
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TITLE AND TOC LAYOUT
+\usepackage{titletoc}
+\usepackage[title]{appendix}
+
+% Define the number of section levels to be included in toc and numbered
+\setcounter{tocdepth}{3}
+\setcounter{secnumdepth}{3}
+
+% Chapter styles (NOTE: only the last one is used)
+\newcommand*{\thesisChapterStyle}{1} % 0 for default
+
+\ifnum\thesisChapterStyle=1
+    \titleformat{\chapter}[hang]{\fontsize{30}{10}\selectfont}
+    {{\fontsize{30pt}{1em}\vspace{-5.2ex}\selectfont \textnormal{\thechapter. \hspace{1pt}}}}
+    {.5ex}{\raggedright}[\rule{\textwidth}{0.3pt}]
+    \titlespacing{\chapter}{0pt}{0pt}{\parskip}
+\fi
+
+% TODO: raggedright?
+\ifnum\thesisChapterStyle=2
+    \titleformat{\chapter}[display]
+    {\Huge\bfseries\filcenter}
+    {{\fontsize{50pt}{1em}\vspace{-4.2ex}\selectfont \textnormal{\thechapter}}}{1ex}{}[]
+\fi
+
+% Handle number of blank pages at chapter break
+\if\thesisLayout 1
+    \renewcommand{\cleardoublepage}{\clearpage}
+\fi
+
+% Name of chapters
+% \addto\captionsenglish{\renewcommand{\abstractname}{}}
+\addto{\captionsenglish}{\renewcommand{\contentsname}{Table of contents}}
+\addto{\captionsenglish}{\renewcommand{\listfigurename}{List of figures}}
+\addto{\captionsenglish}{\renewcommand{\listtablename}{List of tables}}
+% \addto\captionsenglish{\renewcommand{\appendixname}{}}
+
+% \bibname seems to be reset at \begin{document} (workaround in main)
+\newcommand{\thesisBibName}{References}
+\addto{\captionsenglish}{\renewcommand{\bibname}{\thesisBibName}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% COVER PAGE BACKGROUND
+\usepackage{eso-pic}
+
+\newcommand{\backgroundpic}[3]{
+    \put(#1,#2){
+    \parbox[b][\paperheight]{\paperwidth}{
+    \centering
+    \includegraphics[width=\paperwidth,height=\paperheight,keepaspectratio]{#3}}}}
+
+% COLOUR FOR HEADERS
+\definecolor{headerBrown}{RGB}{144,102,78}
+
+\if\thesisType B
+    \definecolor{thesisHeaderColor}{RGB}{126,180,56} % Green
+\fi
+
+\if\thesisType M
+    \definecolor{thesisHeaderColor}{cmyk}{0.14,0,0,0.65} % Gray
+\fi
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PATCHES AND FIXES
+
+% Give error on include with missing file
+\makeatletter
+\patchcmd\@include\@input@\input{}{}
+\makeatother
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OTHER
+\usepackage{csquotes}               % Quotations, using the command
+\usepackage{lipsum}                 % Generating Lorem Ipsum
+\usepackage{enumitem}               % Provides control over lists
+\usepackage{xcolor}                 % Coloured text
+\usepackage{glossaries}
+
+\usepackage[yyyymmdd]{datetime}     % Dates
+\renewcommand{\dateseparator}{-}    % Modify date separator
+
+% To-do notes
+\if\thesisStatus f
+    \usepackage[disable]{todonotes}
+\else
+    \if\thesisStatus d
+		\usepackage[colorinlistoftodos]{todonotes}
+    \fi
+\fi
+\setlength{\marginparwidth}{2.5cm}
+
+% Chemistry:
+% \usepackage{mhchem}               % Isotopes
+\usepackage{chemfig}                % Chemical structures
+
+% NOTE: this is not the correct placement for these packages:
+% \usepackage[export]{adjustbox}    % Alt. way of inserting subfigs
+% \usepackage{multicol}             % Multiple columns
+
+% \usepackage{marvosym}             % Symbols, e.g. euro, zodiac etc.
+% \usepackage{helvet}               % Enables different fonts
+% \usepackage{wrapfig}              % Wrap figures
+% \usepackage{arydshln}             % Dashed \hline and other
+
+% \usepackage{pdflscape}            % Landscape-mode
+% \usepackage{verbatim}             % e.q. comment environment
+% \usepackage{moreverb}             % List settings
+% \usepackage{comment}              % comment environment
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% REFERENCES
+% hyperref should, in general, be loaded last to avoid problems.
+% Hence, other packages should, most likely, be placed above this.
+
+\if\thesisStatus f
+    \newcommand{\thesisColorlinks}{false}
+\else
+    % change to false for black links in draft
+    \newcommand{\thesisColorlinks}{true}
+\fi
+
+% Clickable links in final pdf
+\usepackage[
+    hidelinks,
+    linktoc     = all,
+    colorlinks  = \thesisColorlinks,
+    filecolor   = blue,
+    linkcolor   = blue,
+    urlcolor    = blue,
+    citecolor   = blue,
+    anchorcolor = blue,
+]{hyperref}
+\hypersetup{pdfinfo = {
+    Author   = {\thesisAuthor},
+    Title    = {\thesisImprintTitle},
+    Keywords = {\thesisKeywords}
+}}
+
+\usepackage{bookmark}                                   % Improve bookmarks
+\usepackage{url}                                        % Clickable url links
+\usepackage[noabbrev]{cleveref}                         % Clever references
+% Optional: [capitalise, nameinlink] for "Table 1" with "Table" part of the
+%   hyperlink instead of "table 1" with hyperlink "1".
+% Note: use \cpageref to reference pages with correct hyperlinks
+
+% CREF
+\crefname{equation}{}{}  % "(1.1)" instead of "equation (1.1)"
+
+% NUMBERING:
+\numberwithin{equation}{chapter}    % Number equations within chapter
+\numberwithin{figure}{chapter}      % Number figures within chapter
+\numberwithin{table}{chapter}       % Number tables within chapter
+\counterwithout{footnote}{chapter}  % Number footnotes without chapter
