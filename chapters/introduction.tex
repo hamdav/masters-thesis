@@ -1,4 +1,6 @@
 \chapter{Introduction}
+\todoblk{After thesis is done, check that I've used cref and not ref}
+\todoblk{References before the dot or after? And space or no space?}
 
 \tododec{Introduction to quantum acoustics\ldots I need to read more
 literature I think}
@@ -21,18 +23,17 @@ To find the optimal device they would then systematically test parameter values
 to see which give the best performance in a simulation of the device.
 This brute force method of design limits the possible number of parameters to a
 very small number.
-If there are 10 different values to test for each parameter, the even 6
+If there are 10 different values to test for each parameter, even six
 parameters would require 1,000,000 simulations.
 One can of course use smarter optimization algorithms like bayesian optimization
 \todocit{cite something, check Ida's thesis maybe}
-or particle swarm optimization
-\todocit{cite the thing the danish guys cited}
+or particle swarm optimization\cite{zhang_compact_2013}
 to decrease the number of simulations needed, but it will still be of the same
 order.
 
 A different approach that has been gaining some popularity is
-\emph{inverse design with adjoint simulation}.
-\todocit{maybe cite \emph{inverse design in nanophotonics}}
+\emph{inverse design with adjoint simulation}.%
+\cite{molesky_inverse_2018}
 The idea is that if the gradient of the figure of merit
 with respect to the parameters can be calculated, then we can use gradient based
 optimization methods, which converge much faster, even if the number of

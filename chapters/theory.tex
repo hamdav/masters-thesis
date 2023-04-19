@@ -7,12 +7,12 @@ a linear elasticity model is often assumed.
 For small deformations, solid materials obey Hooke's law which in it's full form
 looks like
 \[
-	\sigma_{ij} = C_{ijkl} \epsilon_{jl}
+	\sigma = C : \epsilon
 \]
 where $\sigma$ is the stress tensor, $C$ the elasticity tensor which is a
-property of the material, and 
+four-tensor that is a property of the material,
 $\epsilon \defeq \nabla \vec u + (\nabla \vec u)^T$
-is the strain tensor.
+is the strain tensor, and $:$ denotes double scalar product.
 This equation is linear in $\vec u$, hence the name \emph{linear} elasticity.
 Using this and newtons equations of motion, the equation governing the dynamics
 is obtained:
@@ -21,15 +21,40 @@ is obtained:
 \]
 where $\rho$ is the density, $\vec{u}$ is the displacement and $\vec F$ is the
 externally applied force.
-\tododec{Proper derivation for equation below? It is relatively
-straightforward but requires some effort}
 Assuming a time harmonic solution
-$\vec u(\vec x, t) = \vec u(x) e^{i \omega t}$ and plugging this into
-the governing equations yields
-\begin{equation}\label{eq:gov_eq}
-	-\rho \omega^2 u_i = \partial_j C_{ijkl} \partial_k u_l + F_i
+$\vec u(\vec x, t) = \vec u(x) e^{i \omega t}$
+with angular frequency $\omega$ this becomes
+\[
+	-\rho \omega^2 \vec{u} = \nabla \cdot \sigma + \vec F.
+\]
+
+To combine these into one equation that can be solved for $\vec{u}$ we first
+rewrite them in index notation to make calculations clearer:
+\begin{align}
+	\epsilon_{ij} &= \frac12(\partial_i u_j + \partial_j u_i)\\
+	\sigma_{ij} &= C_{ijkl} \epsilon_{kl}\\
+				&= \frac12\left(C_{ijkl} \partial_k u_l + C_{ijkl} \partial_l
+				u_k\right)\\
+				&= C_{ijkl} \partial_k u_l\text{ because of the symmetry of $C$}
+\end{align}
+which gives
+\begin{align}
+	F_{i} &= -\rho \omega^2 u_{i} - \partial_j \sigma_{ij}\\
+		   &= -\rho \omega^2 \delta_{ik} u_{k} -
+		   \partial_j \left(C_{ijkl} \partial_l u_k\right)\\
+		   &= -\left(\rho \omega^2 \delta_{ik} \placeholder + 
+		   \partial_j \left(C_{ijkl} \partial_l \placeholder\right)\right) u_k
+\end{align}
+where the indices $i,j,k,l$ go over the spacial dimensions $x,y,z$.
+All of the tensors in the equation above are really tensor fields, i.e.\ they are
+functions of $\vec{x}$.
+Defining the operator $\hat A_{ik}$ as
+$-\left(\rho \omega^2 \delta_{ik} \placeholder + 
+\partial_j \left(C_{ijkl} \partial_l \placeholder\right)\right)$
+we can write
+\begin{equation}
+	\hat A_{ik} u_k = F_i
 \end{equation}
-written in index notation for clarity. 
 
 \todowrt{
 With no external forces we get traveling modes=eigenvalues.
@@ -79,7 +104,7 @@ the design, which in our case means with respect to the material parameters.
 I will in this section first give a general derivation, followed by the case of
 inverse design in acoustics.
 
-\subsubsection{General Derivation}
+\subsubsection{General Derivation}\label{sec:general_derivation}
 
 Let $\fobj$ be a function which depends on some (large) vector $v$.
 The vector $v$ can be calculated by solving the linear equation
@@ -109,40 +134,180 @@ The first factor of this product is the solution to the \emph{adjoint problem}
 \end{equation}
 hence the name adjoint simulation.
 As it turns out, $A$ is often symmetric which means that this is simply a normal
-simulation but with $\diff{\fobj}{v}^T$ as the source.
+simulation but with $\difs{\fobj}{v}^T$ as the source.
 Thus, to obtain the derivative we just need to run an additional
 simulation with a different input.
 
 Now you might be wondering: what have we gained by this?
 Let $n$ be the dimension of $v$, $m$ the dimension of $p$ and $l$ the dimension
 of $b$.
-This means that $A$ is a matrix with dimension $l\times n$ and $\diff{A}{p}$ is
+This means that $A$ is a matrix with dimension $l\times n$ and $\difs{A}{p}$ is
 a three-tensor with dimension $m\times l\times n$.
-Thus calculating $A^{-1} \diff{A}{p}$ directly involves solving $Ax = w$ for a
-three-tensor, and calculating $A^{-1} \left(\diff{A}{p} v\right)$
+Thus calculating $A^{-1} \difs{A}{p}$ directly involves solving $Ax = w$ for a
+three-tensor, and calculating $A^{-1} \left(\difs{A}{p}\,v\right)$
 involves solving for a matrix, both of which are orders of magnitude more
 computationally expensive than solving for a vector.
 
 \subsubsection{Specific derivation with acoustics}
 
 Now we turn to the specific case of acoustic devices.
-Here $A v = b$ is replaced by the dynamic equation \todo{dynamic equation?
+Here $A v = b$ is replaced by the dynamic equation \todowrt[noinline]{dynamic equation?
 Better name} of linear elasticity:
+\begin{equation}\label{eq:sim_eq}
+	\hat A_{ik} u_k = F_i
+\end{equation}
+Instead of vectors, like we saw in \cref{sec:general_derivation}, these quantities are now functions%
+\footnote{%
+	Vector-valued funcitons, but that is not the important part here.
+}
+of $\vec x$.
+Analogously to the vector of design parameters we now have a \emph{design field}
+$p(\vec x)$.
+
+Because we are now dealing with functions,
+we need to use the functional derivative instead of the ordinary derivative,
+which is defined through
 \begin{equation}
-	-\left(\rho \omega \delta_{il} + \partial_j C_{ijkl} \partial_k\right) u_l =
-	F_i
+	\int \diff.f.{L}{f} (x) \varphi(x) \dl x
+	= \diff*{L[f + \varepsilon \varphi]}{\varepsilon}
+\end{equation}
+\tododec{I find the definition somewhat difficult to comprehend and really
+	didn't understand it until I sat down and did some examples for myself.
+	Maybe give some properties / examples of how to use it instead / also. At least
+	show the chain rule.
+	Also, explain the syntax delta f / (delta p(x)) and (delta f /delta p) (x)
+	and that they're the same.
+}
+A useful property of the functional derivative is the chain rule:
+
+For simplicity I will limit myself to the case where the objective function is
+an overlap integral of the displacement field $u_k(\vec x)$ with some function
+$\varphi_k^*(\vec x)$:
+\begin{equation}
+	\fobj[\vec u] = \int u_i(\vec x) \varphi_i^*(\vec x) \dl{\vec x}.
+\end{equation}
+Such an integral is a scalar product in the space where
+$\vec u(\vec x)$ resides.
+\tododec[noinline]{is this sentence necessary? It motivates taking the
+conjugate...}
+
+Analogously to the general derivation, we will use the chain rule to expand
+$\difs.f.{\fobj}{p}(\vec x)$.
+However, because $\vec u$ is in general complex, I will split it into its real and
+imaginary components: $u_i = v_i + i w_i$.
+\begin{equation}
+	\label{eq:chain_rule}
+	\diff.f.{f_\text{obj}}{p}(\bm x)
+	=
+	\int_\Omega \dl{\bm y} 
+	\diff.f.{f_\text{obj}}{v_i}(\bm y)
+	\diff.f.{v_i(\bm y)}{p}(\bm x)
+	+
+	\diff.f.{f_\text{obj}}{w_i}(\bm y)
+	\diff.f.{w_i(\bm y)}{p}(\bm x)
+\end{equation}
+The first factor of each of the two terms is easy enough to calculate:
+\begin{align}
+	\diff.f.{f_\text{obj}}{v_i}(\bm y) &=
+	\diff.f.*{
+		\Re\left(\int_\Omega u_j(\bm x) \varphi_j^*(\bm x) \dl{\bm x}\right)
+	}{v_i(\bm y)}\\
+	&= \int_\Omega
+	\Re\left(\diff.f.*{
+		u_j(\bm x) \varphi_j^*(\bm x)
+	}{v_i(\bm y)}\right) \dl{\bm x}\\
+	&= \int_\Omega
+	\Re\left(\delta(\bm x - \bm y) \delta_{ij} \varphi_j^*(\bm x)\right)
+	\dl{\bm x}\\
+	&= \Re\left(\varphi_i^*(\bm y)\right)
+\end{align}
+and
+\begin{align}
+	\diff.f.{f_\text{obj}}{w_i}(\bm y) &=
+	\diff.f.*{
+		\Re\left(\int_\Omega u_j(\bm x) \varphi_j^*(\bm x) \dl{\bm x}\right)
+	}{w_i(\bm y)}\\
+	&= \int_\Omega
+	\Re\left(\diff.f.*{
+		u_j(\bm x) \varphi_j^*(\bm x)
+	}{w_i(\bm y)}\right) \dl{\bm x}\\
+	&= \int_\Omega
+	\Re\left(i \delta(\bm x - \bm y) \delta_{ij} \varphi_j^*(\bm x)\right)
+	\dl{\bm x}\\
+	&= \Re\left(i m_i^*(\bm y)\right)\\
+	&= -\Im\left(\varphi_i^*(\bm y)\right)
+\end{align}
+which gives us
+\begin{align}
+	\diff.f.{f_\text{obj}}{p}(\bm x)
+	&=
+	\int_\Omega \dl{\bm y} 
+	\Re\left(\varphi_i^*(\bm{y})\right)
+	\diff.f.{v_i(\bm y)}{p}(\bm x)
+	-
+	\Im\left(\varphi_i^*(\bm{y})\right)
+	\diff.f.{w_i(\bm y)}{p}(\bm x)\\
+	&=
+	\int_\Omega \dl{\bm y} 
+	\Re\left(\varphi_i^*(\bm{y})\right)
+	\Re\left(\diff.f.{u_i(\bm y)}{p}(\bm x)\right)
+	-
+	\Im\left(\varphi_i^*(\bm{y})\right)
+	\Im\left(\diff.f.{u_i(\bm y)}{p}(\bm x)\right)\\
+	&=
+	\Re\left(
+	\int_\Omega \dl{\bm y} 
+	\varphi_i^*(\bm{y})
+	\diff.f.{u_i(\bm y)}{p}(\bm x)
+	\right)\label{eq:dfdp_as_dudp_integral}
+\end{align}
+\tododec{I am mixing putting the argument in the denominator / after the
+functional derivative. Should I be consistent? I like after more, but it is a
+bit weird when putting the operant after the derivative}
+To find $\difs.f.{u_i(\bm y)}{p}(\bm x)$ we apply $\difs.f.{}{p(\bm x)}$ to
+equation~\eqref{eq:sim_eq}, which gives us
+\begin{equation}\label{eq:dAdpu_Adudp}
+	0 =
+	\diff.f.{\hat A_{ik}}{p}(\vec x) u_k(\bm y)
+	+
+	\hat A_{ik} \diff.f.{u_k(\bm y)}{p(\bm x)}
 \end{equation}
 
-\tododec{Derive specific case (with functional analysis):
-	borrowing heavily from the mathy notes is possible.
-	Derivation is theoretically possible without specifying that the objective function
-	is an overlap integral, only
-	using equation~\eqref{eq:gov_eq},
-	but the equations would be \emph{a lot} longer and more abstruse,
-	so I don't think that it is a good idea.
-}
+The point of inverse design is that we now want to find an ajoint field
+$\tilde u_i(\bm y)$
+such that the integral in equation~\eqref{eq:dfdp_as_dudp_integral} is
+\begin{equation}
+	\int_\Omega \dl{\bm y}\,
+	\varphi_i^*(\bm y)
+	\diff.f.{u_i(\bm y)}{p}(\bm x).
+	=
+	\int_\Omega \dl{\bm y}\,
+	\tilde u_i(\bm y)
+	\hat A_{ik}
+	\diff.f.{u_k(\bm y)}{p}(\bm x)
+\end{equation}
+which by equation~\cref{eq:dAdpu_Adudp} is equal to
+\begin{equation}
+	\int_\Omega \dl{\bm y}\,
+	\tilde u_i(\bm y)
+	\diff.f.{\hat A_{ik}}{p}(\vec x)
+	u_k(\bm y).
+\end{equation}
+\todowrt{use the form of $\hat A$ to obtain an explicit formula for this}
+The way to find this $\tilde u_i$ is through an adjoint simulation.
+
+\todoblk{The infamous integral. Still am not entirely sure about it, but I
+haven't thought more about it since I abandoned that.}
 
 \subsection{Optimization Algorithms}
+
+In the last section I painstakingly derived how one can obtain the gradient,
+and in this section I will attempt to justify that by describing how one can use
+the gradient.
+I will begin by describing the advantages of gradient based optimization
+algorithms over those that don't use the gradient.
+Following that I describe the algorithm that I used, as well as some of it's
+predecessors.
 
 \tododec{General paragraph on the benefits of gradient based
 optimization algorithms vs other algorithms? And general overview of the
