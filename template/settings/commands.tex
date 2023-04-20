@@ -29,28 +29,6 @@
 \DeclareMathOperator{\tr}{tr} 	% Trace
 \newcommand{\scalprod}[2]{\left\langle#1, #2\right\rangle}
 
-% Swap the definition of \abs* and \norm*, so that \abs
-% and \norm resizes the size of the brackets, and the
-% starred versions do not.
-\makeatletter
-\let\oldabs\abs
-\def\abs{\@ifstar{\oldabs}{\oldabs*}}
-%
-\let\oldnorm\norm
-\def\norm{\@ifstar{\oldnorm}{\oldnorm*}}
-\makeatother
-
-%symbols
-% for := as
-\newcommand*{\defeq}{%
-    \mathrel{%
-        \vcenter{%
-            \baselineskip0.5ex \lineskiplimit0pt \hbox{\scriptsize.}\hbox{\scriptsize.}%
-        }%
-    }%
-    =%
-}
-
 % vectors are boldface
 \renewcommand{\vec}{\bm}
 

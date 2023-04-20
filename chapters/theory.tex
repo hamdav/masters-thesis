@@ -309,9 +309,35 @@ algorithms over those that don't use the gradient.
 Following that I describe the algorithm that I used, as well as some of it's
 predecessors.
 
-\tododec{General paragraph on the benefits of gradient based
-optimization algorithms vs other algorithms? And general overview of the
-optimization process: simulate -- compute gradient -- step}
+An optimization algorithm is an algorithm for finding the optimum of a function.
+The function is often called the \emph{objective function} or the \emph{cost
+function}.
+A very naive optimization method would be to simply try some number of inputs
+and then choose the one with the highest function value.
+This would require a large number of points before a good value is found,
+which means that it would take a long time.
+An improvement to this method is to use the information gained from the points
+already tried to decide which points to try next.
+If some point has a bad value, then try somewhere else; if some point has a good
+value, try another close by.
+Examples of algorithms that do this are bayesian optimization, particle swarm
+optimization, \todowrt[noinline]{more examples}
+However, if the input to your function is very high-dimensional, ``close by'' is
+a very large volume.
+For such functions, it is essential that you know in which direction the
+function increases the fastest, so that you.
+
+\tododec{%
+	Cool thing to maybe put in. If you have a linear function
+	$f(x) = v\cdot x + k$, what is the probability that you will significantly
+	(say more than 10\% of optimal step) increase $f$ with a random unit
+	length step?
+	Optimal: step in $\hat v$, $\Delta f = v\cdot \hat v = \norm{v}$.
+	Probability of 10\% of this: $\int_{0.1}^1 (1-x^2)^{n/2} \dl x / \int_{-1}^1
+	\cdots$
+	use $(1-x^2)^n \approx \exp(-n x^2)$.
+}
+
 
 \todowrt{Paragraph describing regular gradient descent}
 
