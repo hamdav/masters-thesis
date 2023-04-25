@@ -1,0 +1,59 @@
+\begin{tikzpicture}[scale=1.5, very thick]
+	\coordinate (ca) at (0,0);
+	\coordinate (cb) at (1,0);
+	\def\radiusa{0.7cm}
+	\def\radiusb{0.1cm}
+	\def\radpt{0.7pt}
+	\draw (-1,-1) rectangle (1.5,1);
+	\foreach \i in {0,15,...,360}{% 
+		\filldraw [blue]  (ca)++(\i:\radiusa) circle (\radpt);
+	}
+	\foreach \i in {0,72,...,360}{% 
+		\filldraw [blue]  (cb)++(\i:\radiusb) circle (\radpt);
+	}
+	\draw (ca) circle[radius=\radiusa];
+	\draw (cb) circle[radius=\radiusb];
+
+	\begin{scope}[xshift=3cm]
+		\coordinate (ca) at (0,0);
+		\coordinate (cb) at (1,0);
+		\def\radiusa{0.4cm}
+		\def\radiusb{0.4cm}
+		\draw (-0.8,-1) rectangle (1.7,1);
+		\foreach \i in {0,15,...,360}{% 
+			\filldraw [blue]  (ca)++(\i:\radiusa) circle (\radpt);
+		}
+		\foreach \i in {0,72,...,360}{% 
+			\filldraw [blue]  (cb)++(\i:\radiusb) circle (\radpt);
+		}
+		\draw (ca) circle[radius=\radiusa];
+		\draw (cb) circle[radius=\radiusb];
+	\end{scope}
+	\begin{scope}[xshift=6cm]
+		\coordinate (ca) at (0.2,0);
+		\coordinate (cb) at (0.8,0);
+		\def\radiusa{0.4cm}
+		\def\radiusb{0.4cm}
+		\draw (-0.8,-1) rectangle (1.7,1);
+		\foreach \i in {60,75,...,315}{% 
+			\filldraw [blue]  (ca)++(\i:\radiusa) circle (\radpt);
+		}
+		\foreach \i in {-72,0,72}{% 
+			\filldraw [blue]  (cb)++(\i:\radiusb) circle (\radpt);
+		}
+		\foreach \i in {-45, -30, ..., 45}{% 
+			\filldraw [red]  (ca)++(\i:\radiusa) circle (\radpt);
+		}
+		\foreach \i in {144, -144}{% 
+			\filldraw [red]  (cb)++(\i:\radiusb) circle (\radpt);
+		}
+		\draw (ca)++(60:\radiusa)
+			arc[radius=\radiusa, start angle=60, end angle=300]
+			to[out=30, in=150]
+			([shift=(240:\radiusb)] cb)
+			arc[radius=\radiusb, start angle=240, end angle=480]
+			to[out=210, in=-30]
+			cycle;
+		%\draw (cb) circle[radius=\radiusb];
+	\end{scope}
+\end{tikzpicture}
