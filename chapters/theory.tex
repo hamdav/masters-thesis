@@ -11,7 +11,7 @@ looks like
 \]
 where $\sigma$ is the stress tensor, $C$ the elasticity tensor which is a
 four-tensor that is a property of the material,
-$\epsilon \defeq \nabla \vec u + (\nabla \vec u)^T$
+$\epsilon \coloneqq \nabla \vec u + (\nabla \vec u)^T$
 is the strain tensor, and $:$ denotes double scalar product.
 This equation is linear in $\vec u$, hence the name \emph{linear} elasticity.
 Using this and newtons equations of motion, the equation governing the dynamics
@@ -71,7 +71,7 @@ phonons so if I talk about it it's just for applications...}
 \todowrt{Write about PML design and why we need it: Simulating infinite
 	waveguides isn't possible because of the finite computing power. Also we
 don't care about stuff far away, just that there are no reflections that can
-interfere.}
+interfere. Or maybe write about this in the method\ldots}
 
 \section{Inverse Design}
 
@@ -210,56 +210,54 @@ The first factor of each of the two terms is easy enough to calculate:
 \begin{align}
 	\diff.f.{f_\text{obj}}{v_i}(\bm y) &=
 	\diff.f.*{
-		\Re\left(\int_\Omega u_j(\bm x) \varphi_j^*(\bm x) \dl{\bm x}\right)
+		\int_\Omega u_j(\bm x) \varphi_j^*(\bm x) \dl{\bm x}
 	}{v_i(\bm y)}\\
 	&= \int_\Omega
-	\Re\left(\diff.f.*{
+	\diff.f.*{
 		u_j(\bm x) \varphi_j^*(\bm x)
-	}{v_i(\bm y)}\right) \dl{\bm x}\\
+	}{v_i(\bm y)} \dl{\bm x}\\
 	&= \int_\Omega
-	\Re\left(\delta(\bm x - \bm y) \delta_{ij} \varphi_j^*(\bm x)\right)
+	\delta(\bm x - \bm y) \delta_{ij} \varphi_j^*(\bm x)
 	\dl{\bm x}\\
-	&= \Re\left(\varphi_i^*(\bm y)\right)
+	&= \varphi_i^*(\bm y)
 \end{align}
 and
 \begin{align}
 	\diff.f.{f_\text{obj}}{w_i}(\bm y) &=
 	\diff.f.*{
-		\Re\left(\int_\Omega u_j(\bm x) \varphi_j^*(\bm x) \dl{\bm x}\right)
+		\int_\Omega u_j(\bm x) \varphi_j^*(\bm x) \dl{\bm x}
 	}{w_i(\bm y)}\\
 	&= \int_\Omega
-	\Re\left(\diff.f.*{
+	\diff.f.*{
 		u_j(\bm x) \varphi_j^*(\bm x)
-	}{w_i(\bm y)}\right) \dl{\bm x}\\
+	}{w_i(\bm y)} \dl{\bm x}\\
 	&= \int_\Omega
-	\Re\left(i \delta(\bm x - \bm y) \delta_{ij} \varphi_j^*(\bm x)\right)
+	i \delta(\bm x - \bm y) \delta_{ij} \varphi_j^*(\bm x)
 	\dl{\bm x}\\
-	&= \Re\left(i m_i^*(\bm y)\right)\\
-	&= -\Im\left(\varphi_i^*(\bm y)\right)
+	&= i \varphi_i^*(\bm y)
 \end{align}
 which gives us
 \begin{align}
 	\diff.f.{f_\text{obj}}{p}(\bm x)
 	&=
-	\int_\Omega \dl{\bm y} 
-	\Re\left(\varphi_i^*(\bm{y})\right)
+	\int_\Omega \dl{\bm y}
+	\varphi_i^*(\bm{y})
 	\diff.f.{v_i(\bm y)}{p}(\bm x)
-	-
-	\Im\left(\varphi_i^*(\bm{y})\right)
+	+
+	i \varphi_i^*(\bm{y})
 	\diff.f.{w_i(\bm y)}{p}(\bm x)\\
 	&=
-	\int_\Omega \dl{\bm y} 
-	\Re\left(\varphi_i^*(\bm{y})\right)
+	\int_\Omega \dl{\bm y}
+	\varphi_i^*(\bm{y})
 	\Re\left(\diff.f.{u_i(\bm y)}{p}(\bm x)\right)
-	-
-	\Im\left(\varphi_i^*(\bm{y})\right)
+	+
+	i \varphi_i^*(\bm{y})
 	\Im\left(\diff.f.{u_i(\bm y)}{p}(\bm x)\right)\\
 	&=
-	\Re\left(
-	\int_\Omega \dl{\bm y} 
+	\int_\Omega \dl{\bm y}
 	\varphi_i^*(\bm{y})
 	\diff.f.{u_i(\bm y)}{p}(\bm x)
-	\right)\label{eq:dfdp_as_dudp_integral}
+	\label{eq:dfdp_as_dudp_integral}
 \end{align}
 \tododec{I am mixing putting the argument in the denominator / after the
 functional derivative. Should I be consistent? I like after more, but it is a
@@ -322,10 +320,14 @@ If some point has a bad value, then try somewhere else; if some point has a good
 value, try another close by.
 Examples of algorithms that do this are bayesian optimization, particle swarm
 optimization, \todowrt[noinline]{more examples}
-However, if the input to your function is very high-dimensional, ``close by'' is
-a very large volume.
+However, if the input to your function is very high-dimensional,
+choosing a random direction step in for your next try is very unlikely
+to yield a much better value.
 For such functions, it is essential that you know in which direction the
-function increases the fastest, so that you.
+function increases the fastest, so that you can choose your next point in that
+direction. That is why we want to use gradient based optimization algorithms;
+they enable us to quickly find the right direction to go in for best
+improvement.
 
 \tododec{%
 	Cool thing to maybe put in. If you have a linear function
@@ -338,7 +340,31 @@ function increases the fastest, so that you.
 	use $(1-x^2)^n \approx \exp(-n x^2)$.
 }
 
+\subsubsection{Gradient Descent}
 
-\todowrt{Paragraph describing regular gradient descent}
+The simplest gradient based optimization algorithm is called \emph{gradient
+descent}.
+Like all of the algorithms I will describe it is an iterative algorithm,
+meaning that it generates a sequence of points that converges to an optimum,
+and the next point in the sequence is derived from the previous ones.
+In the case of gradient descent, the next point is gotten by
+\begin{equation}
+	p_n = p_{n-1} + \eta g_{n-1}
+\end{equation}
+where $\eta$ is the so called \emph{learning rate} and $g_{n-1}$ is the gradient
+of the objective function at $p_{n-1}$.
+For ordinary gradient descent the learning rate would be fixed,
+and choosing an appropriate value for this parameter is one of the problems of
+this method.
+If a too high value is chosen, then the steps taken will be too large and the
+optimium might be missed entirely.
+A too low value results in too small steps which will yield a slow convergence.
 
-\todowrt{Paragraph describing the ADAM algorithm}
+\subsubsection{Adaptive Moment Estimation (ADAM)}
+
+\todowrt{Paragraph describing the \gls{adam} algorithm}
+
+\todowrt{\gls{adam} has one learning rate for each dimension}
+\todowrt{\gls{adam} one does not need to manually set the learning rate}
+\tododec{Somewhere I should write about epsilon, and alpha and how I set them,
+but that probably needs to come later, in the method}
