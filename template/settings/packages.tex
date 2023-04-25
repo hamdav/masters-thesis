@@ -291,7 +291,6 @@
 \usepackage{lipsum}                 % Generating Lorem Ipsum
 \usepackage{enumitem}               % Provides control over lists
 \usepackage{xcolor}                 % Coloured text
-\usepackage{glossaries}
 
 \usepackage[yyyymmdd]{datetime}     % Dates
 \renewcommand{\dateseparator}{-}    % Modify date separator
@@ -355,7 +354,8 @@
 
 \usepackage{bookmark}                                   % Improve bookmarks
 \usepackage{url}                                        % Clickable url links
-\usepackage[noabbrev]{cleveref}                         % Clever references
+\usepackage[acronym, toc]{glossaries}
+\usepackage[noabbrev, nameinlink]{cleveref}                         % Clever references
 % Optional: [capitalise, nameinlink] for "Table 1" with "Table" part of the
 %   hyperlink instead of "table 1" with hyperlink "1".
 % Note: use \cpageref to reference pages with correct hyperlinks
