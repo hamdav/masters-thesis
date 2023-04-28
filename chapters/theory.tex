@@ -164,21 +164,85 @@ of $\vec x$.
 Analogously to the vector of design parameters we now have a \emph{design field}
 $p(\vec x)$.
 
-Because we are now dealing with functions,
-we need to use the functional derivative instead of the ordinary derivative,
-which is defined through
+\begin{tcolorbox}[title=On functionals and their derivatives, breakable,
+	parbox=false]
+	\tododec{
+		Big fat box on functionals and their derivatives. I think this should be
+		included somewhere, since very few of my peers know what a functional
+		derivative is... Not really sure how though. I kinda like the thought of
+		putting it in a box like this 
+	}
+Our $\fobj$ is no longer a function, but rather a \emph{functional}, and thus
+we need to use the functional derivative instead of the ordinary derivative.
+One can think of a functional as a function of a function,
+i.e.\ something that maps an element of a function space to a scalar number.
+There are also functionals which depend on both a function and a real number,
+or on multiple functions.
+Below I will give an overview of the notational conventions I use,
+and then give the definition of the functional derivative as well as some useful
+properties of it.
+
+Let $\mathcal{Y}$ be a function space of functions $\R \to \R$.
+A functional $F:\mathcal{Y} \to \R$ evaluated at the function
+$f\in\mathcal{Y}$
+is notated with the function in square brackets: $F[f]$.
+If the functional additionally depends on a real number,
+$G:\mathcal{Y} \times \R \to \R$,
+that is put in round brackets: $G[f](x)$.
+Note that in principle, $F$ is the functional while $F[f]$ is just a
+number,
+analogously to how $f$ is a function while $f(x)$ is a real number.
+
+The functional derivative of $F$ with respect to it's function argument
+is a functional $\mathcal{Y} \times \R \to \R$ denoted $\difs.f.{F[f]}{f}$.
+In this expression, $f$ is technically a dummy function, writing
+$\difs.f.{F[g]}{g}$ is exactly the same functional.
+Almost always the functional derivative will be evaluated
+at some function $h$.
+In the stringent notation this is written
 \begin{equation}
-	\int \diff.f.{L}{f} (x) \varphi(x) \dl x
-	= \diff*{L[f + \varepsilon \varphi]}{\varepsilon}
+	\diff.f.{F[g]}{g} [h]
 \end{equation}
+and is simply an ordinary function $\R \to \R$.
+However, I will use the notation $\difs.f.{F}{h}$ for this, to make the
+equations clearer.\footnote{%
+	This is consistent with how many other authors use the notation,
+	though whether that is an \emph{intentional} notational simplification or
+	not I will leave unsaid\ldots
+}
+\tododec{footnote should probably be deleted\ldots}
+In addition, when evaluating the functional derivative at a point, the
+argument can be put either after it, or in the denominator:
+\begin{equation}
+	\diff.f.{F[g]}{g} [h](x) = \diff.f.{F}{h}(x) = \diff.f.{F}{h(x)}.
+\end{equation}
+
+The functional derivative is defined by
+\begin{equation}
+	\int \diff.f.{F}{f} (x) \varphi(x) \dl x
+	= \diff*{F[f + \varepsilon \varphi]}{\varepsilon}
+\end{equation}
+where $F$ is a functional of $f$ and $\varphi$ is an arbitrary test function.
 \tododec{I find the definition somewhat difficult to comprehend and really
 	didn't understand it until I sat down and did some examples for myself.
-	Maybe give some properties / examples of how to use it instead / also. At least
-	show the chain rule.
-	Also, explain the syntax delta f / (delta p(x)) and (delta f /delta p) (x)
-	and that they're the same.
+	Maybe talk about analogies to vector functions\ldots
 }
-A useful property of the functional derivative is the chain rule:
+I will use two properties of the functional derivative:
+\begin{itemize}
+	\item If $F$ is the functional $F[f](y) = f(y)$,
+		then $\difs.f.{F(y)}{f}(x) = \delta(y-x)$.
+	\item The chain rule: if $F$ is a functional with one function argument,
+		$G$ is a functional with one function and one real argument,
+		and $H$ is the functional defined as $H[f] = F[G[f](y)]$,
+		then
+		\begin{equation}
+			\diff.f.{H}{f}(x)
+			= \int \diff.f.{F}{G[f]}(y) \diff{G(y)}{f}(x) \dl{y}
+		\end{equation}
+\end{itemize}
+\end{tcolorbox}
+
+\todowrt{Look over what domains all of the integrals integrate over.}
 
 For simplicity I will limit myself to the case where the objective function is
 an overlap integral of the displacement field $u_k(\vec x)$ with some function
@@ -188,8 +252,8 @@ $\varphi_k^*(\vec x)$:
 \end{equation}
 Such an integral is a scalar product in the space where
 $\vec u(\vec x)$ resides.
-\tododec[noinline]{is this sentence necessary? It motivates taking the
-conjugate...}
+\tododec[noinline]{This integral would be over the unit cell, or over all of
+space but with $\phi_i(\vec{x})$ being non-zero only inside the unit cell}
 
 Analogously to the general derivation, we will use the chain rule to expand
 $\difs.f.{\fobj}{p}(\vec x)$.
@@ -274,10 +338,10 @@ equation~\eqref{eq:sim_eq}, which gives us
 The point of inverse design is that we now want to find an ajoint field
 $\tilde u_i(\bm y)$
 such that the integral in equation~\eqref{eq:dfdp_as_dudp_integral} is
-\begin{equation}
+\begin{equation}\label{eq:phi_dudp_integral}
 	\int_\Omega \dl{\bm y}\,
 	\varphi_i^*(\bm y)
-	\diff.f.{u_i(\bm y)}{p}(\bm x).
+	\diff.f.{u_i(\bm y)}{p}(\bm x)
 	=
 	\int_\Omega \dl{\bm y}\,
 	\tilde u_i(\bm y)
@@ -293,6 +357,25 @@ which by equation~\cref{eq:dAdpu_Adudp} is equal to
 \end{equation}
 \todowrt{use the form of $\hat A$ to obtain an explicit formula for this}
 The way to find this $\tilde u_i$ is through an adjoint simulation.
+
+\begin{tcolorbox}
+	When discretizing space \cref{eq:phi_dudp_integral} becomes
+	\begin{equation}
+		\varphi_{a}^* \eta_{ab} = \tilde u_{c} A_{ca} \eta_{ab}
+	\end{equation}
+	Meaning that to find $\tilde u$ we solve
+	\begin{equation}
+		\varphi_a^* = \tilde u_c A_{ca}
+	\end{equation}
+	or, taking the hermitian adjoint of both sides
+	\begin{equation}
+		A_{ac}^\dagger \tilde u_c^* = \varphi_a
+	\end{equation}
+	which in normal matrix notation is
+	\begin{equation}
+		A^\dagger \tilde u^* = \varphi
+	\end{equation}
+\end{tcolorbox}
 
 \todoblk{The infamous integral. Still am not entirely sure about it, but I
 haven't thought more about it since I abandoned that.}
