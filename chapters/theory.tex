@@ -442,12 +442,43 @@ this method.
 If a too high value is chosen, then the steps taken will be too large and the
 optimium might be missed entirely.
 A too low value results in too small steps which will yield a slow convergence.
+Almost all gradient descent implementations use a so called learning schedule,
+which means that $\eta$ is not constant during the learning.
+This introduces the additional problem of how to choose how fast and between
+which values it should change.
 
 \subsubsection{Adaptive Moment Estimation (ADAM)}
 
-\todowrt{Paragraph describing the \gls{adam} algorithm}
+The \gls{adam} algorithm is an improved version of gradient descent.
+It has three main differences:
+\begin{enumerate}
+	\item Each dimension has a separate learning rate.
+	\item The learning rate is automatically set from the previously seen gradients.
+	\item The evolution carries some momentum.
+\end{enumerate}
+C\Cref{fig:adam_vs_gd} shows the difference in performance between \gls{adam}
+and \gls{gd}.
+With a slightly too large learning rate, the \gls{gd} algorithm gets stuck in an
+oscillation and makes very little progress towards the minimum.
+If the learning rate is decreased, the oscillations disappear but the stepsize
+is now too small to make it all the way to the true minimum. 
+Since the \gls{adam} algorithm has some momentum, the motion along the valley
+gets compounded while the motion perpendicular gets dampened which means that
+the oscillations are not as much of a problem.
+The adaptive learning rate also means that the algorithm doesn't get stuck
+prematurely due to the small gradient at the bottom of the valley.
+\begin{figure}[htpb]
+	\centering
+	\includegraphics{chapters/theory/adam_vs_gd_plot.pdf}
+	\caption{
+		A comparison between \gls{adam} and \gls{gd} in an optimization
+		landscape with a narrow canyon. The two different \gls{gd} algorithms
+		are shown with 1000 steps, while 200 steps with the \gls{adam} algorithm
+		are shown.
+	}
+	\label{fig:adam_vs_gd}
+\end{figure}
 
-\todowrt{\gls{adam} has one learning rate for each dimension}
-\todowrt{\gls{adam} one does not need to manually set the learning rate}
+\todowrt{Pseudocode for the algorithm}
 \tododec{Somewhere I should write about epsilon, and alpha and how I set them,
 but that probably needs to come later, in the method}
