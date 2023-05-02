@@ -52,7 +52,7 @@ Defining the operator $\hat A_{ik}$ as
 $-\left(\rho \omega^2 \delta_{ik} \placeholder + 
 \partial_j \left(C_{ijkl} \partial_l \placeholder\right)\right)$
 we can write
-\begin{equation}
+\begin{equation}\label{eq:gov_eq}
 	\hat A_{ik} u_k = F_i
 \end{equation}
 
@@ -62,7 +62,92 @@ Explain how and why periodicity means only certain modes can propagate.
 Good resource in Chan's thesis, or maybe solid state physics book?
 % Bloch state / Bloch's theorem
 }
+\subsection{Bloch States and Band Diagrams}
 
+With no external forces, i.e.\ $F_i = 0$, \cref{eq:gov_eq} can be written as
+\begin{equation}
+	\frac 1 \rho \partial_j \left(C_{ijkl} \partial_l u_k\right) = \omega^2 u_i
+\end{equation}
+which is an eigenvalue equation for the operator
+$\hat O_{ik} = \frac 1 \rho\partial_j \left(C_{ijkl} \partial_l \placeholder\right)$
+where eigenvalues are the angular frequency squared.
+If furthermore the structure is periodic, then the eigenstates are so called
+\emph{Bloch states}.
+
+If the structure is periodic with some periodicity $\vec a$,
+meaning that $C_{ijkl}(\vec x) = C_{ijkl}(\vec x + n \vec a)$ where $n$ is an
+integer, then this operator commutes with the translation operator
+$\hat T_{\vec a} \vec u(\vec x) = \vec u(\vec x + \vec a)$.
+This means that there is a space of simultaneous eigenstates to both of them.
+The eigenfunctions of the translation operator are $\exp(i \vec k \cdot \vec
+x)$ with eigenvalues $\exp(i k a)$, where $a = \abs{a}$.
+Defining the reciprocal lattice constant $\vec b = 2 \pi \vec a / a^2$, we see
+that the functions $\exp(i (\vec k + m \vec b) \cdot \vec x)$ for integer values
+of $m$ all have the same eigenvalue, which means that they form a degenerate
+subspace of eigenfunctions.
+Thus we can write the eigenfunctions of both operators as
+\begin{equation}
+	\vec u_{\vec k}(\vec x) = \sum_m e^{i (\vec k + m \vec b) \cdot \vec x}
+	\vec u_{m, \vec k}(\vec x)
+	= e^{i \vec k \cdot \vec x} \bar{\vec u}_{\vec k}(\vec x)
+\end{equation}
+where $\bar{\vec{u}}_{\vec{k}}$ is a periodic function with periodicity $\vec a$.
+
+The solutions to these eigenvalue equations are often called modes, and each
+mode has both a frequency and a wave vector. This gives rise to a band diagram,
+where the frequency is plotted as a function of the wave vector.
+
+\subsubsection{Concrete example of phononic crystal}
+
+In this work, a rectangular waveguide patterned with ellipses is used.
+The structure is clamped at the bottom (meaning that we use a fixed boundary
+condition there) while the other sides are free.
+A top down schematic of the unit cell can be seen in \cref{fig:unitcell}.
+
+\begin{figure}[htpb]
+\begin{center}
+	\begin{tikzpicture}[scale=6]
+	\def \a{0.5}
+	\def \w{1.0}
+	\def \hx{0.13}
+	\def \hy{0.3}
+	\def \fadedist{0.15}
+
+	\draw[ultra thick] (-0.5*\w, -0.5*\a) rectangle (0.5*\w, 0.5*\a);
+	\draw[ultra thick] (0, 0) circle [x radius=\hy, y radius=\hx];
+	\draw[ultra thick, path fading=south]
+		(-0.5*\w, -0.5*\a-\fadedist) --
+		(-0.5*\w, -0.5*\a)
+		(+0.5*\w, -0.5*\a) --
+		(+0.5*\w, -0.5*\a-\fadedist);
+	\draw[ultra thick, path fading=north]
+		(-0.5*\w, 0.5*\a+\fadedist) --
+		(-0.5*\w, 0.5*\a)
+		(+0.5*\w, 0.5*\a) --
+		(+0.5*\w, 0.5*\a+\fadedist);
+	\draw[<->]
+		(0.4*\w, -0.5*\a*0.95) -- node[right] {$a$}
+		(0.4*\w, 0.5*\a*0.95);
+	\draw[<->]
+		(-0.5*\w*0.95, 0.6*\a) -- node[above] {$w$}
+		(0.5*\w*0.95, 0.6*\a);
+	\draw[<->] (0,0) -- node[right] {$h_x$} (0.0, 0.95*\hx);
+	\draw[<->] (0,0) -- node[below] {$h_y$} (0.95*\hy, 0);
+\end{tikzpicture}
+\end{center}
+\caption{}%
+\label{fig:unitcell}
+\end{figure}
+
+Enforcing a wave vector $k\hat y$ and running COMSOL to find the eigenmodes with their
+corresponding frequencies for this structure yields the band diagram in
+\cref{fig:banddiagram}.
+\begin{figure}[htpb]
+	\centering
+	\includegraphics{chapters/theory/bandstructure.pdf}
+	\caption{chapters/theory/banddiagram.pdf}
+	\label{fig:banddiagram}
+\end{figure}
 \tododec{At some point write about phonons? I haven't really had to care about
 phonons so if I talk about it it's just for applications...}
 
