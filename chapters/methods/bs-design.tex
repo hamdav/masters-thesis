@@ -45,6 +45,8 @@
 	% Design area
 	\draw (0, -\designx / 2) rectangle (\designy, \designx / 2);
 	\node at (\designy / 2, 1) {Design Area};
+	\node[left] at (\designy, 0) {$d_x$};
+	\node[above] at (\designy/2, -\designx/2) {$d_y$};
 
 	% Output waveguide
 	\begin{scope}[xshift=\designy cm, yshift=\outputh cm]
@@ -83,4 +85,8 @@
 		(13.5*\a, 0) pic[transform shape] {unitcell};
 	\end{scope}
 	\end{scope}
+	\draw[|-|]
+		(15*\a + \designy, -\outputh) -- node[right] {$s$}
+		(15*\a + \designy, \outputh);
+		
 \end{tikzpicture}

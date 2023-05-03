@@ -12,7 +12,25 @@ All of this will be described in this chapter.
 
 \section{Design}
 
-The device design to be optimized can be seen in figure~\ref{fig:bs-design}
+The device design to be optimized can be seen in \cref{fig:bs-design}.
+The input and output waveguides consists of unit cells like the one in
+\cref{fig:unitcell}.
+The values for the parameters in the sketch are given in \cref{tab:params}.
+The reason for using this mode in this waveguide is that it has been shown to be
+interesting for avoiding mechanical leakage into the substrate on which it is
+clamped, as well as retaining a high optomechanical
+coupling.\cite{kolvik_clamped_2023}
+
+Inside the design area, there can be one of two kinds of designs.
+The first is a \emph{continuous design}, meaning that the material parameters
+$\rho$ and $C_{ijkl}$ are continuously varying. The range of values that they
+can take are between the density and elasticity of pure silicon and that of air.
+Any in-between values are obviously not something that can be physically
+realized, but it is useful as a first step in the optimization.
+The second kind is a binary design, where each point either has silicon or not
+and there are no in-between values.
+This is accomplished using level-set methods, which will be explained in
+\cref{sec:level-set}.
 
 \begin{figure}[htpb]
 	\centering
@@ -21,10 +39,38 @@ The device design to be optimized can be seen in figure~\ref{fig:bs-design}
 		Device design to be optimized.
 		At the red line, a wave traveling right is excited.
 		On the blue unit cells is where the output is measured.
-		The dashed unit cells are \gls{pml}
+		The dashed unit cells are \glspl{pml}
 	}
 	\label{fig:bs-design}
 \end{figure}
+\tododec{Are the dx and dy in \cref{fig:bs-design} clear? I thought of having arrows but it
+feels like the image gets quite messy then}
+
+\begin{table}[htpb]
+	\centering
+	\caption{%
+		Values for the geometric parameters of the device.
+		Reference \cref{fig:bs-design,fig:unitcell} for what the quantities
+		mean. The only parameter not mentioned there is $h$, which is the height
+		of the structure.
+	}%
+	\label{tab:params}
+
+	\begin{tabular}{cc}
+		\toprule
+		Parameter & value\\
+		\midrule
+		$a$ & \qty{187}{\nm}\\
+		$w$ & \qty{187}{\nm}\\
+		$h_x$ & \qty{153.5}{\nm}\\
+		$h_y$ & \qty{49.5}{\nm}\\
+		$h$ & \qty{220}{\nm}\\
+		$d_x$ & $6 w$\\
+		$d_y$ & $4 w$\\
+		$s$ & $3 w$\\
+		\bottomrule
+	\end{tabular}
+\end{table}
 
 \tododec{Write about why we use the mode we use, and why I clamp the bottom. Can
 reference Johan and Pauls paper}
@@ -70,7 +116,7 @@ Therefore, the imaginary part is taken to be exponentially increasing:
 }
 
 
-\subsection{Level-set}
+\subsection{Level-set}\label{sec:level-set}
 
 Ultimately, we want our device to consist of regions of material and regions of
 no material.
