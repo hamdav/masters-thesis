@@ -32,6 +32,9 @@ and there are no in-between values.
 This is accomplished using level-set methods, which will be explained in
 \cref{sec:level-set}.
 
+Because the device is completely symmetric, only one half of it needs to be
+modeled, and the other half is extrapolated with a symmetry boundary condition.
+
 \begin{figure}[htpb]
 	\centering
 	\input{chapters/methods/bs-design.tex}
@@ -106,7 +109,7 @@ Therefore, the imaginary part is taken to be exponentially increasing:
 			node[right] {$f(x) = \rho_\text{si} \cdot s \cdot e^{-\abs{y-y_0} / d}$};
 	\end{tikzpicture}
 	\caption{Profile of the imaginary component of the waveguides}
-	\label{fig:}
+	\label{fig:pml_profile}
 \end{figure}
 
 \todoblk{Hold up\ldots why do I choose an exponentially increasing imaginary
@@ -207,25 +210,46 @@ talked about computing the derivative.}
 
 \subsection{Objective function}
 
-\tododec{Maybe I'll only mention that $f$ is an integral of the displacement
-	field in the theory and here give the specific formula:
-}
+The figure of merit of the device is how much of the input excitation gets transmitted
+into the output beams.
+Furthermore, all of the excitation of the output waveguide should be in the same
+mode that was excited at the input.
+Therefore, a mode overlap integral is used:
 \begin{equation}
-	\fobj = \int_{\Omega_1} \vec{m_1}^*(\vec{x}) \vec{u}(\vec{x})
-	\dl{x} + \int_{\Omega_2} \vec{m_2}^*(\vec{x}) \vec{u}(\vec{x})
+	I = \int_{\Omega_1} \vec{m}^*(\vec{x}) \vec{u}(\vec{x})
 \end{equation}
+where $\vec m$ is the shape of the mode (\cref{fig:ms1}).
+Because the phase of the output waves does not matter,
+the absolute value squared of the overlap integral is taken to be the objective
+function,
+\begin{equation}
+	\fobj = \abs{I}^2 = I I^*
+\end{equation}
+
+The functional derivative of $\fobj$ with respect to $p$ then becomes
+\begin{align}
+	\diff.f.{\fobj}{p}(x) &= \diff.f.{I}{p}(x) I^* + I\diff.f.{I^*}{p}(x)\\
+	&= \diff.f.{I}{p}(x) I^* + \left(I^*\diff.f.{I}{p}(x)\right)^*\\
+	&= 2\Re\left(\diff.f.{I}{p}(x) I^*\right).
+\end{align}
+The derivative of $I$ was derived in \cref{sec:spec_der}.
 
 \tododec{Paragraph about pure part of objective function, enforcing the minimum
 feature size}
 
-\section{Adjoint Simulation}
+\section{Simulations}
 
-\tododec{Give the explicit formula for the gradient now that the objective
-function has been fully defined}
+\todowrt{How correct mode was excited, i.e. boundary load with frequency from
+unit cell simulations}
+\tododec{How I know that the correct mode was excited...? Or is that a results thing }
+\tododec{Speaking of, the pml simulations (which is kinda how I know the correct
+mode was excited, should they also be here?}
+\todowrt{Mesh export / import and why that is done}
 
 \section{Optimization}
 
-\tododec{Describe what optimization algorithm was used, as well as how this
+\tododec{%
+	Describe what optimization algorithm was used, as well as how this
 	changed during the simulation. E.g.\ first 200 iterations ADAM; next ADAM
 	but with sigmoid function application; sigmoid + feature size; and finally level-set.
 }
