@@ -92,6 +92,12 @@ Thus we can write the eigenfunctions of both operators as
 	= e^{i \vec k \cdot \vec x} \bar{\vec u}_{\vec k}(\vec x)
 \end{equation}
 where $\bar{\vec{u}}_{\vec{k}}$ is a periodic function with periodicity $\vec a$.
+\todocit[inline]{%
+	Sakurai does basically the same derivation but for electronic
+	states in a crystal lattice, but he also uses operator formalism. Can I cite
+	that? Other option is citing Chan's PhD who do it the same way for photonic
+	crystals and says that it can be done analogously for phononic crystals.
+}
 
 The solutions to these eigenvalue equations are often called modes, and each
 mode has both a frequency and a wave vector. This gives rise to a band diagram,
@@ -131,27 +137,88 @@ A top down schematic of the unit cell can be seen in \cref{fig:unitcell}.
 	\draw[<->]
 		(-0.5*\w*0.95, 0.6*\a) -- node[above] {$w$}
 		(0.5*\w*0.95, 0.6*\a);
-	\draw[<->] (0,0) -- node[right] {$h_x$} (0.0, 0.95*\hx);
-	\draw[<->] (0,0) -- node[below] {$h_y$} (0.95*\hy, 0);
+	\draw[<->] (0,0) -- node[right] {$h_y$} (0.0, 0.95*\hx);
+	\draw[<->] (0,0) -- node[below] {$h_x$} (0.95*\hy, 0);
 \end{tikzpicture}
 \end{center}
-\caption{}%
+\caption{Top down view of unit cell of a phononic crystal.}%
 \label{fig:unitcell}
 \end{figure}
 
-Enforcing a wave vector $k\hat y$ and running COMSOL to find the eigenmodes with their
+Enforcing a wave vector $\vec k = k\hat{\vec y}$ and running COMSOL to find the eigenmodes with their
 corresponding frequencies for this structure yields the band diagram in
 \cref{fig:banddiagram}.
+\Cref{fig:modeshapes} shows the shapes of the eight lowest lying eigenmodes at
+$k=0.9 \pi / a$.
 \begin{figure}[htpb]
 	\centering
 	\includegraphics{chapters/theory/bandstructure.pdf}
-	\caption{chapters/theory/banddiagram.pdf}
+	\caption{
+		Band diagram of phononic crystal defined in \cref{fig:unitcell}.
+	}%
 	\label{fig:banddiagram}
 \end{figure}
-\tododec{At some point write about phonons? I haven't really had to care about
-phonons so if I talk about it it's just for applications...}
 
-\todowrt{Show our mode as example of this, and include band diagram}
+\begin{figure}[htpb]
+	\centering
+	\begin{subfigure}[]{0.24\textwidth}
+	\begin{center}
+		\includegraphics[width=\textwidth]{chapters/theory/modeshape_1.png}
+	\end{center}
+	\label{fig:ms1}
+	\end{subfigure}
+	\begin{subfigure}[]{0.24\textwidth}
+	\begin{center}
+		\includegraphics[width=\textwidth]{chapters/theory/modeshape_2.png}
+	\end{center}
+	\label{fig:ms2}
+	\end{subfigure}
+	\begin{subfigure}[]{0.24\textwidth}
+	\begin{center}
+		\includegraphics[width=\textwidth]{chapters/theory/modeshape_3.png}
+	\end{center}
+	\label{fig:ms3}
+	\end{subfigure}
+	\begin{subfigure}[]{0.24\textwidth}
+	\begin{center}
+		\includegraphics[width=\textwidth]{chapters/theory/modeshape_4.png}
+	\end{center}
+	\label{fig:ms4}
+	\end{subfigure}\\
+
+	\begin{subfigure}[]{0.24\textwidth}
+	\begin{center}
+		\includegraphics[width=\textwidth]{chapters/theory/modeshape_5.png}
+	\end{center}
+	\label{fig:ms5}
+	\end{subfigure}
+	\begin{subfigure}[]{0.24\textwidth}
+	\begin{center}
+		\includegraphics[width=\textwidth]{chapters/theory/modeshape_6.png}
+	\end{center}
+	\label{fig:ms6}
+	\end{subfigure}
+	\begin{subfigure}[]{0.24\textwidth}
+	\begin{center}
+		\includegraphics[width=\textwidth]{chapters/theory/modeshape_7.png}
+	\end{center}
+	\label{fig:ms7}
+	\end{subfigure}
+	\begin{subfigure}[]{0.24\textwidth}
+	\begin{center}
+		\includegraphics[width=\textwidth]{chapters/theory/modeshape_8.png}
+	\end{center}
+	\label{fig:ms8}
+	\end{subfigure}
+	
+	\caption{%
+		Mode shapes for the lowest eight modes at $k=0.9 \pi / a$.
+		The color denotes the absolute value of the displacement.
+	}
+	\label{fig:modeshapes}
+\end{figure}
+\tododec{At some point write about phonons? I haven't really had to care about
+the fact that excitations are discrete so if I talk about it it'd just for applications...}
 
 \todowrt{Write about PML design and why we need it: Simulating infinite
 	waveguides isn't possible because of the finite computing power. Also we
@@ -218,8 +285,8 @@ The first factor of this product is the solution to the \emph{adjoint problem}
 	A^T \tilde v = \diff{\fobj}{v}^T,
 \end{equation}
 hence the name adjoint simulation.
-As it turns out, $A$ is often symmetric which means that this is simply a normal
-simulation but with $\difs{\fobj}{v}^T$ as the source.
+As it turns out, $A$ is often symmetric (or self-adjoint) which means that this is simply a normal
+simulation but with $\difs{\fobj}{v}^T$ (or $\difs{\fobj}{v}^\dagger$) as the source.
 Thus, to obtain the derivative we just need to run an additional
 simulation with a different input.
 
@@ -290,13 +357,7 @@ In the stringent notation this is written
 \end{equation}
 and is simply an ordinary function $\R \to \R$.
 However, I will use the notation $\difs.f.{F}{h}$ for this, to make the
-equations clearer.\footnote{%
-	This is consistent with how many other authors use the notation,
-	though whether that is an \emph{intentional} notational simplification or
-	not I will leave unsaid\ldots
-}
-\tododec{footnote should probably be deleted\ldots}
-In addition, when evaluating the functional derivative at a point, the
+equations clearer. In addition, when evaluating the functional derivative at a point, the
 argument can be put either after it, or in the denominator:
 \begin{equation}
 	\diff.f.{F[g]}{g} [h](x) = \diff.f.{F}{h}(x) = \diff.f.{F}{h(x)}.
