@@ -80,43 +80,48 @@ reference Johan and Pauls paper}
 
 \subsection{Perfectly Matched Layers (PMLs)}
 
-Ideally, we would like to have infinite waveguides but that cannot be done in
-practice.
+Ideally, the input and outputs are infinite waveguides.
+Unfortunately, it has been discovered that infinity is big; simulating
+infinite waveguides would take infinite time, and the author would like to be done by
+June.
 Instead, \glspl{pml} are placed at the caps of the input and output waveguides.
 The purpose of the \gls{pml} is to absorb any incoming waves without reflection,
 which would make it act as if there was an infinite waveguide on the other side
 into which the waves propagate indefinitely.
 The way to accomplish this is to add an imaginary component to the density of
 the material.
-If there is an abrupt transition from a real density to a significant imaginary
-part, reflections will be created at that transition instead.
-Therefore, the imaginary part is taken to be exponentially increasing:
+This needs to be done smoothly, otherwise the abrupt change in material
+parameters would induce reflections anyway.
+Therefore, the imaginary part is taken to be exponentially increasing.
+Furthermore, the curve is shifted such that it starts at 0, and rescaled so that
+the endpoint is at $s$.
 \begin{equation}
-	\rho_\text{im} = \rho_\text{si} \cdot s \cdot e^{-\abs{y-y_0} / d}
+	\rho_\text{im} = \rho_\text{si} \cdot s \cdot
+	\frac{e^{-\abs{y-y_0} / d} - e^{-n/d}}{1 - e^{-n/d}}
 \end{equation}
 
-\begin{figure}[htpb]
-	\centering
-	\begin{tikzpicture}[domain=1:4]
-		\draw[very thin,color=gray] (-0.1,-1.1) grid (3.9,3.9);
+% \begin{figure}[htpb]
+% 	\centering
+% 	\begin{tikzpicture}[domain=1:4]
+% 		\draw[very thin,color=gray] (-0.1,-1.1) grid (3.9,3.9);
 
-		\draw[->] (-0.2,0) -- (4.2,0) node[right] {$y$};
-		\draw[->] (0,-1.2) -- (0,4.2) node[above] {$\rho_\text{im}$};
-		\draw[color=red, very thick] (0,0) -- (1,0) -- plot (\x,{(\x-1) *
-			0.05*exp(4) / 3})
-			node[anchor=south west] {why not this instead?};
-		\draw[color=blue, very thick] (0,0) -- (1,0) -- plot (\x,{0.05*exp(\x)})
-			node[right] {$f(x) = \rho_\text{si} \cdot s \cdot e^{-\abs{y-y_0} / d}$};
-	\end{tikzpicture}
-	\caption{Profile of the imaginary component of the waveguides}
-	\label{fig:pml_profile}
-\end{figure}
+% 		\draw[->] (-0.2,0) -- (4.2,0) node[right] {$y$};
+% 		\draw[->] (0,-1.2) -- (0,4.2) node[above] {$\rho_\text{im}$};
+% 		\draw[color=red, very thick] (0,0) -- (1,0) -- plot (\x,{(\x-1) *
+% 			0.05*exp(4) / 3})
+% 			node[anchor=south west] {why not this instead?};
+% 		\draw[color=blue, very thick] (0,0) -- (1,0) -- plot (\x,{0.05*exp(\x)})
+% 			node[right] {$f(x) = \rho_\text{si} \cdot s \cdot e^{-\abs{y-y_0} / d}$};
+% 	\end{tikzpicture}
+% 	\caption{Profile of the imaginary component of the waveguides}
+% 	\label{fig:pml_profile}
+% \end{figure}
 
-\todoblk{Hold up\ldots why do I choose an exponentially increasing imaginary
-	component. If the two possible sources of reflections are the discontinuous
-	jump when the pml starts and that the increase is too steep, then why not
-	just use a straight line?
-}
+% \todoblk{Hold up\ldots why do I choose an exponentially increasing imaginary
+% 	component. If the two possible sources of reflections are the discontinuous
+% 	jump when the pml starts and that the increase is too steep, then why not
+% 	just use a straight line?
+% }
 
 
 \subsection{Level-set}\label{sec:level-set}

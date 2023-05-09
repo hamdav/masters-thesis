@@ -11,7 +11,7 @@ looks like
 \]
 where $\sigma$ is the stress tensor, $C$ the elasticity tensor which is a
 four-tensor that is a property of the material,
-$\epsilon \coloneqq \nabla \vec u + (\nabla \vec u)^T$
+$\epsilon \coloneqq \nabla \vec u + (\nabla \vec u)^\transpose$
 is the strain tensor, and $:$ denotes double scalar product.
 This equation is linear in $\vec u$, hence the name \emph{linear} elasticity.
 Using this and newtons equations of motion, the equation governing the dynamics
@@ -286,15 +286,15 @@ which gives
 \begin{align}
 	\diff{\fobj}{p} &= - \diff{\fobj}{v} A^{-1} \diff{A}{p}
 	v\label{eq:no_adj_sim}\\
-	&= - \left(A^{-T} \diff{\fobj}{v}^T \right)^T \diff{A}{p} v
+	&= - \left(A^{-T} \diff{\fobj}{v}^\transpose \right)^\transpose \diff{A}{p} v
 \end{align}
 The first factor of this product is the solution to the \emph{adjoint problem}
 \begin{equation}
-	A^T \tilde v = \diff{\fobj}{v}^T,
+	A^\transpose \tilde v = \diff{\fobj}{v}^\transpose,
 \end{equation}
 hence the name adjoint simulation.
 As it turns out, $A$ is often symmetric (or self-adjoint) which means that this is simply a normal
-simulation but with $\difs{\fobj}{v}^T$ (or $\difs{\fobj}{v}^\dagger$) as the source.
+simulation but with $\difs{\fobj}{v}^\transpose$ (or $\difs{\fobj}{v}^\dagger$) as the source.
 Thus, to obtain the derivative we just need to run an additional
 simulation with a different input.
 
@@ -330,7 +330,8 @@ $p(\vec x)$.
 		Big fat box on functionals and their derivatives. I think this should be
 		included somewhere, since very few of my peers know what a functional
 		derivative is... Not really sure how though. I kinda like the thought of
-		putting it in a box like this 
+		putting it in a box like this.
+		Alternatively, I could put it in an appendix.
 	}
 Our $\fobj$ is no longer a function, but rather a \emph{functional}, and thus
 we need to use the functional derivative instead of the ordinary derivative.
@@ -346,30 +347,46 @@ Let $\mathcal{Y}$ be a function space of functions $\R \to \R$.
 A functional $F:\mathcal{Y} \to \R$ evaluated at the function
 $f\in\mathcal{Y}$
 is notated with the function in square brackets: $F[f]$.
-If the functional additionally depends on a real number,
-$G:\mathcal{Y} \times \R \to \R$,
-that is put in round brackets: $G[f](x)$.
 Note that in principle, $F$ is the functional while $F[f]$ is just a
 number,
 analogously to how $f$ is a function while $f(x)$ is a real number.
+If the functional additionally depends on a real number,
+$G:\mathcal{Y} \times \R \to \R$,
+that is put in round brackets: $G[f](x)$.
 
 The functional derivative of $F$ with respect to it's function argument
 is a functional $\mathcal{Y} \times \R \to \R$ denoted $\difs.f.{F[f]}{f}$.
 In this expression, $f$ is technically a dummy function, writing
 $\difs.f.{F[g]}{g}$ is exactly the same functional.
-Almost always the functional derivative will be evaluated
-at some function $h$.
-In the stringent notation this is written
-\begin{equation}
-	\diff.f.{F[g]}{g} [h]
-\end{equation}
-and is simply an ordinary function $\R \to \R$.
-However, I will use the notation $\difs.f.{F}{h}$ for this, to make the
-equations clearer. In addition, when evaluating the functional derivative at a point, the
-argument can be put either after it, or in the denominator:
-\begin{equation}
-	\diff.f.{F[g]}{g} [h](x) = \diff.f.{F}{h}(x) = \diff.f.{F}{h(x)}.
-\end{equation}
+However, often the argument of $F$ is omitted and the function in the
+denominator is named in accordance with the names in the definition of the
+functional.
+Furthermore, the same notation is also often used to denote the functional
+derivative evaluated at a certain function.
+For example, if we define a functional taking two function arguments
+$F[f_1, f_2] = \int f_1(x) + f_2(x) \dl x$, one can write
+\begin{align}
+	\diff.f.{F}{f_2}(x)
+	&& \text{meaning}&\quad \diff.f.{F[g_1, g_2]}{g_2}(x)\\
+	\diff.f.{F}{f_2}(x)
+	&& \text{meaning}&\quad \diff.f.{F[g_1, g_2]}{g_2} [f_1, f_2](x)
+\end{align}
+where in the latter case, $f_1$ and $f_2$ are specific functions defined
+previously.
+% Almost always the functional derivative will be evaluated
+% at some function $h$.
+% In proper notation this should be written
+% \begin{equation}
+% 	\diff.f.{F[g]}{g} [h]
+% \end{equation}
+% and is simply an ordinary function $\R \to \R$.
+% However, I will use the notation $\difs.f.{F}{h}$ for this, to make the
+% equations clearer. In addition, when evaluating the functional derivative at a point, the
+% argument can be put either after it, or in the denominator:
+% \begin{equation}
+% 	\diff.f.{F[g]}{g} [h](x) = \diff.f.{F}{h}(x) = \diff.f.{F}{h(x)}.
+% \end{equation}
+% Furthermore, 
 
 The functional derivative is defined by
 \begin{equation}
@@ -396,18 +413,15 @@ I will use two properties of the functional derivative:
 \end{itemize}
 \end{tcolorbox}
 
-\todowrt{Look over what domains all of the integrals integrate over.}
-
 For simplicity I will limit myself to the case where the objective function is
 an overlap integral of the displacement field $u_k(\vec x)$ with some function
 $\varphi_k^*(\vec x)$:
 \begin{equation}
-	\fobj[\vec u] = \int u_i(\vec x) \varphi_i^*(\vec x) \dl{\vec x}.
+	\fobj[\vec u] = \int_\Omega u_i(\vec x) \varphi_i^*(\vec x) \dl{\vec x}.
 \end{equation}
-Such an integral is a scalar product in the space where
-$\vec u(\vec x)$ resides.
-\tododec[noinline]{This integral would be over the unit cell, or over all of
-space but with $\phi_i(\vec{x})$ being non-zero only inside the unit cell}
+where $\Omega$ is the domain of $\vec u$.
+Such an integral is an inner product in the space of functions on
+$\Omega$.
 
 Analogously to the general derivation, we will use the chain rule to expand
 $\difs.f.{\fobj}{p}(\vec x)$.
@@ -477,9 +491,6 @@ which gives us
 	\diff.f.{u_i(\bm y)}{p}(\bm x)
 	\label{eq:dfdp_as_dudp_integral}
 \end{align}
-\tododec{I am mixing putting the argument in the denominator / after the
-functional derivative. Should I be consistent? I like after more, but it is a
-bit weird when putting the operant after the derivative}
 To find $\difs.f.{u_i(\bm y)}{p}(\bm x)$ we apply $\difs.f.{}{p(\bm x)}$ to
 equation~\eqref{eq:sim_eq}, which gives us
 \begin{equation}\label{eq:dAdpu_Adudp}
@@ -503,36 +514,54 @@ such that the integral in equation~\eqref{eq:dfdp_as_dudp_integral} is
 	\diff.f.{u_k(\bm y)}{p}(\bm x)
 \end{equation}
 which by equation~\cref{eq:dAdpu_Adudp} is equal to
-\begin{equation}
+\begin{equation}\label{eq:an_integral}
 	\int_\Omega \dl{\bm y}\,
 	\tilde u_i(\bm y)
 	\diff.f.{\hat A_{ik}}{p}(\vec x)
 	u_k(\bm y).
 \end{equation}
-\todowrt{use the form of $\hat A$ to obtain an explicit formula for this}
-The way to find this $\tilde u_i$ is through an adjoint simulation.
+To further simplify this expression, the dependence of $\hat A$ on $p$ must be
+specified.
+A linear dependence is proposed here, though extending the formula to more
+complicated dependences is rather easy.
+Taking $\rho(\vec y) = \rho^0 p(\vec y)$
+and $C_{ijkl}(\vec y) = C_{ijkl}^0 p(\vec y)$
+implies 
+\begin{align}
+	\diff.f.{\hat A_{ik}(\vec y)}{p}(\vec x)
+	= -\rho^0 \delta_{ik} \delta(\vec x - \vec y)
+	- \partial_j\left(C_{ijkl}^0\delta(\vec x - \vec y) \partial_l \placeholder\right)\\
+	= -\rho^0 \delta_{ik} \delta(\vec x - \vec y)
+	- C_{ijkl}^0\delta(\vec x - \vec y)\partial_j \partial_l.
+\end{align}
+Plugging this back into the integral in \cref{eq:an_integral} gives
+\begin{equation}
+	-\rho^0 \tilde u_i(\vec x) u_i(\vec x)
+	- C_{ijkl}^0 \tilde u_i(\vec x) \partial_j \partial_l u_k(\vec x)
+\end{equation}
+which is comparatively easily evaluated.
+The only thing remaining is to calculate $\tilde{\vec u}$.
+The way to do this is through an \emph{adjoint simulation}.
 
-\begin{tcolorbox}
-	When discretizing space \cref{eq:phi_dudp_integral} becomes
-	\begin{equation}
-		\varphi_{a}^* \eta_{ab} = \tilde u_{c} A_{ca} \eta_{ab}
-	\end{equation}
-	Meaning that to find $\tilde u$ we solve
-	\begin{equation}
-		\varphi_a^* = \tilde u_c A_{ca}
-	\end{equation}
-	or, taking the hermitian adjoint of both sides
-	\begin{equation}
-		A_{ac}^\dagger \tilde u_c^* = \varphi_a
-	\end{equation}
-	which in normal matrix notation is
-	\begin{equation}
-		A^\dagger \tilde u^* = \varphi
-	\end{equation}
-\end{tcolorbox}
+When solving these equations in practice, space is discretized and the fields
+are represented by vectors and the operators by matrices.
+Thus \cref{eq:phi_dudp_integral} becomes
+\begin{equation}
+	\varphi_{a}^* \eta_{ab} = \tilde u_{c} A_{ca} \eta_{ab}
+\end{equation}
+where $\difs.f.{\vec u}{p}$ has been labeled $\eta$ for notational simplicity,
+and the indices go over the discretized spacial meshpoints.
+Meaning that to find $\tilde u$ we solve
+\begin{equation}
+	\varphi_a^* = \tilde u_c A_{ca}
+\end{equation}
+or, taking the transpose of both sides
+\begin{equation}
+	A_{ac}^\transpose \tilde u_c = \varphi_a^*.
+\end{equation}
 
-\todoblk{The infamous integral. Still am not entirely sure about it, but I
-haven't thought more about it since I abandoned that.}
+% \todoblk{The infamous integral. Still am not entirely sure about it, but I
+% haven't thought more about it since I abandoned that.}
 
 \subsection{Optimization Algorithms}
 
@@ -575,6 +604,7 @@ improvement.
 	Probability of 10\% of this: $\int_{0.1}^1 (1-x^2)^{n/2} \dl x / \int_{-1}^1
 	\cdots$
 	use $(1-x^2)^n \approx \exp(-n x^2)$.
+	Approaches 0 very very quickly.
 }
 
 \subsubsection{Gradient Descent}
@@ -621,6 +651,10 @@ gets compounded while the motion perpendicular gets dampened which means that
 the oscillations are not as much of a problem.
 The adaptive learning rate also means that the algorithm doesn't get stuck
 prematurely due to the small gradient at the bottom of the valley.
+Admittedly, this objective function is specifically chosen to showcase the
+advantages of \gls{adam}, but it has been shown to outperform \gls{gd} in almost
+all cases.
+\todocit{citations}
 \begin{figure}[htpb]
 	\centering
 	\includegraphics{chapters/theory/adam_vs_gd_plot.pdf}
