@@ -1,6 +1,4 @@
-\chapter{Theory}
-
-\section{Acoustic waves and waveguides}
+\chapter{Acoustic waves and waveguides}
 
 In order to efficiently model the deformation and stresses in a solid material,
 a linear elasticity model is often assumed.
@@ -56,13 +54,7 @@ we can write
 	\hat A_{ik} u_k = F_i
 \end{equation}
 
-\todowrt{
-With no external forces we get traveling modes=eigenvalues.
-Explain how and why periodicity means only certain modes can propagate.
-Good resource in Chan's thesis, or maybe solid state physics book?
-% Bloch state / Bloch's theorem
-}
-\subsection{Bloch States and Band Diagrams}
+\section{Bloch States and Band Diagrams}
 
 With no external forces, i.e.\ $F_i = 0$, \cref{eq:gov_eq} can be written as
 \begin{equation}
@@ -97,13 +89,14 @@ where $\bar{\vec{u}}_{\vec{k}}$ is a periodic function with periodicity $\vec a$
 	states in a crystal lattice, but he also uses operator formalism. Can I cite
 	that? Other option is citing Chan's PhD who do it the same way for photonic
 	crystals and says that it can be done analogously for phononic crystals.
+	I don't think Auld does anything with periodic crystals/bloch states?
 }
 
 The solutions to these eigenvalue equations are often called modes, and each
 mode has both a frequency and a wave vector. This gives rise to a band diagram,
 where the frequency is plotted as a function of the wave vector.
 
-\subsubsection{Concrete example of phononic crystal}
+\subsection{Concrete example of phononic crystal}
 
 In this work, a rectangular waveguide patterned with ellipses is used.
 The structure is clamped at the bottom (meaning that we use a fixed boundary
@@ -228,12 +221,13 @@ $k=0.9 \pi / a$.
 \tododec{At some point write about phonons? I haven't really had to care about
 the fact that excitations are discrete so if I talk about it it'd just for applications...}
 
-\todowrt{Write about PML design and why we need it: Simulating infinite
-	waveguides isn't possible because of the finite computing power. Also we
-don't care about stuff far away, just that there are no reflections that can
-interfere. Or maybe write about this in the method\ldots}
+\tododec{
+	I originally thought to have something about PMLs here, but now it's been
+	put in the method... It is more of a simulations topic, not really a physics
+	one.
+}
 
-\section{Inverse Design}
+\chapter{Inverse Design}
 
 Inverse design is a design paradigm where the design of a device is guided fully by
 the desired characteristics.
@@ -257,14 +251,14 @@ An overview of the design process is as follows:
 		return to step~\ref{it:grad}.
 \end{enumerate}
 
-\subsection{Adjoint Simulation}
+\section{Adjoint Simulation}
 
 Adjoint simulation is a way to compute the gradient of $\fobj$ with respect to
 the design, which in our case means with respect to the material parameters.
 I will in this section first give a general derivation, followed by the case of
 inverse design in acoustics.
 
-\subsubsection{General Derivation}\label{sec:general_derivation}
+\subsection{General Derivation}\label{sec:general_derivation}
 
 Let $\fobj$ be a function which depends on some (large) vector $v$.
 The vector $v$ can be calculated by solving the linear equation
@@ -308,7 +302,7 @@ three-tensor, and calculating $A^{-1} \left(\difs{A}{p}\,v\right)$
 involves solving for a matrix, both of which are orders of magnitude more
 computationally expensive than solving for a vector.
 
-\subsubsection{Specific derivation with acoustics}\label{sec:spec_der}
+\subsection{Specific derivation with acoustics}\label{sec:spec_der}
 
 Now we turn to the specific case of acoustic devices.
 Here $A v = b$ is replaced by the dynamic equation \todowrt[noinline]{dynamic equation?
@@ -563,7 +557,7 @@ or, taking the transpose of both sides
 % \todoblk{The infamous integral. Still am not entirely sure about it, but I
 % haven't thought more about it since I abandoned that.}
 
-\subsection{Optimization Algorithms}
+\section{Optimization Algorithms}
 
 In the last section I painstakingly derived how one can obtain the gradient,
 and in this section I will attempt to justify that by describing how one can use
@@ -595,19 +589,27 @@ direction. That is why we want to use gradient based optimization algorithms;
 they enable us to quickly find the right direction to go in for best
 improvement.
 
-\tododec{%
-	Cool thing to maybe put in. If you have a linear function
-	$f(x) = v\cdot x + k$, what is the probability that you will significantly
-	(say more than 10\% of optimal step) increase $f$ with a random unit
-	length step?
-	Optimal: step in $\hat v$, $\Delta f = v\cdot \hat v = \norm{v}$.
-	Probability of 10\% of this: $\int_{0.1}^1 (1-x^2)^{n/2} \dl x / \int_{-1}^1
-	\cdots$
-	use $(1-x^2)^n \approx \exp(-n x^2)$.
-	Approaches 0 very very quickly.
-}
+% \tododec{%
+% 	Curiosity that could be included:
+% 	If you have a linear function (which all functions are if you zoom in far
+% 	enough) $f(x) = v\cdot x + k$, and take a random step (random meaning random
+% 	step in $[-\epsilon, \epsilon]$ in each dimension)
+% 	then the expected improvement (given that you don't go downhill, in which
+% 	case you can just stay where you are).
+% 	% Curiosity that could be included. If you have a linear function
+% 	% $f(x) = v\cdot x + k$, what is the probability that you will significantly
+% 	% (say more than 10\% of optimal step) increase $f$ with a random unit
+% 	% length step?
+% 	% Optimal: step in $\hat v$, $\Delta f = v\cdot \hat v = \norm{v}$.
+% 	% Probability of 10\% of this: $\int_{0.1}^1 (1-x^2)^{n/2} \dl x / \int_{-1}^1
+% 	% \cdots$
+% 	% use $(1-x^2)^n \approx \exp(-n x^2)$.
+% 	% Approaches 0 very very quickly, at 10000 dimensions it's like \num{1e-45} or something.
+% 	% Or maybe give the expected improvement given that you take the max of
+% 	% current result and next result.
+% }
 
-\subsubsection{Gradient Descent}
+\subsection{Gradient Descent}
 
 The simplest gradient based optimization algorithm is called \emph{gradient
 descent}.
@@ -631,7 +633,7 @@ which means that $\eta$ is not constant during the learning.
 This introduces the additional problem of how to choose how fast and between
 which values it should change.
 
-\subsubsection{Adaptive Moment Estimation (ADAM)}
+\subsection{Adaptive Moment Estimation (ADAM)}
 
 The \gls{adam} algorithm is an improved version of gradient descent.
 It has three main differences:

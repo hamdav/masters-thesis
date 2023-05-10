@@ -78,6 +78,53 @@ feels like the image gets quite messy then}
 \tododec{Write about why we use the mode we use, and why I clamp the bottom. Can
 reference Johan and Pauls paper}
 
+\subsection{Objective function}
+
+The figure of merit of the device is how much of the input excitation gets transmitted
+into the output beams.
+Furthermore, all of the excitation of the output waveguide should be in the same
+mode that was excited at the input.
+Therefore, a mode overlap integral is used:
+\begin{equation}
+	I = \int_{\Omega_1} \vec{m}^*(\vec{x}) \vec{u}(\vec{x})
+\end{equation}
+where $\vec m$ is the shape of the mode (\cref{fig:ms1}).
+Because the phase of the output waves does not matter,
+the absolute value squared of the overlap integral is taken to be the objective
+function,
+\begin{equation}
+	\fobj = \abs{I}^2 = I I^*
+\end{equation}
+
+The functional derivative of $\fobj$ with respect to $p$ then becomes
+\begin{align}
+	\diff.f.{\fobj}{p}(x) &= \diff.f.{I}{p}(x) I^* + I\diff.f.{I^*}{p}(x)\\
+	&= \diff.f.{I}{p}(x) I^* + \left(I^*\diff.f.{I}{p}(x)\right)^*\\
+	&= 2\Re\left(\diff.f.{I}{p}(x) I^*\right).
+\end{align}
+The derivative of $I$ was derived in \cref{sec:spec_der}.
+
+\tododec{Paragraph about pure part of objective function, enforcing the minimum
+feature size}
+
+\subsection{Excitation}
+
+In order to excite the input waveguide in the desired mode,
+the stress on the boundary of a unit cell was exported from a unit cell
+eigenmode simulation and applied to the boundary marked in red in
+\cref{fig:bs-design}.
+Since the frequency is perfectly controlled, this should excite only the desired
+mode, since that is the only permitted mode close by as seen in the band diagram
+in \cref{fig:banddiagram}.
+
+In order to confirm that the excitation was indeed fully in the desired mode, a
+separate model with only a waveguide with 200 unitcells was created.
+Applying the excitation and running the simulation, the mode overlap integral
+was then calculated, as well as the integral $\int u_i^* u_i$ from which one can
+calculate the proportion of energy in the mode compared to the energy in other
+modes.
+The result was near perfect (>99.9\%) excitation of only the desired mode.
+
 \subsection{Perfectly Matched Layers (PMLs)}
 
 Ideally, the input and outputs are infinite waveguides.
@@ -99,30 +146,27 @@ the endpoint is at $s$.
 	\rho_\text{im} = \rho_\text{si} \cdot s \cdot
 	\frac{e^{-\abs{y-y_0} / d} - e^{-n/d}}{1 - e^{-n/d}}
 \end{equation}
+\Cref{fig:pml_profile} shows the effect of changing these parameters on the
+shape of the profile of the imaginary component.
 
-% \begin{figure}[htpb]
-% 	\centering
-% 	\begin{tikzpicture}[domain=1:4]
-% 		\draw[very thin,color=gray] (-0.1,-1.1) grid (3.9,3.9);
+\begin{figure}[htpb]
+	\centering
+	\includegraphics{chapters/methods/pml_profile.pdf}
+	\caption{
+		This figure shows the effect of changing different parameters.
+		The green curves shows changing $d$ while keeping the other parameters
+		fixed, and the orange and blue show $s$ and $n$ respectively.
+		Darker colour means higher value, and the last green curve coincides
+		with the first orange, and the last orange with the first blue.
+	}
+	\label{fig:pml_profile}
+\end{figure}
 
-% 		\draw[->] (-0.2,0) -- (4.2,0) node[right] {$y$};
-% 		\draw[->] (0,-1.2) -- (0,4.2) node[above] {$\rho_\text{im}$};
-% 		\draw[color=red, very thick] (0,0) -- (1,0) -- plot (\x,{(\x-1) *
-% 			0.05*exp(4) / 3})
-% 			node[anchor=south west] {why not this instead?};
-% 		\draw[color=blue, very thick] (0,0) -- (1,0) -- plot (\x,{0.05*exp(\x)})
-% 			node[right] {$f(x) = \rho_\text{si} \cdot s \cdot e^{-\abs{y-y_0} / d}$};
-% 	\end{tikzpicture}
-% 	\caption{Profile of the imaginary component of the waveguides}
-% 	\label{fig:pml_profile}
-% \end{figure}
+\todowrt{Write about the long waveguide simulation and fourier transform to show
+that the pml was indeed reflectionless.}
 
-% \todoblk{Hold up\ldots why do I choose an exponentially increasing imaginary
-% 	component. If the two possible sources of reflections are the discontinuous
-% 	jump when the pml starts and that the increase is too steep, then why not
-% 	just use a straight line?
-% }
-
+\todoblk{Simulations currently running... There will be a graph of relfection as
+a function of strength for a bunch of different $d$.}
 
 \subsection{Level-set}\label{sec:level-set}
 
@@ -210,46 +254,30 @@ length $s$ in the normal direction, then simply add $s$ to the function there.
 	\label{fig:add_shift}
 \end{figure}
 
-\tododec{Write about how I use it? This feels like it should come after I've
-talked about computing the derivative.}
-
-\subsection{Objective function}
-
-The figure of merit of the device is how much of the input excitation gets transmitted
-into the output beams.
-Furthermore, all of the excitation of the output waveguide should be in the same
-mode that was excited at the input.
-Therefore, a mode overlap integral is used:
-\begin{equation}
-	I = \int_{\Omega_1} \vec{m}^*(\vec{x}) \vec{u}(\vec{x})
-\end{equation}
-where $\vec m$ is the shape of the mode (\cref{fig:ms1}).
-Because the phase of the output waves does not matter,
-the absolute value squared of the overlap integral is taken to be the objective
-function,
-\begin{equation}
-	\fobj = \abs{I}^2 = I I^*
-\end{equation}
-
-The functional derivative of $\fobj$ with respect to $p$ then becomes
-\begin{align}
-	\diff.f.{\fobj}{p}(x) &= \diff.f.{I}{p}(x) I^* + I\diff.f.{I^*}{p}(x)\\
-	&= \diff.f.{I}{p}(x) I^* + \left(I^*\diff.f.{I}{p}(x)\right)^*\\
-	&= 2\Re\left(\diff.f.{I}{p}(x) I^*\right).
-\end{align}
-The derivative of $I$ was derived in \cref{sec:spec_der}.
-
-\tododec{Paragraph about pure part of objective function, enforcing the minimum
-feature size}
+As the update algorithm when optimizing level-set designs, the gradient is
+simply added to the signed distance field. Some care needs to be taken in how
+this is done though.
+Firstly, the gradient obviously needs to be rescaled so that the boundary moves
+an appropriate distance.
+This has been done such that the boundary moves maximally \qty{5}{\nm}.
+\todoblk[noinline]{check this number before finalizing, I change it every now and then}
+Secondly, since the gradient is occasionally sharply peaked somewhere which may
+not lie near the boundary, only the gradient near the boundary is actually added
+to the signed distance field.
+After performing this addition, what was previously a signed distance field will
+now no longer be that, and thus the signed distance field is recalculated from
+the new boundary.
+This recalculation comes with a performance penalty, but since the COMSOL
+simulations are orders of magnitude slower than all other parts of the
+optimization, this is of little concern.
 
 \section{Simulations}
 
-\todowrt{How correct mode was excited, i.e. boundary load with frequency from
-unit cell simulations}
-\tododec{How I know that the correct mode was excited...? Or is that a results thing }
-\tododec{Speaking of, the pml simulations (which is kinda how I know the correct
-mode was excited, should they also be here?}
-\todowrt{Mesh export / import and why that is done}
+\tododec{How much specifics should I have? Should I write about exporting the
+	gradient to a file and how I calculate the 2D gradient in my matlab scripts
+from that}
+\todowrt{Mesh export / import and why that is done should probably be mentioned
+since it's quite important to get the excitation in the right mode.}
 
 \section{Optimization}
 
