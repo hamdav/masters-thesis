@@ -43,7 +43,7 @@ which gives
 		   &= -\left(\rho \omega^2 \delta_{ik} \placeholder + 
 		   \partial_j \left(C_{ijkl} \partial_l \placeholder\right)\right) u_k
 \end{align}
-where the indices $i,j,k,l$ go over the spacial dimensions $x,y,z$.
+where the indices $i,j,k,l$ go over the spatial dimensions $x,y,z$.
 All of the tensors in the equation above are really tensor fields, i.e.\ they are
 functions of $\vec{x}$.
 Defining the operator $\hat A_{ik}$ as
@@ -526,12 +526,12 @@ implies
 	= -\rho^0 \delta_{ik} \delta(\vec x - \vec y)
 	- \partial_j\left(C_{ijkl}^0\delta(\vec x - \vec y) \partial_l \placeholder\right)\\
 	= -\rho^0 \delta_{ik} \delta(\vec x - \vec y)
-	- C_{ijkl}^0\delta(\vec x - \vec y)\partial_j \partial_l.
+	- 2 C_{ijkl}^0\delta(\vec x - \vec y)\partial_j \partial_l.
 \end{align}
 Plugging this back into the integral in \cref{eq:an_integral} gives
 \begin{equation}
 	-\rho^0 \tilde u_i(\vec x) u_i(\vec x)
-	- C_{ijkl}^0 \tilde u_i(\vec x) \partial_j \partial_l u_k(\vec x)
+	- 2 C_{ijkl}^0 \tilde u_i(\vec x) \partial_j \partial_l u_k(\vec x)
 \end{equation}
 which is comparatively easily evaluated.
 The only thing remaining is to calculate $\tilde{\vec u}$.
@@ -544,7 +544,7 @@ Thus \cref{eq:phi_dudp_integral} becomes
 	\varphi_{a}^* \eta_{ab} = \tilde u_{c} A_{ca} \eta_{ab}
 \end{equation}
 where $\difs.f.{\vec u}{p}$ has been labeled $\eta$ for notational simplicity,
-and the indices go over the discretized spacial meshpoints.
+and the indices go over the discretized spatial meshpoints.
 Meaning that to find $\tilde u$ we solve
 \begin{equation}
 	\varphi_a^* = \tilde u_c A_{ca}
@@ -642,7 +642,7 @@ It has three main differences:
 	\item The learning rate is automatically set from the previously seen gradients.
 	\item The evolution carries some momentum.
 \end{enumerate}
-C\Cref{fig:adam_vs_gd} shows the difference in performance between \gls{adam}
+\Cref{fig:adam_vs_gd} shows the difference in performance between \gls{adam}
 and \gls{gd}.
 With a slightly too large learning rate, the \gls{gd} algorithm gets stuck in an
 oscillation and makes very little progress towards the minimum.

@@ -124,6 +124,11 @@ was then calculated, as well as the integral $\int u_i^* u_i$ from which one can
 calculate the proportion of energy in the mode compared to the energy in other
 modes.
 The result was near perfect (>99.9\%) excitation of only the desired mode.
+To obtain such high fidelity, it was important that the mesh used for the
+unitcells in the wave guide was the same as the mesh in the unit cell
+simulation.
+High fidelity was also achieved if both meshes were made very fine, but such
+fine meshes carried a prohibitively large computational cost.
 
 \subsection{Perfectly Matched Layers (PMLs)}
 
@@ -162,11 +167,98 @@ shape of the profile of the imaginary component.
 	\label{fig:pml_profile}
 \end{figure}
 
-\todowrt{Write about the long waveguide simulation and fourier transform to show
-that the pml was indeed reflectionless.}
+There are three possible sources of reflections.
+Firstly, if the transition from no imaginary component to some imaginary
+component is too abrupt, that causes reflections.
+Secondly, if the imaginary component is too small, the waves will not be
+dampened completely when they reach the end of the \gls{pml} and thus reflect
+off of that.
+And lastly, if $d$ is small then there can be reflections from the steep
+increase that happens some distance away from the beginning of the \gls{pml}.
+See \cref{fig:banddiagram} for an illustration of where the different types of
+reflections occur.
 
-\todoblk{Simulations currently running... There will be a graph of relfection as
-a function of strength for a bunch of different $d$.}
+\tikzset{
+	reflection/.pic={
+		\draw[->] (-0.4, 0) -- (-0.1, 0) arc[radius=0.1, start angle=-90, end
+		angle=90] --++ (-0.1, 0);
+		\draw[dashed] (0,-3.1) -- (0,8.3);
+	}
+}
+\begin{figure}[htpb]
+	\centering
+	\begin{tikzpicture}[domain=1:8]
+
+		\draw[->] (-0.2,0) -- (8.2,0) node[right] {$y$};
+		\draw[->] (0,-1.2) -- (0,4.2) node[above] {$\rho_\text{im}$};
+		\draw[very thin,color=gray] (-0.1,-1.1) grid (7.9,3.9);
+		\clip (-0.1, -1.1) rectangle (7.9,3.9);
+		\draw[color=ForestGreen, very thick] (0,0) -- (1,0) --
+			plot (\x,{0.40*(exp(\x/3)-exp(1/3))});
+		\draw[color=Orange, very thick] (0,0) -- (1,0) --
+			plot (\x,{0.10*(exp(\x/4)-exp(1/4))});
+		\draw[color=NavyBlue, very thick] (0,0) -- (1,0) --
+			plot (\x,{0.02*exp(2.0*(\x-4))});
+		\draw[ForestGreen] (1.1, 0.3) pic {reflection};
+		\draw[NavyBlue] (5.7, 0.8) pic {reflection};
+		\draw[Orange] (7.9, 0.9) pic {reflection};
+	\end{tikzpicture}
+	\caption{
+		For the green curve, the initial sudden increase of the imaginary
+		component of the density at the beginning of the \gls{pml} causes reflections.
+		For the blue curve, the beginning of the \gls{pml} is smooth but there
+		is an increase partway through sharp enough to cause reflections.
+		For the orange curve, the \gls{pml} never becomes strong enough to
+		completely dampen the waves, and they get reflected at the end.
+	}
+	\label{fig:pml_reflections}
+\end{figure}
+
+It is desirable to make $n$ as small as possible while still eliminating all
+reflections. In order to do so, a long waveguide with the same parameters as
+used for the input and output waveguides in the beamsplitter design was created.
+To discern where there was some component of the wave reflected, a fourier
+transform of the displacement field was made.
+\Cref{fig:pml_sweep1} shows the amplitude of the reflection,
+quantified as the peak height relative to the forward propagating wave,
+for different profiles.
+These figures fit well with the three types of reflection mentioned previously.
+To achieve a short yet functional \gls{pml}, $d=5$, $s=0.03$ and $n=20$ was
+chosen.
+
+\begin{figure}[htpb]
+	\centering
+	\begin{subfigure}[]{\textwidth}
+	\begin{center}
+		\includegraphics{chapters/methods/pml_sweep_sd.pdf}
+	\end{center}
+	\caption{
+		On the left is the reflection amplitude plotted as a function of the
+		\gls{pml} strength $s$ for different $d$.
+		For $d > 4$ there are two sources of reflection:
+		for small $s$ reflection at the end of the \gls{pml} occurs,
+		and for large $s$, there is reflection at the beginning.
+		The right figure makes it clear that it is the slope at the beginning of
+		the \gls{pml} that matters, since the point at which it becomes
+		significant is the same for all $d$.
+	}
+	\label{fig:pml_sweep_sd}
+	\end{subfigure}
+	\begin{subfigure}[]{\textwidth}
+	\begin{center}
+		\includegraphics{chapters/methods/pml_sweep_sn.pdf}
+	\end{center}
+	\caption{
+		This is the same as \cref{fig:pml_sweep_sd} but with varying $n$.
+		For $n=15$, the reflections from the beginning do not subside before the
+		reflections from the end become significant, so at least $n=20$ is
+		necessary.
+	}
+	\label{fig:pml_sweep_sn}
+	\end{subfigure}
+	\caption{}
+	\label{fig:pml_sweep1}
+\end{figure}
 
 \subsection{Level-set}\label{sec:level-set}
 
@@ -273,9 +365,11 @@ optimization, this is of little concern.
 
 \section{Simulations}
 
-\tododec{How much specifics should I have? Should I write about exporting the
+\tododec{
+	How much specifics should I have? Should I write about exporting the
 	gradient to a file and how I calculate the 2D gradient in my matlab scripts
-from that}
+	from that
+}
 \todowrt{Mesh export / import and why that is done should probably be mentioned
 since it's quite important to get the excitation in the right mode.}
 
