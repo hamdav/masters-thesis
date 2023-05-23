@@ -47,8 +47,10 @@ modeled, and the other half is extrapolated with a symmetry boundary condition.
 	\caption{
 		Device design to be optimized.
 		At the red line, a wave traveling right is excited.
-		On the blue unit cells is where the output is measured.
-		The dashed unit cells are \glspl{pml}
+		The output is measured over the blue unit cells.
+		The dashed unit cells are \glspl{pml}.
+		The large, rectangular design area has dimensions $d_x \times d_y \times
+		h$.
 	}
 	\label{fig:bs-design}
 \end{figure}
@@ -60,8 +62,7 @@ feels like the image gets quite messy then}
 	\caption{%
 		Values for the geometric parameters of the device.
 		Reference \cref{fig:bs-design,fig:unitcell} for what the quantities
-		mean. The only parameter not mentioned there is $h$, which is the height
-		of the structure.
+		mean.
 	}%
 	\label{tab:params}
 
@@ -92,15 +93,17 @@ Furthermore, all of the excitation of the output waveguide should be in the same
 mode that was excited at the input.
 Therefore, a mode overlap integral is used:
 \begin{equation}
-	I = \int_{\Omega_1} \vec{m}^*(\vec{x}) \vec{u}(\vec{x})
+	I = \int_{\Omega_1} \vec{m}^*(\vec{x}) \vec{u}(\vec{x}) \dl{\vec x},
 \end{equation}
 where $\vec m$ is the shape of the mode (\cref{fig:ms1}).
 Because we are not interested in the phase of the output waves,
 the absolute value squared of the overlap integral is taken as the objective
 function,
 \begin{equation}
-	\fobj = \abs{I}^2 = I I^*
+	\fobj = \abs{I}^2 = I I^*.
 \end{equation}
+This will be maximized when the excitation of the mode $m$ in the output
+waveguide is maximized, regardless of which phase it has.
 
 The functional derivative of $\fobj$ with respect to $p$ then becomes
 \begin{align}
@@ -163,8 +166,8 @@ the material.
 This needs to be done smoothly, otherwise the abrupt change in material
 parameters would induce reflections anyway.
 Therefore, the imaginary part is taken to be exponentially increasing.
-Furthermore, the curve is shifted such that it starts at 0, and rescaled so that
-the endpoint is at $s$.
+Furthermore, the curve is shifted vertically such that it is 0 at $y = y_0-n$,
+and rescaled so that it is $\rho_\text{si} s$ at $y=y_0$.
 \begin{equation}
 	\rho_\text{im} = \rho_\text{si} \cdot s \cdot
 	\frac{e^{-\abs{y-y_0} / d} - e^{-n/d}}{1 - e^{-n/d}}
@@ -209,17 +212,19 @@ reflections occur.
 	\centering
 	\begin{tikzpicture}[domain=1:8]
 
-		\draw[->] (-0.2,0) -- (8.2,0) node[right] {$y$};
-		\draw[->] (0,-1.2) -- (0,4.2) node[above] {$\rho_\text{im}$};
-		\draw[very thin,color=gray] (-0.1,-1.1) grid (7.9,3.9);
-		\clip (-0.1, -1.1) rectangle (7.9,3.9);
+		\draw[->,very thick] (-0.0,0) -- (8.2,0) node[right] {$y$};
+		\draw[->,very thick] (0,-0.0) -- (0,4.2) node[above] {$\rho_\text{im}$};
+		\draw[very thick] (1,0) -- (1,-0.10) node[below] {$y_0-n$};
+		\draw[very thick] (7.9,0) -- (7.9,-0.10) node[below] {$y_0$};
+		%\draw[very thin,color=gray] (-0.1,-1.1) grid (7.9,3.9);
+		\clip (0.0, 0.0) rectangle (7.9,3.9);
 		\draw[color=ForestGreen, very thick] (0,0) -- (1,0) --
 			plot (\x,{0.40*(exp(\x/3)-exp(1/3))});
 		\draw[color=Orange, very thick] (0,0) -- (1,0) --
 			plot (\x,{0.10*(exp(\x/4)-exp(1/4))});
 		\draw[color=NavyBlue, very thick] (0,0) -- (1,0) --
 			plot (\x,{0.02*exp(2.0*(\x-4))});
-		\draw[ForestGreen] (1.1, 0.3) pic {reflection};
+		\draw[ForestGreen] (1.0, 0.3) pic {reflection};
 		\draw[NavyBlue] (5.7, 0.8) pic {reflection};
 		\draw[Orange] (7.9, 0.9) pic {reflection};
 	\end{tikzpicture}
@@ -304,7 +309,7 @@ Computing the normal direction of a directly stored boundary is slightly cumbers
 though certainly achievable.
 With level-set, moving the boundary in the normal direction is as easy as adding
 a constant to the implicit function.
-Secondly, while the boundary is changing the resolution in one part might need
+Secondly, while the boundary is changing, the resolution in one part might need
 to be increased while the resolution in another needs to be decreased. Deciding
 where and when to add new points is non-trivial when directly storing the
 boundary. Furthermore, if two boundaries merge, or if one splits in two, points
@@ -335,6 +340,8 @@ There is one choice that simplifies a lot of calculations though: the signed
 distance function.
 This function is defined as the distance from the closest point on the boundary,
 with a plus sign if it is inside and a minus sign if it is outside the boundary.
+\tododec[inline]{make figure of example of a signed distance function, maybe the
+analogous of \cref{fig:direct_troubles}}
 It has the advantage that if one wishes to locally shift the boundary some
 length $s$ in the normal direction, then simply add $s$ to the function there.
 \Cref{fig:add_shift} shows this effect in one dimension.

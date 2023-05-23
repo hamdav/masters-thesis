@@ -17,7 +17,7 @@ This equation is linear in $\vec u$, hence the name \emph{linear} elasticity.
 Using this and Newton's equations of motion, the equation governing the dynamics
 is obtained:
 \begin{equation}\label{eq:lin_el}
-	\rho \ddot{\vec{u}} = \nabla \cdot \sigma + \vec F.
+	\rho \ddot{\vec{u}} = \nabla \cdot \sigma + \vec F,
 \end{equation}
 where $\rho$ is the density, $\vec{u}$ is the displacement and $\vec F$ is the
 externally applied force.
@@ -64,7 +64,7 @@ we can write
 
 With no external forces, i.e.\ $F_i = 0$, \cref{eq:gov_eq} can be written as
 \begin{equation}
-	\frac 1 \rho \partial_j \left(C_{ijkl} \partial_l u_k\right) = \omega^2 u_i
+	\frac 1 \rho \partial_j \left(C_{ijkl} \partial_l u_k\right) = \omega^2 u_i,
 \end{equation}
 which is an eigenvalue equation for the operator
 $\hat O_{ik} = \frac 1 \rho\partial_j \left(C_{ijkl} \partial_l \placeholder\right)$
@@ -72,30 +72,31 @@ where eigenvalues are the angular frequency squared.
 If furthermore the structure is periodic, then the eigenstates are so called
 \emph{Bloch states}.
 
-If the structure is periodic with some periodicity $\vec a$,
-meaning that $C_{ijkl}(\vec x) = C_{ijkl}(\vec x + n \vec a)$ where $n$ is an
+If the structure is periodic in the $y$ direction with some periodicity
+$\vec a = a \hat{\vec y}$,
+meaning that $C_{ijkl}(\vec x) = C_{ijkl}(\vec x + n \vec a)$ and $\rho(\vec x)
+= \rho(\vec x + \vec a)$ where $n$ is an
 integer, then this operator commutes with the translation operator
-$\hat T_{\vec a} \vec u(\vec x) = \vec u(\vec x + \vec a)$.
-This means that there is a space of simultaneous eigenstates to both of them.
-The eigenfunctions of the translation operator are $\exp(i \vec k \cdot \vec
-x)$ with eigenvalues $\exp(i k a)$, where $a = \abs{\vec{a}}$.
-Defining the reciprocal lattice constant $\vec b = 2 \pi \vec a / a^2$, we see
-that the functions $\exp(i (\vec k + m \vec b) \cdot \vec x)$ for integer values
+$\hat T_{\vec a}[\vec u(\vec x)] = \vec u(\vec x + \vec a)$.
+This means that there is a basis of simultaneous eigenstates of both operators.
+The eigenfunctions of the translation operator are
+$\vec f(x, z)\exp(i k_y y)$, where $\vec f$ is an arbitrary function,
+and the eigenvalues are $\exp(i k_y a)$.
+Defining the reciprocal lattice constant $b = 2 \pi / a$, we see
+that the functions $\vec f(x, z) \exp(i (k_y + m b) y)$ for integer values
 of $m$ all have the same eigenvalue, which means that they form a degenerate
 subspace of eigenfunctions.
-Thus we can write the eigenfunctions of both operators as
+This also means that we can restrict ourselves to the first Brillouin zone:
+$k_y \in [-b/2, b/2]$.
+Thus, the simultaneous eigenstate $\vec u_{k_y, \omega^2}$ can be written
 \begin{equation}
-	\vec u_{\vec k}(\vec x) = \sum_m e^{i (\vec k + m \vec b) \cdot \vec x}
-	\vec u_{m, \vec k}(\vec x)
-	= e^{i \vec k \cdot \vec x} \bar{\vec u}_{\vec k}(\vec x)
+	\vec u_{k_y, \omega^2}(\vec x) = \sum_m \vec f_{m,k_y,\omega^2}(x, z) e^{i (k_y + m b) y}
+	= e^{i k_y y} \tilde{\vec f}_{k_y, \omega^2}(\vec x)
 \end{equation}
-where $\bar{\vec{u}}_{\vec{k}}$ is a periodic function with periodicity $\vec a$.
+where $\tilde{\vec f}_{k_y, \omega^2}$ is a periodic function with periodicity
+$\vec a$ by construction.
 \todocit[inline]{%
-	Sakurai does basically the same derivation but for electronic
-	states in a crystal lattice, but he also uses operator formalism. Can I cite
-	that? Other option is citing Chan's PhD who do it the same way for photonic
-	crystals and says that it can be done analogously for phononic crystals.
-	I don't think Auld does anything with periodic crystals/bloch states?
+	Cite chapter 3 of Z:/general interest/literature/books/photonic-crystals-book.pdf
 }
 
 The solutions to these eigenvalue equations are often called modes, and each
@@ -154,11 +155,14 @@ same periodicity as the unit cell.
 Enforcing a wave vector $\vec k = k\hat{\vec y}$
 thus entails using periodic boundary conditions with a specified phase shift
 over the unit cell.
-These are called \emph{floquet periodic boundary conditions} in COMSOL.
+These are called \emph{floquet periodic boundary conditions} in COMSOL, which is
+the simulation software used throughout this thesis.\tododec{Don't I introduce
+comsol earlier?}
 Running simulations with different $k$
 to find the eigenmodes with their
 corresponding frequencies for this structure yields the band diagram in
 \cref{fig:banddiagram}.
+The parameter values used in the simulations can be found in \cref{tab:params}.
 \Cref{fig:modeshapes} shows the shapes of the eight lowest lying eigenmodes at
 $k=0.9 \pi / a$.
 \begin{figure}[htpb]
@@ -232,7 +236,8 @@ $k=0.9 \pi / a$.
 
 	\caption{%
 		Mode shapes for the lowest eight modes at $k=0.9 \pi / a$.
-		The color denotes the absolute value of the displacement.
+		The color denotes the absolute value of the displacement,
+		and the scale is normalized for each figure.
 	}%
 	\label{fig:modeshapes}
 \end{figure}
@@ -284,6 +289,8 @@ $A v = b$, where $b$ is a fixed vector and $A$ is a matrix that depends on a
 vector of design parameters $p$.
 This could be the acoustics equation, but it might also be the analogous
 equation for photonics, or something completely different like fluid dynamics.
+I will refer to the process of solving this equation as a simulation, since for
+this thesis it is solved through the simulation software COMSOL.
 The overall goal is to find the parameters $p$ that maximize the objective
 function $\fobj$.
 The goal of adjoint simulation is to find $\diff{\fobj}{p}$.
@@ -325,7 +332,7 @@ computationally expensive than solving for a vector.
 \subsection{Specific derivation with acoustics}\label{sec:spec_der}
 
 Now we turn to the specific case of acoustic devices.
-Here $A v = b$ is replaced by the acoustic field equation:
+Here $A v = b$ is replaced by the acoustic field equation (\cref{eq:gov_eq}):
 \begin{equation}\label{eq:sim_eq}
 	\hat A_{ik} u_k = F_i.
 \end{equation}
@@ -362,7 +369,7 @@ properties of it.
 Let $\mathcal{Y}$ be a function space of functions $\R \to \R$.
 A functional $F:\mathcal{Y} \to \R$ evaluated at the function
 $f\in\mathcal{Y}$
-is notated with the function in square brackets: $F[f]$.
+is denoted with the function in square brackets: $F[f]$.
 Note that in principle, $F$ is the functional while $F[f]$ is just a
 number,
 analogously to how $f$ is a function while $f(x)$ is a real number.
@@ -370,7 +377,7 @@ If the functional additionally depends on a real number,
 $G:\mathcal{Y} \times \R \to \R$,
 that is put in round brackets: $G[f](x)$.
 
-The functional derivative of $F$ with respect to it's function argument
+The functional derivative of $F$ with respect to its function argument
 is a functional $\mathcal{Y} \times \R \to \R$ denoted $\difs.f.{F[f]}{f}$.
 In this expression, $f$ is technically a dummy function, writing
 $\difs.f.{F[g]}{g}$ is exactly the same functional.
@@ -439,11 +446,12 @@ where $\Omega$ is the domain of $\vec u$.
 Such an integral is an inner product in the space of functions on
 $\Omega$.
 
-Analogously to the general derivation, the chain rule is used to expand
+Analogously to the general derivation in \cref{sec:general_derivation},
+the chain rule is used to expand
 $\difs.f.{\fobj}{p}(\vec x)$, see \cref{box:functionals} for the form of the
 chain rule for the functional derivative.
 However, because $\vec u$ is in general complex, I will split it into its real and
-imaginary components: $u_i = v_i + i w_i$.
+imaginary components: $\vec u = \vec v + i \vec w$.
 \begin{equation}
 	\label{eq:chain_rule}
 	\diff.f.{f_\text{obj}}{p}(\bm x)
@@ -509,17 +517,18 @@ which gives us
 	\label{eq:dfdp_as_dudp_integral}
 \end{align}
 To find $\difs.f.{u_i(\bm y)}{p}(\bm x)$ we apply $\difs.f.{}{p(\bm x)}$ to
-equation~\eqref{eq:sim_eq}, which gives us
+\cref{eq:sim_eq}, which gives us
 \begin{equation}\label{eq:dAdpu_Adudp}
 	0 =
 	\diff.f.{\hat A_{ik}}{p}(\vec x) u_k(\bm y)
 	+
-	\hat A_{ik} \diff.f.{u_k(\bm y)}{p(\bm x)}
+	\hat A_{ik} \diff.f.{u_k(\bm y)}{p}(\bm x)
 \end{equation}
 
-The point of inverse design is that we now want to find an ajoint field
+\todowrt{rewrite this}
+The point of inverse design is that we now want to find an adjoint field
 $\tilde u_i(\bm y)$
-such that the integral in equation~\eqref{eq:dfdp_as_dudp_integral} is
+such that the integral in \cref{eq:dfdp_as_dudp_integral} is
 \begin{equation}\label{eq:phi_dudp_integral}
 	\int_\Omega \dl{\bm y}\,
 	\varphi_i^*(\bm y)
@@ -669,7 +678,7 @@ If a too high value is chosen, then the steps taken will be too large and the
 optimium might be missed entirely.
 A too low value results in too small steps which will yield a slow convergence.
 Almost all gradient descent implementations use a so called learning schedule,
-which means that $\eta$ is not constant during the learning.
+which means that $\eta$ is not constant during the optimization.
 This introduces the additional problem of how to choose how fast and between
 which values it should change.
 
