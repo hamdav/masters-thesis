@@ -10,6 +10,10 @@ And lastly, we need a gradient based optimization algorithm to find the optimal
 design.
 All of this will be described in this chapter.
 
+\todowrt{Comment from PB: at some point you should explain what a beam splitter is, explain why it is so popular in photonics and how it could be interesting in phononics. 
+also you should refer to previous work on phononic beam splitters, their plattform and basic differences. 
+Doesnt have to be too detailed but some context is required.}
+
 \section{Design}
 
 The device design to be optimized can be seen in \cref{fig:bs-design}.
@@ -27,6 +31,8 @@ $\rho$ and $C_{ijkl}$ are continuously varying. The range of values that they
 can take are between the density and elasticity of pure silicon and that of air.
 Any in-between values are obviously not something that can be physically
 realized, but it is useful as a first step in the optimization.
+This is parametrized through the \emph{design field}, $p$, which takes values
+between 0, which means pure air, and 1, which means pure silicon.
 The second kind is a binary design, where each point either has silicon or not
 and there are no in-between values.
 This is accomplished using level-set methods, which will be explained in
@@ -89,8 +95,8 @@ Therefore, a mode overlap integral is used:
 	I = \int_{\Omega_1} \vec{m}^*(\vec{x}) \vec{u}(\vec{x})
 \end{equation}
 where $\vec m$ is the shape of the mode (\cref{fig:ms1}).
-Because the phase of the output waves does not matter,
-the absolute value squared of the overlap integral is taken to be the objective
+Because we are not interested in the phase of the output waves,
+the absolute value squared of the overlap integral is taken as the objective
 function,
 \begin{equation}
 	\fobj = \abs{I}^2 = I I^*
@@ -111,7 +117,7 @@ feature size}
 
 In order to excite the input waveguide in the desired mode,
 the stress on the boundary of a unit cell was exported from a unit cell
-eigenmode simulation and applied to the boundary marked in red in
+eigenmode simulation with $k=0.9 \pi / a$ and applied to the boundary marked in red in
 \cref{fig:bs-design}.
 Since the frequency is perfectly controlled, this should excite only the desired
 mode, since that is the only permitted mode close by as seen in the band diagram
@@ -119,19 +125,31 @@ in \cref{fig:banddiagram}.
 
 In order to confirm that the excitation was indeed fully in the desired mode, a
 separate model with only a waveguide with 200 unitcells was created.
-Applying the excitation and running the simulation, the mode overlap integral
-was then calculated, as well as the integral $\int u_i^* u_i$ from which one can
-calculate the proportion of energy in the mode compared to the energy in other
-modes.
-The result was near perfect (>99.9\%) excitation of only the desired mode.
+After applying the excitation and running the simulation,
+the proportion of the excitation that ended up in the desired mode was
+calculated.
+This was done by first calculating the mode overlap integral
+$\int u u_m^* \dl{\vec x}$
+and comparing that to the norm of the displacement field
+$\int u u^* \dl{\vec x}$.
+If $u = a u_m + b u_r$ for some scalars $a$ and $b$, then
+$\int u u^* \dl{\vec x} = a\int u u_m^*\dl{\vec x} + b\int u u_r^*\dl{\vec x}$.
+And assuming $u_r$ is orthogonal to $u_m$,
+$a = \int u u_m^*\dl{\vec x} / \int u_m u_m^*\dl{\vec x}$.
+% the mode overlap integral
+% was then calculated, as well as the integral $\int u_i^* u_i$ from which one can
+% calculate the proportion of energy in the mode compared to the energy in other
+% modes.
+The result was near perfect ($b < 0.01 a$) excitation of only the desired mode.
 To obtain such high fidelity, it was important that the mesh used for the
 unitcells in the wave guide was the same as the mesh in the unit cell
 simulation.
 High fidelity was also achieved if both meshes were made very fine, but such
-fine meshes carried a prohibitively large computational cost.
+fine meshes carries a prohibitively large computational cost.
 
 \subsection{Perfectly Matched Layers (PMLs)}
 
+\tododec{Humour?}
 Ideally, the input and outputs are infinite waveguides.
 Unfortunately, it has been discovered that infinity is big; simulating
 infinite waveguides would take infinite time, and the author would like to be done by
@@ -153,6 +171,8 @@ the endpoint is at $s$.
 \end{equation}
 \Cref{fig:pml_profile} shows the effect of changing these parameters on the
 shape of the profile of the imaginary component.
+
+\todowrt{Explain why adding an imag part absorbs waves}
 
 \begin{figure}[htpb]
 	\centering
@@ -274,7 +294,7 @@ The second method, which is the one used in this report, is called
 the \emph{level-set method}.
 In this method, the boundary is not directly stored, but rather is stored via an
 \emph{implicit function}, $\phi(x)$, defined such that the boundary is the
-0-isocontour of $\phi$.
+0-isocontour of $\phi$, i.e.\ the points $x$ where $\phi(x)=0$.
 
 There are two main advantages of using the level-set method rather than
 directly storing the boundary points.
@@ -346,10 +366,10 @@ length $s$ in the normal direction, then simply add $s$ to the function there.
 	\label{fig:add_shift}
 \end{figure}
 
-As the update algorithm when optimizing level-set designs, the gradient is
-simply added to the signed distance field. Some care needs to be taken in how
-this is done though.
-Firstly, the gradient obviously needs to be rescaled so that the boundary moves
+Using a signed distance function means that a gradient descent step can be taken
+by simply adding the gradient field to the signed distance field.
+However, there are some pitfalls that must be avoided.
+Firstly, the gradient needs to be rescaled so that the boundary moves
 an appropriate distance.
 This has been done such that the boundary moves maximally \qty{5}{\nm}.
 \todoblk[noinline]{check this number before finalizing, I change it every now and then}
@@ -362,6 +382,8 @@ the new boundary.
 This recalculation comes with a performance penalty, but since the COMSOL
 simulations are orders of magnitude slower than all other parts of the
 optimization, this is of little concern.
+
+\tododec{Meshing of the level-set designs?}
 
 \section{Simulations}
 

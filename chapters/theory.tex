@@ -4,36 +4,39 @@ In order to efficiently model the deformation and stresses in a solid material,
 a linear elasticity model is often assumed.
 For small deformations, solid materials obey Hooke's law which in it's full form
 looks like
-\[
+\begin{equation}\label{eq:stress}
 	\sigma = C : \epsilon
-\]
+\end{equation}
 where $\sigma$ is the stress tensor, $C$ the elasticity tensor which is a
-four-tensor that is a property of the material,
-$\epsilon \coloneqq \nabla \vec u + (\nabla \vec u)^\transpose$
+rank four tensor that is a property of the material,
+\begin{equation}\label{eq:strain}
+	\epsilon \coloneqq \frac12(\nabla \vec u + (\nabla \vec u)^\transpose)
+\end{equation}
 is the strain tensor, and $:$ denotes double scalar product.
 This equation is linear in $\vec u$, hence the name \emph{linear} elasticity.
-Using this and newtons equations of motion, the equation governing the dynamics
+Using this and Newton's equations of motion, the equation governing the dynamics
 is obtained:
-\[
+\begin{equation}\label{eq:lin_el}
 	\rho \ddot{\vec{u}} = \nabla \cdot \sigma + \vec F.
-\]
+\end{equation}
 where $\rho$ is the density, $\vec{u}$ is the displacement and $\vec F$ is the
 externally applied force.
 Assuming a time harmonic solution
 $\vec u(\vec x, t) = \vec u(x) e^{i \omega t}$
 with angular frequency $\omega$ this becomes
-\[
+\begin{equation}\label{eq:lin_el2}
 	-\rho \omega^2 \vec{u} = \nabla \cdot \sigma + \vec F.
-\]
+\end{equation}
 
-To combine these into one equation that can be solved for $\vec{u}$ we first
+To combine \cref{eq:stress,eq:strain,eq:lin_el,eq:lin_el2} into one equation that can be solved for $\vec{u}$ we first
 rewrite them in index notation to make calculations clearer:
 \begin{align}
 	\epsilon_{ij} &= \frac12(\partial_i u_j + \partial_j u_i)\\
 	\sigma_{ij} &= C_{ijkl} \epsilon_{kl}\\
 				&= \frac12\left(C_{ijkl} \partial_k u_l + C_{ijkl} \partial_l
 				u_k\right)\\
-				&= C_{ijkl} \partial_k u_l\text{ because of the symmetry of $C$}
+				&= C_{ijkl} \partial_k u_l\text{ because of the symmetry
+				$C_{ijkl}=C_{ijlk}$}
 \end{align}
 which gives
 \begin{align}
@@ -46,15 +49,18 @@ which gives
 where the indices $i,j,k,l$ go over the spatial dimensions $x,y,z$.
 All of the tensors in the equation above are really tensor fields, i.e.\ they are
 functions of $\vec{x}$.
-Defining the operator $\hat A_{ik}$ as
-$-\left(\rho \omega^2 \delta_{ik} \placeholder + 
-\partial_j \left(C_{ijkl} \partial_l \placeholder\right)\right)$
+Defining the operator
+\begin{equation}\label{eq:A_def}
+	\hat A_{ik} =
+	-\left(\rho \omega^2 \delta_{ik} \placeholder +
+	\partial_j \left(C_{ijkl} \partial_l \placeholder\right)\right)
+\end{equation}
 we can write
 \begin{equation}\label{eq:gov_eq}
 	\hat A_{ik} u_k = F_i
 \end{equation}
 
-\section{Bloch States and Band Diagrams}
+\section{Bloch States and Band Diagrams}\label{sec:bloch}
 
 With no external forces, i.e.\ $F_i = 0$, \cref{eq:gov_eq} can be written as
 \begin{equation}
@@ -72,7 +78,7 @@ integer, then this operator commutes with the translation operator
 $\hat T_{\vec a} \vec u(\vec x) = \vec u(\vec x + \vec a)$.
 This means that there is a space of simultaneous eigenstates to both of them.
 The eigenfunctions of the translation operator are $\exp(i \vec k \cdot \vec
-x)$ with eigenvalues $\exp(i k a)$, where $a = \abs{a}$.
+x)$ with eigenvalues $\exp(i k a)$, where $a = \abs{\vec{a}}$.
 Defining the reciprocal lattice constant $\vec b = 2 \pi \vec a / a^2$, we see
 that the functions $\exp(i (\vec k + m \vec b) \cdot \vec x)$ for integer values
 of $m$ all have the same eigenvalue, which means that they form a degenerate
@@ -100,7 +106,7 @@ where the frequency is plotted as a function of the wave vector.
 
 In this work, a rectangular waveguide patterned with ellipses is used.
 The structure is clamped at the bottom (meaning that we use a fixed boundary
-condition there) while the other sides are free.
+condition there, enforcing $\vec u = 0$) while the other sides are free.
 A top down schematic of the unit cell can be seen in \cref{fig:unitcell}.
 
 \begin{figure}[htpb]
@@ -138,7 +144,19 @@ A top down schematic of the unit cell can be seen in \cref{fig:unitcell}.
 \label{fig:unitcell}
 \end{figure}
 
-Enforcing a wave vector $\vec k = k\hat{\vec y}$ and running COMSOL to find the eigenmodes with their
+An infinite waveguide can be simulated with just one unit cell using periodic
+boundary conditions at the edge where the unit cell would be attached to the
+next one.
+As \cref{sec:bloch} showed,
+waves with any $\vec k$ can be investigated with a single unit cell since $\vec
+u$ is a phase factor $e^{i\vec k \cdot \vec x}$ times some function with the
+same periodicity as the unit cell.
+Enforcing a wave vector $\vec k = k\hat{\vec y}$
+thus entails using periodic boundary conditions with a specified phase shift
+over the unit cell.
+These are called \emph{floquet periodic boundary conditions} in COMSOL.
+Running simulations with different $k$
+to find the eigenmodes with their
 corresponding frequencies for this structure yields the band diagram in
 \cref{fig:banddiagram}.
 \Cref{fig:modeshapes} shows the shapes of the eight lowest lying eigenmodes at
@@ -146,7 +164,7 @@ $k=0.9 \pi / a$.
 \begin{figure}[htpb]
 	\centering
 	\includegraphics{chapters/theory/bandstructure.pdf}
-	\caption{
+	\caption{%
 		Band diagram of phononic crystal defined in \cref{fig:unitcell}.
 	}%
 	\label{fig:banddiagram}
@@ -215,7 +233,7 @@ $k=0.9 \pi / a$.
 	\caption{%
 		Mode shapes for the lowest eight modes at $k=0.9 \pi / a$.
 		The color denotes the absolute value of the displacement.
-	}
+	}%
 	\label{fig:modeshapes}
 \end{figure}
 \tododec{At some point write about phonons? I haven't really had to care about
@@ -233,9 +251,7 @@ Inverse design is a design paradigm where the design of a device is guided fully
 the desired characteristics.
 These desired characteristics are quantified through what is called an objective
 function%
-\footnote{
-	Also called \emph{figure of merit (FoM)} by some.%
-}%
+\footnote{Also called \emph{figure of merit (FoM)}.}%
 , which I will denote $\fobj$,
 that should be maximized.
 When coupled with \emph{adjoint simulation}, which is a clever way to compute
@@ -260,22 +276,26 @@ inverse design in acoustics.
 
 \subsection{General Derivation}\label{sec:general_derivation}
 
-Let $\fobj$ be a function which depends on some (large) vector $v$.
+\todocit[inline]{Citation needed for this section}
+
+Let $\fobj$ be a function which depends on some high-dimensional vector $v$.
 The vector $v$ can be calculated by solving the linear equation
 $A v = b$, where $b$ is a fixed vector and $A$ is a matrix that depends on a
 vector of design parameters $p$.
+This could be the acoustics equation, but it might also be the analogous
+equation for photonics, or something completely different like fluid dynamics.
 The overall goal is to find the parameters $p$ that maximize the objective
 function $\fobj$.
 The goal of adjoint simulation is to find $\diff{\fobj}{p}$.
 This can be expanded through the chain rule as
-\[
+\begin{equation}
 	\diff{\fobj}{p} = \diff{\fobj}{v} \diff{v}{p}.
-\]
+\end{equation}
 To find the latter factor we do
-\begin{align*}
+\begin{align}
 	\diff{}{p} [Av = b] &\implies \diff{A}{p} v + A \diff{v}{p} = 0\\
 						&\implies \diff{v}{p} = -A^{-1} \diff{A}{p} v
-\end{align*}
+\end{align}
 which gives
 \begin{align}
 	\diff{\fobj}{p} &= - \diff{\fobj}{v} A^{-1} \diff{A}{p}
@@ -305,10 +325,9 @@ computationally expensive than solving for a vector.
 \subsection{Specific derivation with acoustics}\label{sec:spec_der}
 
 Now we turn to the specific case of acoustic devices.
-Here $A v = b$ is replaced by the dynamic equation \todowrt[noinline]{dynamic equation?
-Better name} of linear elasticity:
+Here $A v = b$ is replaced by the acoustic field equation:
 \begin{equation}\label{eq:sim_eq}
-	\hat A_{ik} u_k = F_i
+	\hat A_{ik} u_k = F_i.
 \end{equation}
 Instead of vectors, like we saw in \cref{sec:general_derivation}, these quantities are now functions%
 \footnote{%
@@ -316,10 +335,13 @@ Instead of vectors, like we saw in \cref{sec:general_derivation}, these quantiti
 }
 of $\vec x$.
 Analogously to the vector of design parameters we now have a \emph{design field}
-$p(\vec x)$.
+$p(\vec x)$,
+and analogously to $\fobj$ being a function of a vector, this $\fobj$ is a
+function of a function, i.e.\ a \emph{functional}.
+For a quick overview of functionals and their derivatives, see
+\cref{box:functionals}.
 
-\begin{tcolorbox}[title=On functionals and their derivatives, breakable,
-	parbox=false]
+\begin{mybox}[breakable, parbox=false, label=box:functionals]{On functionals and their derivatives}
 	\tododec{
 		Big fat box on functionals and their derivatives. I think this should be
 		included somewhere, since very few of my peers know what a functional
@@ -405,7 +427,7 @@ I will use two properties of the functional derivative:
 			= \int \diff.f.{F}{G[f]}(y) \diff{G(y)}{f}(x) \dl{y}
 		\end{equation}
 \end{itemize}
-\end{tcolorbox}
+\end{mybox}
 
 For simplicity I will limit myself to the case where the objective function is
 an overlap integral of the displacement field $u_k(\vec x)$ with some function
@@ -417,8 +439,9 @@ where $\Omega$ is the domain of $\vec u$.
 Such an integral is an inner product in the space of functions on
 $\Omega$.
 
-Analogously to the general derivation, we will use the chain rule to expand
-$\difs.f.{\fobj}{p}(\vec x)$.
+Analogously to the general derivation, the chain rule is used to expand
+$\difs.f.{\fobj}{p}(\vec x)$, see \cref{box:functionals} for the form of the
+chain rule for the functional derivative.
 However, because $\vec u$ is in general complex, I will split it into its real and
 imaginary components: $u_i = v_i + i w_i$.
 \begin{equation}
@@ -509,7 +532,7 @@ such that the integral in equation~\eqref{eq:dfdp_as_dudp_integral} is
 \end{equation}
 which by equation~\cref{eq:dAdpu_Adudp} is equal to
 \begin{equation}\label{eq:an_integral}
-	\int_\Omega \dl{\bm y}\,
+	-\int_\Omega \dl{\bm y}\,
 	\tilde u_i(\bm y)
 	\diff.f.{\hat A_{ik}}{p}(\vec x)
 	u_k(\bm y).
@@ -520,18 +543,20 @@ A linear dependence is proposed here, though extending the formula to more
 complicated dependences is rather easy.
 Taking $\rho(\vec y) = \rho^0 p(\vec y)$
 and $C_{ijkl}(\vec y) = C_{ijkl}^0 p(\vec y)$
+in the definition of $\hat A_{ik}$ from \cref{eq:A_def}
 implies 
 \begin{align}
 	\diff.f.{\hat A_{ik}(\vec y)}{p}(\vec x)
-	= -\rho^0 \delta_{ik} \delta(\vec x - \vec y)
+	= -\rho^0 \omega^2 \delta_{ik} \delta(\vec x - \vec y)
 	- \partial_j\left(C_{ijkl}^0\delta(\vec x - \vec y) \partial_l \placeholder\right)\\
-	= -\rho^0 \delta_{ik} \delta(\vec x - \vec y)
+	= -\rho^0 \omega^2 \delta_{ik} \delta(\vec x - \vec y)
 	- 2 C_{ijkl}^0\delta(\vec x - \vec y)\partial_j \partial_l.
 \end{align}
 Plugging this back into the integral in \cref{eq:an_integral} gives
+\tododec{What? Minus sign???}
 \begin{equation}
-	-\rho^0 \tilde u_i(\vec x) u_i(\vec x)
-	- 2 C_{ijkl}^0 \tilde u_i(\vec x) \partial_j \partial_l u_k(\vec x)
+	\rho^0 \tilde u_i(\vec x) u_i(\vec x)
+	+ 2 C_{ijkl}^0 \tilde u_i(\vec x) \partial_j \partial_l u_k(\vec x)
 \end{equation}
 which is comparatively easily evaluated.
 The only thing remaining is to calculate $\tilde{\vec u}$.
@@ -556,9 +581,25 @@ or, taking the transpose of both sides
 
 % \todoblk{The infamous integral. Still am not entirely sure about it, but I
 % haven't thought more about it since I abandoned that.}
+\tododec{Comment from PB:
+	it might be nice to clarify at which point one can see that the adjoint simulation would result in the solution u tilde
+	you could consider writing a short summary at the end of the chapter where you explain step by step how inverse design is practically done. E.g.: 
+	1. We are solving the system with the regular acoustic field equation for a certain p and receive u
+	2. we are interested in df/dp so that we know how to change p in order to maximize f
+	3. df/dp was calculated in eqn X. 
+	I think this would be instructive for the reader :)
+}
+\tododec{%
+	I think that the last part of this,
+	on the adjoint simulation,
+	is in need of a rewrite. For one thing, before I talk about the
+	discretization, there is no adjoint in the formula for the adjoint field.
+	Or there is no dagger at least\ldots
+}
 
 \section{Optimization Algorithms}
 
+\todowrt{rephrase first sentence}
 In the last section I painstakingly derived how one can obtain the gradient,
 and in this section I will attempt to justify that by describing how one can use
 the gradient.
@@ -572,20 +613,19 @@ The function is often called the \emph{objective function} or the \emph{cost
 function}.
 A very naive optimization method would be to simply try some number of inputs
 and then choose the one with the highest function value.
-This would require a large number of points before a good value is found,
-which means that it would take a long time.
+This requires a large number of points before a good value is found,
+meaning that it takes a long time.
 An improvement to this method is to use the information gained from the points
 already tried to decide which points to try next.
 If some point has a bad value, then try somewhere else; if some point has a good
 value, try another close by.
 Examples of algorithms that do this are bayesian optimization, particle swarm
 optimization, \todowrt[noinline]{more examples}
-However, if the input to your function is very high-dimensional,
-choosing a random direction step in for your next try is very unlikely
-to yield a much better value.
-For such functions, it is essential that you know in which direction the
-function increases the fastest, so that you can choose your next point in that
-direction. That is why we want to use gradient based optimization algorithms;
+However, if the domain of the objective function is very high-dimensional,
+``close by'' is a very large space.
+For such functions, it is essential to know in which direction the
+function increases.
+That is why gradient based optimization algorithms are so powerful;
 they enable us to quickly find the right direction to go in for best
 improvement.
 

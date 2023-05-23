@@ -42,6 +42,14 @@
 
 %units
 \sisetup{
-   output-decimal-marker = {,},
+   output-decimal-marker = {.},
    exponent-product = \ensuremath{\cdot}
 }
+
+%tcolorbox
+\newtcolorbox[auto counter,number within=chapter,
+crefname={box}{boxes}]%
+{mybox}[2][]{colback=blue!5!white,colframe=blue!75!black,fonttitle=\bfseries,
+title=Box \thetcbcounter: #2,#1}
+
+
