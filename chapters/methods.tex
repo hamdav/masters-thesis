@@ -333,6 +333,15 @@ Both of these issues are automatically handled with the level-set method.
 	}
 	\label{fig:direct_troubles}
 \end{figure}
+\begin{figure}[htpb]
+	\centering
+	\includegraphics{chapters/methods/signed_dist_example.pdf}
+	\caption{%
+		Example of three signed distance functions for three different
+		boundaries.
+	}
+	\label{fig:signed_dist_example}
+\end{figure}
 
 There are of course a lot of possible functions $\phi(x)$ that have a given
 boundary as it's 0-isocontour.
@@ -340,8 +349,7 @@ There is one choice that simplifies a lot of calculations though: the signed
 distance function.
 This function is defined as the distance from the closest point on the boundary,
 with a plus sign if it is inside and a minus sign if it is outside the boundary.
-\tododec[inline]{make figure of example of a signed distance function, maybe the
-analogous of \cref{fig:direct_troubles}}
+See \cref{fig:signed_dist_example} for an example.
 It has the advantage that if one wishes to locally shift the boundary some
 length $s$ in the normal direction, then simply add $s$ to the function there.
 \Cref{fig:add_shift} shows this effect in one dimension.

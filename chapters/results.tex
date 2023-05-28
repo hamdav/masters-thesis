@@ -1,5 +1,20 @@
 \chapter{Results}
 
+The continuous optimization yielded devices with near perfect performance.
+However, the optimization never converged.
+After reaching a high value, the algorithm invariably descended to very low
+levels.
+This failure to converge prevented a gradual introduction of penalty terms for
+in-between values, which would have allowed for a smooth transition to the
+level-set design paradigm.
+Nevertheless, the level-set methods were also tried,
+though since the best devices of the continuous optimization were very far from
+binary, manual designs were used as a starting point.
+The level-set optimization fared worse in some regards, better in others.
+The algorithm did converge after a couple hundred iterations.
+However, the final value to which it converged was only 25\% of a perfect
+performance.
+
 \todoblk{%
 	Paragraph summarizing the results: best figure of merit, no of iterations
 	and maybe time for simulations.
@@ -12,3 +27,39 @@
 	A word on errors and why they happen. E.g. the density -> 0 numerically
 	unstable thing
 }
+
+\section{Continuous optimization}
+
+\begin{figure}[htpb]
+	\centering
+	%\includegraphics{}
+	\missingfigure{Optimal design}
+	\caption{}
+	\label{fig:optimal_cont_design}
+\end{figure}
+
+\begin{figure}[htpb]
+	\centering
+	%\includegraphics{}
+	\missingfigure{Convergence plot}
+	\caption{}
+	\label{fig:convergence_plot_cont}
+\end{figure}
+
+\section{Level-set optimization}
+
+\begin{figure}[htpb]
+	\centering
+	%\includegraphics{}
+	\missingfigure{Optimal design}
+	\caption{}
+	\label{fig:optimal_bin_design}
+\end{figure}
+
+\begin{figure}[htpb]
+	\centering
+	%\includegraphics{}
+	\missingfigure{Convergence plot}
+	\caption{}
+	\label{fig:convergence_plot_bin}
+\end{figure}

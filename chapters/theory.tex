@@ -1,5 +1,18 @@
 \chapter{Acoustic waves and waveguides}
 
+In this chapter, the theory of the physics behind my simulations is given.
+\Cref{sec:acoustics} gives a review of solid mechanics in the frequency domain,
+culminating in \cref{eq:gov_eq}, which is the equation that is solved each
+simulation.
+\Cref{sec:bloch} goes on to show that the solutions to this equation with no
+external forces for infinite periodic structures can be obtained from simulating
+a single unit cell of the structure.
+Lastly, the solutions for the specific periodic structure used for the inputs
+and outputs in this thesis is shown with a band diagram as well as the shapes of
+the modes.
+
+\section{The frequency domain acoustic equation}\label{sec:acoustics}
+
 In order to efficiently model the deformation and stresses in a solid material,
 a linear elasticity model is often assumed.
 For small deformations, solid materials obey Hooke's law which in it's full form
@@ -12,7 +25,13 @@ rank four tensor that is a property of the material,
 \begin{equation}\label{eq:strain}
 	\epsilon \coloneqq \frac12(\nabla \vec u + (\nabla \vec u)^\transpose)
 \end{equation}
-is the strain tensor, and $:$ denotes double scalar product.
+is the strain tensor, and $:$ denotes double scalar product%
+\footnote{%
+	See \cref{eq:double_scalar_product_index_not} for what the double scalar
+	product means in this case. It is in general a product that contracts two
+	indices, as opposed to the regular scalar product that contracts only one.
+}%
+.
 This equation is linear in $\vec u$, hence the name \emph{linear} elasticity.
 Using this and Newton's equations of motion, the equation governing the dynamics
 is obtained:
@@ -32,6 +51,7 @@ To combine \cref{eq:stress,eq:strain,eq:lin_el,eq:lin_el2} into one equation tha
 rewrite them in index notation to make calculations clearer:
 \begin{align}
 	\epsilon_{ij} &= \frac12(\partial_i u_j + \partial_j u_i)\\
+	\label{eq:double_scalar_product_index_not}
 	\sigma_{ij} &= C_{ijkl} \epsilon_{kl}\\
 				&= \frac12\left(C_{ijkl} \partial_k u_l + C_{ijkl} \partial_l
 				u_k\right)\\
@@ -47,6 +67,8 @@ which gives
 		   \partial_j \left(C_{ijkl} \partial_l \placeholder\right)\right) u_k
 \end{align}
 where the indices $i,j,k,l$ go over the spatial dimensions $x,y,z$.
+Note that throughout this thesis, the Einstein summation convention is used,
+meaning that repeated indices are summed.
 All of the tensors in the equation above are really tensor fields, i.e.\ they are
 functions of $\vec{x}$.
 Defining the operator
@@ -75,7 +97,7 @@ If furthermore the structure is periodic, then the eigenstates are so called
 If the structure is periodic in the $y$ direction with some periodicity
 $\vec a = a \hat{\vec y}$,
 meaning that $C_{ijkl}(\vec x) = C_{ijkl}(\vec x + n \vec a)$ and $\rho(\vec x)
-= \rho(\vec x + \vec a)$ where $n$ is an
+= \rho(\vec x + n \vec a)$ where $n$ is an
 integer, then this operator commutes with the translation operator
 $\hat T_{\vec a}[\vec u(\vec x)] = \vec u(\vec x + \vec a)$.
 This means that there is a basis of simultaneous eigenstates of both operators.
@@ -87,7 +109,9 @@ that the functions $\vec f(x, z) \exp(i (k_y + m b) y)$ for integer values
 of $m$ all have the same eigenvalue, which means that they form a degenerate
 subspace of eigenfunctions.
 This also means that we can restrict ourselves to the first Brillouin zone:
-$k_y \in [-b/2, b/2]$.
+$k_y \in [-b/2, b/2]$,
+since any $k_y$ outside this interval can be written as $k_y' + mb$ with
+$k_y' \in [-b/2, b/2]$.
 Thus, the simultaneous eigenstate $\vec u_{k_y, \omega^2}$ can be written
 \begin{equation}
 	\vec u_{k_y, \omega^2}(\vec x) = \sum_m \vec f_{m,k_y,\omega^2}(x, z) e^{i (k_y + m b) y}
@@ -276,12 +300,12 @@ An overview of the design process is as follows:
 
 Adjoint simulation is a way to compute the gradient of $\fobj$ with respect to
 the design, which in our case means with respect to the material parameters.
-I will in this section first give a general derivation, followed by the case of
-inverse design in acoustics.
+I will in this section first give a general derivation, following
+reference~\cite{giles_introduction_2000}.
+In \cref{sec:spec_der} I will then derive the specifics when applying this to
+acoustics.
 
 \subsection{General Derivation}\label{sec:general_derivation}
-
-\todocit[inline]{Citation needed for this section}
 
 Let $\fobj$ be a function which depends on some high-dimensional vector $v$.
 The vector $v$ can be calculated by solving the linear equation
@@ -301,21 +325,28 @@ This can be expanded through the chain rule as
 To find the latter factor we do
 \begin{align}
 	\diff{}{p} [Av = b] &\implies \diff{A}{p} v + A \diff{v}{p} = 0\\
-						&\implies \diff{v}{p} = -A^{-1} \diff{A}{p} v
+						&\implies A\diff{v}{p} = -\diff{A}{p}
+						v.\label{eq:direct_dvdp_solve}
 \end{align}
-which gives
-\begin{align}
-	\diff{\fobj}{p} &= - \diff{\fobj}{v} A^{-1} \diff{A}{p}
-	v\label{eq:no_adj_sim}\\
-	&= - \left(A^{-T} \diff{\fobj}{v}^\transpose \right)^\transpose \diff{A}{p} v
-\end{align}
-The first factor of this product is the solution to the \emph{adjoint problem}
-\begin{equation}
-	A^\transpose \tilde v = \diff{\fobj}{v}^\transpose,
+Thus, if we can find a $\tilde v$ such that
+\begin{equation}\label{eq:vtilde}
+	\diff{\fobj}{v} = \tilde v A
 \end{equation}
-hence the name adjoint simulation.
-As it turns out, $A$ is often symmetric (or self-adjoint) which means that this is simply a normal
-simulation but with $\difs{\fobj}{v}^\transpose$ (or $\difs{\fobj}{v}^\dagger$) as the source.
+then
+\begin{align}
+	\diff{\fobj}{p} &=
+	\tilde v A \diff{v}{p}\\
+	&=
+	-\tilde v \diff{A}{p} v.
+\end{align}
+Finding $\tilde v$ from \cref{eq:vtilde} amounts to solving the so called
+\emph{adjoint problem}:
+\begin{equation}
+	A^\dagger \tilde v^\dagger = \diff{\fobj}{v}^\dagger
+\end{equation}
+hence the name adjoint method.
+As it turns out, $A$ is in many cases symmetric (or self-adjoint) which means that this is simply a normal
+simulation but with $\difs{\fobj}{v}^\dagger$ as the source.
 Thus, to obtain the derivative we just need to run an additional
 simulation with a different input.
 
@@ -323,11 +354,10 @@ Now you might be wondering: what have we gained by this?
 Let $n$ be the dimension of $v$, $m$ the dimension of $p$ and $l$ the dimension
 of $b$.
 This means that $A$ is a matrix with dimension $l\times n$ and $\difs{A}{p}$ is
-a three-tensor with dimension $m\times l\times n$.
-Thus calculating $A^{-1} \difs{A}{p}$ directly involves solving $Ax = w$ for a
-three-tensor, and calculating $A^{-1} \left(\difs{A}{p}\,v\right)$
-involves solving for a matrix, both of which are orders of magnitude more
-computationally expensive than solving for a vector.
+a rank three tensor with dimension $m\times l\times n$.
+Thus solving for $\difs{v}{p}$ from equation \cref{eq:direct_dvdp_solve}
+means solving for an $n \times m$ matrix, which much more computationally
+expensive than solving for just a vector of dimension $n$.
 
 \subsection{Specific derivation with acoustics}\label{sec:spec_der}
 
@@ -564,7 +594,7 @@ implies
 Plugging this back into the integral in \cref{eq:an_integral} gives
 \tododec{What? Minus sign???}
 \begin{equation}
-	\rho^0 \tilde u_i(\vec x) u_i(\vec x)
+	\omega^2 \rho^0 \tilde u_i(\vec x) u_i(\vec x)
 	+ 2 C_{ijkl}^0 \tilde u_i(\vec x) \partial_j \partial_l u_k(\vec x)
 \end{equation}
 which is comparatively easily evaluated.

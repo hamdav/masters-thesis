@@ -6,8 +6,25 @@
 
 \thispagestyle{plain}           % Suppress header
 \section*{\abstractname}
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
+Quantum acoustic devices could enable and improve a broad range of functions in
+the realm of quantum computing and sensing as well as classical devices.
+However, such devices are currently often designed by hand, combined with brute force
+parameter sweeps, which severely limits the designs that can be investigated.
+This work presents a method for inverse-design of quantum acoustic devices.
+At the heart of the method lies a fast calculation of the gradient using the
+adjoint method.
+I show that this method is theoretically applicable to acoustic devices as well,
+though implementing it in practice has yielded mixed results.
+As a test I show that using this method to design a defect for maximum transmission
+in a simple periodically patterned phononic waveguide yielded a 92 \% transmission rate.
+REVISE PERCENTAGE WITH NEW DATA.
+As a proof of concept, I also attempted to design an acoustic beamsplitter.
+The algorithm manages to design performant beamsplitters, but it fails to converge.
+Further research is required to find why.
+The two most likely reasons are that the meshing is too coarse,
+or that the function shape order is too low.
+In any case, if these problems can be solved,
+this method looks promising for use in the design of future quantum acoustic devices.
 
 \if\thesisType M
     \textbf{Keywords:}

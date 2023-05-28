@@ -13,20 +13,42 @@ about why we care about quantum acoustics. It feels a little bit forced to do it
 in that order though, talking about quantum acoustics first might be a better
 idea, since that would naturally lead one to introduce the problem of design.}
 
-Conventionally, when designing these components, the designer comes up with a
-design through intuition and parametrizes it with a couple of parameters.
-For example they may believe that a structure with periodically placed circular
-holes should yield a device that performs the desired function.
-% TODO: She? I wrote he first but that will only reinforce the stereotype that
-% the are no women in nano science.
-The parameters that are unknown might then be the distance between neighbouring
-holes and the radius of the holes.
-To find the optimal device they would then systematically test parameter values
-to see which give the best performance in a simulation of the device.
-This brute force method of design limits the possible number of parameters to a
-very small number.
-If there are 10 different values to test for each parameter, even six
-parameters would require 1,000,000 simulations.
+In recent years, the research into quantum devices of different kinds has
+significantly intensified.
+Much of it is in one way or another connected to the
+construction or operation of a quantum computer.
+Though many people are focusing on superconducting circuits, where quanta of
+microwave-frequency photons are manipulated, there has also been
+a growing interest in a different medium for quantum information: sound.
+More precisely, acoustic waves in solid materials.
+Just like how light, or electromagnetic waves, come in quantized packets of energy called
+photons,
+so too does acoustic waves and we call those packets phonons.
+Just recently, in 2019, researchers coupled an acoustic resonator to a transmon
+qubit and were able to directly measure the presence or absence of single
+phonons.
+
+Possible applications of quantum acoustic devices are many.
+One of them is it's use in quantum memory.
+Regular computers have both memory and a processing unit that
+retrieves data from memory, applies operations on it, and then returns it to
+memory.
+Keeping all of the data at the same place where the computing happens would be
+very inefficient.
+The same goes for quantum computers: storing all of the quantum information in
+the same place where the computation happens is probably not a scalable plan.
+Another application of quantum acoustics worth mentioning is
+coherent transduction between microwave and optical photons.
+This would enable communication between physically separated superconducting
+circuit based quantum computers.
+
+One important problem with such devices is that they can be hard to design.
+Currently they are often designed by hand,
+through analytically motivated guesswork combined with brute force parameter
+sweeps.
+However, this severely limits the designs that can be investigated.
+A parameter sweep of just 6 parameters with 10 different values for each
+requires \num{1000000} simulations.
 One can of course use smarter optimization algorithms like bayesian optimization
 \todocit{cite something, check Ida's thesis maybe}
 or particle swarm optimization\cite{zhang_compact_2013}
@@ -41,14 +63,40 @@ with respect to the parameters can be calculated, then we can use gradient based
 optimization methods, which converge much faster, even if the number of
 parameters is very large. With these methods, one hopes to be able to search
 among a much more general class of designs for the optimal one.
-% Su? Isn't it Jelena?
-\citeauthor{spins2019} has developed software that successfully uses inverse design for
-nanophotonic devices \cite{spins2019}.
+This has been successfully applied to nanophotonic devices,
+where a wide variety of components have been designed\cite{spins2019}.
+In some cases, for example the waveguide bend, the inverse-designed device could
+be made much more compact than conventionally designed bends.
+\todocit{Systematic design of photonic crystal structures using topology
+optimization: Lowloss waveguide bends,}
+In other cases, for example the vertically-incident wavelength-demultiplexing
+grating coupler, there are no other known conventional methods of designing the
+device.
+\todocit{pigott thesis}
 
-With this thesis, we explore the possibility of extending this paradigm to
-acoustic devices. In order to do so, we attempt to design a phononic beam
-splitter.
+Quantum acoustic devices have in general been studied much less than photonic
+devices, and the library of known devices is very small.
+With this thesis, I explore the possibility of extending the inverse-design paradigm to
+quantum acoustic devices.
+Since both acoustics and electromagnetics are wave phenomena, there are many
+analogies to be drawn, but there are also important differences.
+I have in this work shown that the adjoint method is applicable to the case of
+acoustics, as well as derived the form of the equations.
+As a proof of concept, I attempt to design a phononic 50/50 beamsplitter.
+The beamsplitter is conceptually one of the simplest devices imaginable,
+and photonic beamsplitters have been studied in great detail for many years.
+However, there is still no standard implementation for phononic beamsplitters.
 
-\todowrt{Say something about the fact that I derived the acoustic case myself}
+\section{Aim and Thesis outline}
 
-\section{Thesis outline}
+The aims of this thesis are:
+\begin{itemize}
+	\item Rederive the equations for inverse design with adjoint simulation in
+		the case of acoustics and confirm that the methods are theoretically
+		applicable.
+	\item Implement the methods and use them to design a phononic beamsplitter.
+\end{itemize}
+
+Chapter 2 presents some of the theory on solid mechanics and acoustic waves needed to
+understand the thesis.
+
