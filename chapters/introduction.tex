@@ -40,7 +40,7 @@ the same place where the computation happens is probably not a scalable plan.
 Another application of quantum acoustics worth mentioning is
 coherent transduction between microwave and optical photons.
 This would enable communication between physically separated superconducting
-circuit based quantum computers.
+circuit based quantum computers.\cite{laer_controlling_2019}
 
 One important problem with such devices is that they can be hard to design.
 Currently they are often designed by hand,
@@ -50,10 +50,9 @@ However, this severely limits the designs that can be investigated.
 A parameter sweep of just 6 parameters with 10 different values for each
 requires \num{1000000} simulations.
 One can of course use smarter optimization algorithms like bayesian optimization
-\todocit{cite something, check Ida's thesis maybe}
-or particle swarm optimization\cite{zhang_compact_2013}
-to decrease the number of simulations needed, but it will still be of the same
-order.
+or particle swarm optimization\cite{schneider2019benchmarking,zhang_compact_2013}
+to decrease the number of simulations needed, but it will still be of the
+approximate order.
 
 A different approach that has been gaining some popularity is
 \emph{inverse design with adjoint simulation}.%
@@ -66,13 +65,11 @@ among a much more general class of designs for the optimal one.
 This has been successfully applied to nanophotonic devices,
 where a wide variety of components have been designed\cite{spins2019}.
 In some cases, for example the waveguide bend, the inverse-designed device could
-be made much more compact than conventionally designed bends.
-\todocit{Systematic design of photonic crystal structures using topology
-optimization: Lowloss waveguide bends,}
+be made much more compact than conventionally designed
+bends.\cite{jensen_systematic_2004}
 In other cases, for example the vertically-incident wavelength-demultiplexing
 grating coupler, there are no other known conventional methods of designing the
-device.
-\todocit{pigott thesis}
+device.\cite{piggott_inverse_2014}
 
 Quantum acoustic devices have in general been studied much less than photonic
 devices, and the library of known devices is very small.
@@ -99,4 +96,13 @@ The aims of this thesis are:
 
 Chapter 2 presents some of the theory on solid mechanics and acoustic waves needed to
 understand the thesis.
+A band diagram over the modes of the waveguide used is also shown there.
+In chapter 3, the inverse design process is presented. First, the general
+adjoint method is showcased, followed by a derivation in the specific case of
+acoustics.
+Then, gradient based optimization algorithms are discussed and the ones used in
+this thesis are presented.
+Chapter 4 describes the specifics of the simulations performed in this work:
+both a specification of the skeleton of the devices, how the input wave was excited,
+and how the designs were parametrized.
 
