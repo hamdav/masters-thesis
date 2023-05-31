@@ -1,4 +1,4 @@
-\chapter{Methods}
+\chapter{Methods}\label{sec:methods}
 
 The aim of this thesis is to use inverse design to find a phononic beamsplitter,
 a task that can be divided into three parts: 
@@ -9,10 +9,6 @@ to the design.
 And lastly, we need a gradient based optimization algorithm to find the optimal
 design.
 All of this will be described in this chapter.
-
-\todowrt{Comment from PB: at some point you should explain what a beam splitter is, explain why it is so popular in photonics and how it could be interesting in phononics. 
-also you should refer to previous work on phononic beam splitters, their plattform and basic differences. 
-Doesnt have to be too detailed but some context is required.}
 
 \section{Design}
 
@@ -54,8 +50,6 @@ modeled, and the other half is extrapolated with a symmetry boundary condition.
 	}
 	\label{fig:bs-design}
 \end{figure}
-\tododec{Are the dx and dy in \cref{fig:bs-design} clear? I thought of having arrows but it
-feels like the image gets quite messy then}
 
 \begin{table}[htpb]
 	\centering
@@ -82,9 +76,6 @@ feels like the image gets quite messy then}
 	\end{tabular}
 \end{table}
 
-\tododec{Write about why we use the mode we use, and why I clamp the bottom. Can
-reference Johan and Pauls paper}
-
 \subsection{Objective function}
 
 The figure of merit of the device is how much of the input excitation gets transmitted
@@ -93,9 +84,9 @@ Furthermore, all of the excitation of the output waveguide should be in the same
 mode that was excited at the input.
 Therefore, a mode overlap integral is used:
 \begin{equation}
-	I = \int_{\Omega_1} \vec{m}^*(\vec{x}) \vec{u}(\vec{x}) \dl{\vec x},
+	I = \int_{\Omega_1} \vec{u}_m^*(\vec{x}) \vec{u}(\vec{x}) \dl{\vec x},
 \end{equation}
-where $\vec m$ is the shape of the mode (\cref{fig:ms1}).
+where $\vec u_m$ is the shape of the mode (\cref{fig:ms1}).
 Because we are not interested in the phase of the output waves,
 the absolute value squared of the overlap integral is taken as the objective
 function,
@@ -113,10 +104,7 @@ The functional derivative of $\fobj$ with respect to $p$ then becomes
 \end{align}
 The derivative of $I$ was derived in \cref{sec:spec_der}.
 
-\tododec{Paragraph about pure part of objective function, enforcing the minimum
-feature size}
-
-\subsection{Excitation}
+\subsection{Excitation}\label{sec:excitation_method}
 
 In order to excite the input waveguide in the desired mode,
 the stress on the boundary of a unit cell was exported from a unit cell
@@ -139,11 +127,10 @@ If $u = a u_m + b u_r$ for some scalars $a$ and $b$, then
 $\int u u^* \dl{\vec x} = a\int u u_m^*\dl{\vec x} + b\int u u_r^*\dl{\vec x}$.
 And assuming $u_r$ is orthogonal to $u_m$,
 $a = \int u u_m^*\dl{\vec x} / \int u_m u_m^*\dl{\vec x}$.
-% the mode overlap integral
-% was then calculated, as well as the integral $\int u_i^* u_i$ from which one can
-% calculate the proportion of energy in the mode compared to the energy in other
-% modes.
-The result was near perfect ($b < 0.01 a$) excitation of only the desired mode.
+The result was near perfect ($b < 0.03 a$) excitation of only the desired mode.
+Since energy is proportional to
+the square of the amplitude, $b < 0.03 a$ means that $>99.9 \%$ of the energy was
+in the correct mode.
 To obtain such high fidelity, it was important that the mesh used for the
 unitcells in the wave guide was the same as the mesh in the unit cell
 simulation.
@@ -180,13 +167,13 @@ shape of the profile of the imaginary component.
 \begin{figure}[htpb]
 	\centering
 	\includegraphics{chapters/methods/pml_profile.pdf}
-	\caption{
+	\caption{%
 		This figure shows the effect of changing different parameters.
 		The green curves shows changing $d$ while keeping the other parameters
 		fixed, and the orange and blue show $s$ and $n$ respectively.
 		Darker colour means higher value, and the last green curve coincides
 		with the first orange, and the last orange with the first blue.
-	}
+	}%
 	\label{fig:pml_profile}
 \end{figure}
 
@@ -244,46 +231,8 @@ reflections. In order to do so, a long waveguide with the same parameters as
 used for the input and output waveguides in the beamsplitter design was created.
 To discern where there was some component of the wave reflected, a fourier
 transform of the displacement field was made.
-\Cref{fig:pml_sweep1} shows the amplitude of the reflection,
-quantified as the peak height relative to the forward propagating wave,
-for different profiles.
-These figures fit well with the three types of reflection mentioned previously.
-To achieve a short yet functional \gls{pml}, $d=5$, $s=0.03$ and $n=20$ was
-chosen.
-
-\begin{figure}[htpb]
-	\centering
-	\begin{subfigure}[]{\textwidth}
-	\begin{center}
-		\includegraphics{chapters/methods/pml_sweep_sd.pdf}
-	\end{center}
-	\caption{
-		On the left is the reflection amplitude plotted as a function of the
-		\gls{pml} strength $s$ for different $d$.
-		For $d > 4$ there are two sources of reflection:
-		for small $s$ reflection at the end of the \gls{pml} occurs,
-		and for large $s$, there is reflection at the beginning.
-		The right figure makes it clear that it is the slope at the beginning of
-		the \gls{pml} that matters, since the point at which it becomes
-		significant is the same for all $d$.
-	}
-	\label{fig:pml_sweep_sd}
-	\end{subfigure}
-	\begin{subfigure}[]{\textwidth}
-	\begin{center}
-		\includegraphics{chapters/methods/pml_sweep_sn.pdf}
-	\end{center}
-	\caption{
-		This is the same as \cref{fig:pml_sweep_sd} but with varying $n$.
-		For $n=15$, the reflections from the beginning do not subside before the
-		reflections from the end become significant, so at least $n=20$ is
-		necessary.
-	}
-	\label{fig:pml_sweep_sn}
-	\end{subfigure}
-	\caption{}
-	\label{fig:pml_sweep1}
-\end{figure}
+The parameters controlling the shape of the $\rho_\text{im}$ curve were then
+varied and an appropriate value was selected.
 
 \subsection{Level-set}\label{sec:level-set}
 
@@ -398,9 +347,96 @@ This recalculation comes with a performance penalty, but since the COMSOL
 simulations are orders of magnitude slower than all other parts of the
 optimization, this is of little concern.
 
-\tododec{Meshing of the level-set designs?}
 
+\section{Optimization}
+
+\tododec{%
+	Describe what optimization algorithm was used, as well as how this
+	changed during the simulation. E.g.\ first 200 iterations ADAM; next ADAM
+	but with sigmoid function application; sigmoid + feature size; and finally level-set.
+}
+For the optimization in the case of continuous optimization, the \gls{adam}
+algorithm with one modification: a global learning rate was employed rather than
+individual learning rates. The reasoning for this was that individual learning
+rates would give jagged contours, which wouldn't be properly resolved by the
+meshing. Practically this modification means that \mintinline{Python}+v+ is a
+scalar and is set to \mintinline{Python}{(1-beta_2)*np.mean(g**2) + beta_2 * v}
+in \cref{lst:adam}.
+The optimization was run and continually monitored, and once convergence was
+visually confirmed through looking at the plot of $\fobj$ by iteration, it was terminated.
+
+The second step of the optimization was to use level-set for the design.
+Just using the final device of the continuous optimization would be a very large
+change, and there is no reason to expect that the resultant level-set design
+would be close to a design with good performance.
+Therefore, once the continuous optimization had converged, a sigmoid function
+was applied to the design field $p$ before $\rho$ and $C_{ijkl}$ was set:
+\begin{align}
+	\rho(\vec x) &= \rho_\text{si} \sigma_r(p(\vec x))
+	&
+	C_{ijkl}(\vec x) &= C_{ijkl}^\text{si} \sigma_r(p(\vec x))
+	&
+	\sigma_r(p) = \frac{1}{1+e^{-(p-0.5)/r}}
+\end{align}
+and then the optimization was restarted.
+This makes the design closer and closer to being binary, which means that the
+step to level-set designs aren't as significant and hopefully the initial design
+for the level-set optimization is not too far from a design with good performance.
 \section{Simulations}
+
+In this section I will detail some of the practicalities of performing the
+simulations.
+The simulation software used was COMSOL version 6.0.
+First, a unit cell with periodic boundary conditions was simulated.
+From that was obtained:\tododec{"was obtained" grammatically correct?}
+\begin{itemize}
+	\item the mode shape, used to calculate the component of the displacement
+		field in the desired mode,
+	\item the stress at the boundary, used as the force exciting the input
+		waveguide,
+	\item the frequency at which to excite in order to obtain a traveling wave
+		with the desired wave vector.
+	\item a mesh to be used when meshing the unit cells in the waveguides.
+\end{itemize}
+
+For the continuous optimization, the basic procedure went
+\begin{enumerate}
+	\item Through the COMSOL-Matlab API, a beamsplitter model was made.
+		The excitation force profile as well as the unit cell mesh and the mode
+		shape was imported from the unit cell simulation.
+	\item A semi-random initial design field $p$ was created. This was done by
+		drawing a sample from a gaussian process, which means that the characteristic
+		length scale that the design varies on could be controlled.
+	\item\label{it:sigmoid} If the sigmoid function was to be used in this optimization, it was
+		applied to the design field, and the result was saved to a different
+		variable, that I call the interpolation field.
+	\item The interpolation field was imported to the COMSOL model, and the
+		material parameters adjusted proportional to said field.
+	\item Both forward and backward simulations were run and the gradient was
+		calculated and exported to Matlab.
+	\item With the gradient, the design field was updated and the algorithm
+		returns to step~\ref{it:sigmoid}.
+\end{enumerate}
+
+For the level-set optimization, the procedure was basically the same, with some
+minor differences:
+\begin{enumerate}
+	\item Through the COMSOL-Matlab API, a beamsplitter model was made.
+		The excitation force profile as well as the unit cell mesh and the mode
+		shape was imported from the unit cell simulation.
+	\item An initial signed distance field $s$ was created.
+		This was done by finding the $p=0.5$ isocontour from the final iteration
+		of the continuous optimization, and initializing a signed distance field
+		from that.
+	\item\label{it:import} The zero isocontour of the signed distance field was imported into
+		the COMSOL model and a geometry was built from that.
+	\item Both forward and backward simulations were run and the gradient was
+		calculated and exported to Matlab.
+	\item With the gradient, the signed distance field was updated and the algorithm
+		returns to step~\ref{it:import}.
+		Note that as part of the update, the signed distance field was
+		reinitialized so that it would not lose its properties.
+\end{enumerate}
 
 \tododec{
 	How much specifics should I have? Should I write about exporting the
@@ -410,10 +446,4 @@ optimization, this is of little concern.
 \todowrt{Mesh export / import and why that is done should probably be mentioned
 since it's quite important to get the excitation in the right mode.}
 
-\section{Optimization}
-
-\tododec{%
-	Describe what optimization algorithm was used, as well as how this
-	changed during the simulation. E.g.\ first 200 iterations ADAM; next ADAM
-	but with sigmoid function application; sigmoid + feature size; and finally level-set.
-}
+\tododec{Meshing of the level-set designs?}

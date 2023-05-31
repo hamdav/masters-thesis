@@ -28,7 +28,7 @@ Just recently, in 2019, researchers coupled an acoustic resonator to a transmon
 qubit and were able to directly measure the presence or absence of single
 phonons.
 
-Possible applications of quantum acoustic devices are many.
+Possible applications of quantum acoustic devices, also called phononic devices, are many.
 One of them is it's use in quantum memory.
 Regular computers have both memory and a processing unit that
 retrieves data from memory, applies operations on it, and then returns it to
@@ -40,9 +40,11 @@ the same place where the computation happens is probably not a scalable plan.
 Another application of quantum acoustics worth mentioning is
 coherent transduction between microwave and optical photons.
 This would enable communication between physically separated superconducting
-circuit based quantum computers.\cite{laer_controlling_2019}
+circuit based quantum computers\cite{laer_controlling_2019}.
+A third possible application is doing quantum information processing purely in
+mechanical elements\cite{qiao2023developing}.
 
-One important problem with such devices is that they can be hard to design.
+One important problem with such quantum acoustic devices is that they can be hard to design.
 Currently they are often designed by hand,
 through analytically motivated guesswork combined with brute force parameter
 sweeps.
@@ -54,24 +56,28 @@ or particle swarm optimization\cite{schneider2019benchmarking,zhang_compact_2013
 to decrease the number of simulations needed, but it will still be of the
 approximate order.
 
-A different approach that has been gaining some popularity is
-\emph{inverse design with adjoint simulation}.%
-\cite{molesky_inverse_2018}
+A different approach that has been gaining some popularity in the field of
+nano-photonics is \emph{inverse design with adjoint
+simulation}~\cite{molesky_inverse_2018}.
 The idea is that if the gradient of the figure of merit
 with respect to the parameters can be calculated, then we can use gradient based
 optimization methods, which converge much faster, even if the number of
 parameters is very large. With these methods, one hopes to be able to search
 among a much more general class of designs for the optimal one.
-This has been successfully applied to nanophotonic devices,
-where a wide variety of components have been designed\cite{spins2019}.
+This has been successfully applied to photonic devices,
+where a wide variety of components have been designed~\cite{spins2019}.
 In some cases, for example the waveguide bend, the inverse-designed device could
 be made much more compact than conventionally designed
-bends.\cite{jensen_systematic_2004}
+bends~\cite{jensen_systematic_2004}.
 In other cases, for example the vertically-incident wavelength-demultiplexing
 grating coupler, there are no other known conventional methods of designing the
-device.\cite{piggott_inverse_2014}
+device~\cite{piggott_inverse_2014}.
+However, to our knowledge, no one has yet applied this method to phononic
+devices, though there is some work on another type of inverse design using
+machine learning models~\cite{han_deep-learning-based_2022}.
 
-Quantum acoustic devices have in general been studied much less than photonic
+
+Phononic devices have in general been studied much less than photonic
 devices, and the library of known devices is very small.
 With this thesis, I explore the possibility of extending the inverse-design paradigm to
 quantum acoustic devices.
@@ -81,8 +87,16 @@ I have in this work shown that the adjoint method is applicable to the case of
 acoustics, as well as derived the form of the equations.
 As a proof of concept, I attempt to design a phononic 50/50 beamsplitter.
 The beamsplitter is conceptually one of the simplest devices imaginable,
-and photonic beamsplitters have been studied in great detail for many years.
-However, there is still no standard implementation for phononic beamsplitters.
+and photonic beamsplitters have been studied in great detail for many years
+and found a multitude of uses in many different experiments.
+However, there is still no standard implementation for phononic beamsplitters,
+though \cite{qiao2023developing} has demonstrated a working beamsplitter for
+surface acoustic waves.
+The two major differences between their design and the one attempted here is
+firstly that they are using surface acoustic waves and I am employing bulk
+acoustic waves confined in a waveguide, and secondly that their beamsplitter
+reflects one of the arms of the beamsplitter back towards the source, whereas I
+have one input arm and two separate outputs.
 
 \section{Aim and Thesis outline}
 

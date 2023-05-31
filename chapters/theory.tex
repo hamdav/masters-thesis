@@ -118,10 +118,7 @@ Thus, the simultaneous eigenstate $\vec u_{k_y, \omega^2}$ can be written
 	= e^{i k_y y} \tilde{\vec f}_{k_y, \omega^2}(\vec x)
 \end{equation}
 where $\tilde{\vec f}_{k_y, \omega^2}$ is a periodic function with periodicity
-$\vec a$ by construction.
-\todocit[inline]{%
-	Cite chapter 3 of Z:/general interest/literature/books/photonic-crystals-book.pdf
-}
+$\vec a$ by construction~\cite{joannopoulos2008photonic}.
 
 The solutions to these eigenvalue equations are often called modes, and each
 mode has both a frequency and a wave vector. This gives rise to a band diagram,
@@ -129,10 +126,14 @@ where the frequency is plotted as a function of the wave vector.
 
 \subsection{Concrete example of phononic crystal}
 
-In this work, a rectangular waveguide patterned with ellipses is used.
+In this work, a rectangular silicon waveguide patterned with elliptic holes is used.
 The structure is clamped at the bottom (meaning that we use a fixed boundary
 condition there, enforcing $\vec u = 0$) while the other sides are free.
 A top down schematic of the unit cell can be seen in \cref{fig:unitcell}.
+The reason for using this specific unit cell is that it has been shown to
+enable good coupling between optical and mechanical modes while still being
+clamped to a substrate, which improves thermal
+properties~\cite{kolvik_clamped_2023}.
 
 \begin{figure}[htpb]
 \begin{center}
@@ -180,8 +181,7 @@ Enforcing a wave vector $\vec k = k\hat{\vec y}$
 thus entails using periodic boundary conditions with a specified phase shift
 over the unit cell.
 These are called \emph{floquet periodic boundary conditions} in COMSOL, which is
-the simulation software used throughout this thesis.\tododec{Don't I introduce
-comsol earlier?}
+the simulation software used throughout this thesis.
 Running simulations with different $k$
 to find the eigenmodes with their
 corresponding frequencies for this structure yields the band diagram in
@@ -268,12 +268,6 @@ $k=0.9 \pi / a$.
 \tododec{At some point write about phonons? I haven't really had to care about
 the fact that excitations are discrete so if I talk about it it'd just for applications...}
 
-\tododec{
-	I originally thought to have something about PMLs here, but now it's been
-	put in the method... It is more of a simulations topic, not really a physics
-	one.
-}
-
 \chapter{Inverse Design}
 
 Inverse design is a design paradigm where the design of a device is guided fully by
@@ -334,6 +328,7 @@ Thus, if we can find a $\tilde v$ such that
 \end{equation}
 then
 \begin{align}
+	\label{eq:dfdp_vtilde}
 	\diff{\fobj}{p} &=
 	\tilde v A \diff{v}{p}\\
 	&=
@@ -426,20 +421,13 @@ $F[f_1, f_2] = \int f_1(x) + f_2(x) \dl x$, one can write
 \end{align}
 where in the latter case, $f_1$ and $f_2$ are specific functions defined
 previously.
-% Almost always the functional derivative will be evaluated
-% at some function $h$.
-% In proper notation this should be written
-% \begin{equation}
-% 	\diff.f.{F[g]}{g} [h]
-% \end{equation}
-% and is simply an ordinary function $\R \to \R$.
-% However, I will use the notation $\difs.f.{F}{h}$ for this, to make the
-% equations clearer. In addition, when evaluating the functional derivative at a point, the
-% argument can be put either after it, or in the denominator:
-% \begin{equation}
-% 	\diff.f.{F[g]}{g} [h](x) = \diff.f.{F}{h}(x) = \diff.f.{F}{h(x)}.
-% \end{equation}
-% Furthermore, 
+Also note that the scalar argument to the functional derivative can be put
+either in the denominator or after, depending on what is more convenient.
+Oftentimes, when the functional being differentiated is a long expression and is
+placed after the fraction, the argument is placed in the denominator:
+\begin{equation}
+	\diff.f.{F}{f}(x) = \diff.f.{F}{f(x)} = \diff.f.*{F}{f(x)}
+\end{equation}
 
 The functional derivative is defined by
 \begin{equation}
@@ -447,10 +435,6 @@ The functional derivative is defined by
 	= \diff*{F[f + \varepsilon \varphi]}{\varepsilon}
 \end{equation}
 where $F$ is a functional of $f$ and $\varphi$ is an arbitrary test function.
-\tododec{I find the definition somewhat difficult to comprehend and really
-	didn't understand it until I sat down and did some examples for myself.
-	Maybe talk about analogies to vector functions\ldots
-}
 I will use two properties of the functional derivative:
 \begin{itemize}
 	\item If $F$ is the functional $F[f](y) = f(y)$,
@@ -555,9 +539,11 @@ To find $\difs.f.{u_i(\bm y)}{p}(\bm x)$ we apply $\difs.f.{}{p(\bm x)}$ to
 	\hat A_{ik} \diff.f.{u_k(\bm y)}{p}(\bm x)
 \end{equation}
 
-\todowrt{rewrite this}
-The point of inverse design is that we now want to find an adjoint field
-$\tilde u_i(\bm y)$
+% The point of inverse design is that we now want to find an adjoint field
+% $\tilde u_i(\bm y)$
+% such that the integral in \cref{eq:dfdp_as_dudp_integral} is
+Just like \cref{eq:dfdp_vtilde},
+we want an adjoint field $\tilde{\vec u}$
 such that the integral in \cref{eq:dfdp_as_dudp_integral} is
 \begin{equation}\label{eq:phi_dudp_integral}
 	\int_\Omega \dl{\bm y}\,
@@ -569,12 +555,22 @@ such that the integral in \cref{eq:dfdp_as_dudp_integral} is
 	\hat A_{ik}
 	\diff.f.{u_k(\bm y)}{p}(\bm x)
 \end{equation}
-which by equation~\cref{eq:dAdpu_Adudp} is equal to
+which by \cref{eq:dAdpu_Adudp} is equal to
 \begin{equation}\label{eq:an_integral}
 	-\int_\Omega \dl{\bm y}\,
 	\tilde u_i(\bm y)
 	\diff.f.{\hat A_{ik}}{p}(\vec x)
 	u_k(\bm y).
+\end{equation}
+The adjoint field is found by solving the adjoint problem:
+\begin{equation}
+	\hat A_{ik}^\dagger \tilde{u}_k = \varphi^*_i,
+\end{equation}
+where the adjoint operator $\hat A_{ik}^\dagger$ is defined through
+\begin{equation}
+	\int_\Omega f(\vec x) \left(\hat A_{ik} g(\vec x)\right) \dl{\vec x}
+	=
+	\int_\Omega \left(\hat A_{ik}^\dagger f(\vec x)\right) g(\vec x) \dl{\vec x}.
 \end{equation}
 To further simplify this expression, the dependence of $\hat A$ on $p$ must be
 specified.
@@ -592,31 +588,11 @@ implies
 	- 2 C_{ijkl}^0\delta(\vec x - \vec y)\partial_j \partial_l.
 \end{align}
 Plugging this back into the integral in \cref{eq:an_integral} gives
-\tododec{What? Minus sign???}
 \begin{equation}
 	\omega^2 \rho^0 \tilde u_i(\vec x) u_i(\vec x)
 	+ 2 C_{ijkl}^0 \tilde u_i(\vec x) \partial_j \partial_l u_k(\vec x)
 \end{equation}
 which is comparatively easily evaluated.
-The only thing remaining is to calculate $\tilde{\vec u}$.
-The way to do this is through an \emph{adjoint simulation}.
-
-When solving these equations in practice, space is discretized and the fields
-are represented by vectors and the operators by matrices.
-Thus \cref{eq:phi_dudp_integral} becomes
-\begin{equation}
-	\varphi_{a}^* \eta_{ab} = \tilde u_{c} A_{ca} \eta_{ab}
-\end{equation}
-where $\difs.f.{\vec u}{p}$ has been labeled $\eta$ for notational simplicity,
-and the indices go over the discretized spatial meshpoints.
-Meaning that to find $\tilde u$ we solve
-\begin{equation}
-	\varphi_a^* = \tilde u_c A_{ca}
-\end{equation}
-or, taking the transpose of both sides
-\begin{equation}
-	A_{ac}^\transpose \tilde u_c = \varphi_a^*.
-\end{equation}
 
 % \todoblk{The infamous integral. Still am not entirely sure about it, but I
 % haven't thought more about it since I abandoned that.}
@@ -627,13 +603,6 @@ or, taking the transpose of both sides
 	2. we are interested in df/dp so that we know how to change p in order to maximize f
 	3. df/dp was calculated in eqn X. 
 	I think this would be instructive for the reader :)
-}
-\tododec{%
-	I think that the last part of this,
-	on the adjoint simulation,
-	is in need of a rewrite. For one thing, before I talk about the
-	discretization, there is no adjoint in the formula for the adjoint field.
-	Or there is no dagger at least\ldots
 }
 
 \section{Optimization Algorithms}
@@ -659,7 +628,8 @@ already tried to decide which points to try next.
 If some point has a bad value, then try somewhere else; if some point has a good
 value, try another close by.
 Examples of algorithms that do this are bayesian optimization, particle swarm
-optimization, \todowrt[noinline]{more examples}
+optimization, and various forms of genetic
+algorithms~\cite{schneider2019benchmarking}.
 However, if the domain of the objective function is very high-dimensional,
 ``close by'' is a very large space.
 For such functions, it is essential to know in which direction the
@@ -734,8 +704,7 @@ The adaptive learning rate also means that the algorithm doesn't get stuck
 prematurely due to the small gradient at the bottom of the valley.
 Admittedly, this objective function is specifically chosen to showcase the
 advantages of \gls{adam}, but it has been shown to outperform \gls{gd} in almost
-all cases.
-\todocit{citations}
+all cases~\cite{kingma2017adam}.
 \begin{figure}[htpb]
 	\centering
 	\includegraphics{chapters/theory/adam_vs_gd_plot.pdf}
@@ -748,6 +717,32 @@ all cases.
 	\label{fig:adam_vs_gd}
 \end{figure}
 
-\todowrt{Pseudocode for the algorithm}
-\tododec{Somewhere I should write about epsilon, and alpha and how I set them,
-but that probably needs to come later, in the method}
+\begin{listing}
+	\begin{minted}{Python}
+def adam(theta_0, get_gradient, alpha,
+		beta_1, beta_2, epsilon, n_iter):
+
+	m = np.zeros(theta_0.shape)
+	v = np.zeros(theta_0.shape)
+	theta = theta_0
+
+	for i in range(n_iter):
+		g = get_gradient(theta)
+		# Update biased first moment estimate
+		m = beta_1 * m + (1-beta_1) * g
+		# Update biased second moment estimate
+		v = beta_2 * v + (1-beta_2) * g**2
+
+		# Compute the bias-corrected estimates
+		m_hat = m / (1 + beta_1**i)
+		v_hat = v / (1 + beta_2**i)
+
+		# Update theta
+		theta -= alpha * m_hat / (np.sqrt(v_hat) + epsilon)
+	\end{minted}
+	\caption{%
+		Pseudocode for the ADAM algorithm. See \cite{kingma2017adam} for a more
+		in depth discussion of the algorithm.
+	}
+	\label{lst:adam}
+\end{listing}
