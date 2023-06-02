@@ -348,7 +348,7 @@ simulations are orders of magnitude slower than all other parts of the
 optimization, this is of little concern.
 
 
-\section{Optimization}
+\section{Optimization}\label{sec:m_optimization}
 
 \tododec{%
 	Describe what optimization algorithm was used, as well as how this
@@ -372,16 +372,17 @@ would be close to a design with good performance.
 Therefore, once the continuous optimization had converged, a sigmoid function
 was applied to the design field $p$ before $\rho$ and $C_{ijkl}$ was set:
 \begin{align}
-	\rho(\vec x) &= \rho_\text{si} \sigma_r(p(\vec x))
+	\rho(\vec x) &= \rho_\text{si} \sigma_r(p(\vec x)),
 	&
-	C_{ijkl}(\vec x) &= C_{ijkl}^\text{si} \sigma_r(p(\vec x))
+	C_{ijkl}(\vec x) &= C_{ijkl}^\text{si} \sigma_r(p(\vec x)),
 	&
-	\sigma_r(p) = \frac{1}{1+e^{-(p-0.5)/r}}
+	\sigma_r(p) = \frac{1}{1+e^{-(p-0.5)/r}}.
 \end{align}
 and then the optimization was restarted.
 This makes the design closer and closer to being binary, which means that the
 step to level-set designs aren't as significant and hopefully the initial design
 for the level-set optimization is not too far from a design with good performance.
+
 \section{Simulations}
 
 In this section I will detail some of the practicalities of performing the

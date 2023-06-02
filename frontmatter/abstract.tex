@@ -10,17 +10,21 @@ Phononic devices could enable and improve a broad range of functions in
 the realm of quantum computing and sensing as well as classical devices.
 However, such devices are currently often designed by hand, combined with brute force
 parameter sweeps, which severely limits the designs that can be investigated.
-This work presents a method for inverse-design of phononic devices.
+This work presents a method for inverse-design of phononic devices,
+allowing a much more general design space to be explored.
 At the heart of the method lies a fast calculation of gradients using the
-adjoint method.
-I show that this method is theoretically applicable to phononic devices.
-As a proof of concept, I also attempt to design a phononic beamsplitter using
-this method.
-The designed devices perform decently, splitting the input power 40/40 with the rest
-being scattered into other modes or getting reflected.
-The final designs depend very much on the initial design,
-though the performance does not.
-This method looks promising for use in the design of future phononic devices.
+adjoint method, whereby the gradient computation costs no more than a single
+normal simulation.
+I show that this method is theoretically applicable to phononic devices,
+and demonstrate that it works in simulation.
+As a proof of concept, I attempt to design a phononic beamsplitter.
+The designed devices perform very well, splitting the input power 50/50 with
+almost nothing being scattered into other modes or reflected.
+However, there are still some complications when transitioning from the first
+part of the optimization, with continuously varying material parameters,
+to the second part where level-set methods were used to make the design binary.
+If these problems can be solved,
+this method looks very promising for use in the design of future phononic devices.
 
 \if\thesisType M
     \textbf{Keywords:}
