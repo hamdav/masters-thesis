@@ -15,14 +15,16 @@
 \addcontentsline{toc}{chapter}{\listtablename}
 \listoftables
 
-\cleardoublepage
+%\cleardoublepage
 %\printglossary[type=\acronymtype]
 \printglossaries
 
 
-% List of todos
-\cleardoublepage
-\listoftodos[List of Todos]
+\if\thesisStatus d
+	% List of todos
+	\cleardoublepage
+	\listoftodos[List of Todos]
+\fi
 
 % The page numbering is changed after this, whence we need a \cleardoublepage.
 % We put it here to be able to exclude it with \includeonly.

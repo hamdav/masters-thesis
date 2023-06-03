@@ -15,12 +15,18 @@ the modes.
 
 In order to efficiently model the deformation and stresses in a solid material,
 a linear elasticity model is often assumed.
-For small deformations, solid materials obey Hooke's law which in it's full form
-looks like
+This means the force is assumed to be linear with displacement, which is a valid
+approximation for small displacements.
+The basic equation is Hooke's law, $F = kx$ for ideal springs, that everybody
+learns in their first mechanics course.
+Since we are dealing with solid elements in three dimensions rather than ideal
+springs in one dimension, the equation changes slightly but the essence is still
+the same.
+Hooke's law in it's full form is
 \begin{equation}\label{eq:stress}
 	\sigma = C : \epsilon
 \end{equation}
-where $\sigma$ is the stress tensor, $C$ the elasticity tensor which is a
+where $\sigma$ is the stress tensor, $C$ the elasticity tensor, a
 rank four tensor that is a property of the material,
 \begin{equation}\label{eq:strain}
 	\epsilon \coloneqq \frac12(\nabla \vec u + (\nabla \vec u)^\transpose)
@@ -32,7 +38,7 @@ is the strain tensor, and $:$ denotes double scalar product%
 	indices, as opposed to the regular scalar product that contracts only one.
 }%
 .
-This equation is linear in $\vec u$, hence the name \emph{linear} elasticity.
+\Cref{eq:stress} is linear in $\vec u$, hence the name \emph{linear} elasticity.
 Using this and Newton's equations of motion, the equation governing the dynamics
 is obtained:
 \begin{equation}\label{eq:lin_el}
@@ -40,9 +46,11 @@ is obtained:
 \end{equation}
 where $\rho$ is the density, $\vec{u}$ is the displacement and $\vec F$ is the
 externally applied force.
-Assuming a time harmonic solution
-$\vec u(\vec x, t) = \vec u(x) e^{i \omega t}$
-with angular frequency $\omega$ this becomes
+If the force is sinusoidally varying with some frequency $\omega$,
+$\vec F(\vec x, t) = \vec F(\vec x) e^{i\omega t}$,
+then $\vec u$ is also expected to be oscillating with that same frequency:
+$\vec u(\vec x, t) = \vec u(x) e^{i \omega t}$.
+Inserting this in \cref{eq:lin_el} gives
 \begin{equation}\label{eq:lin_el2}
 	-\rho \omega^2 \vec{u} = \nabla \cdot \sigma + \vec F.
 \end{equation}
@@ -81,6 +89,8 @@ we can write
 \begin{equation}\label{eq:gov_eq}
 	\hat A_{ik} u_k = F_i
 \end{equation}
+Solving this equation for $\vec u$ thus gives the response of the system to
+periodically varying force $\vec F(\vec x, t) = \vec F(\vec x) e^{i\omega t}$.
 
 \section{Bloch States and Band Diagrams}\label{sec:bloch}
 
@@ -534,9 +544,9 @@ To find $\difs.f.{u_i(\bm y)}{p}(\bm x)$ we apply $\difs.f.{}{p(\bm x)}$ to
 \cref{eq:sim_eq}, which gives us
 \begin{equation}\label{eq:dAdpu_Adudp}
 	0 =
-	\diff.f.{\hat A_{ik}}{p}(\vec x) u_k(\bm y)
+	\diff.f.{\hat A_{ik}(\vec y)}{p}(\vec x) u_k(\bm y)
 	+
-	\hat A_{ik} \diff.f.{u_k(\bm y)}{p}(\bm x)
+	\hat A_{ik}(\vec y) \diff.f.{u_k(\bm y)}{p}(\bm x)
 \end{equation}
 
 % The point of inverse design is that we now want to find an adjoint field
@@ -552,25 +562,25 @@ such that the integral in \cref{eq:dfdp_as_dudp_integral} is
 	=
 	\int_\Omega \dl{\bm y}\,
 	\tilde u_i(\bm y)
-	\hat A_{ik}
+	\hat A_{ik}(\vec y)
 	\diff.f.{u_k(\bm y)}{p}(\bm x)
 \end{equation}
 which by \cref{eq:dAdpu_Adudp} is equal to
 \begin{equation}\label{eq:an_integral}
 	-\int_\Omega \dl{\bm y}\,
 	\tilde u_i(\bm y)
-	\diff.f.{\hat A_{ik}}{p}(\vec x)
+	\diff.f.{\hat A_{ik}(\vec y)}{p}(\vec x)
 	u_k(\bm y).
 \end{equation}
 The adjoint field is found by solving the adjoint problem:
-\begin{equation}
+\begin{equation}\label{eq:adjoint_problem}
 	\hat A_{ik}^\dagger \tilde{u}_k = \varphi^*_i,
 \end{equation}
 where the adjoint operator $\hat A_{ik}^\dagger$ is defined through
 \begin{equation}
-	\int_\Omega f(\vec x) \left(\hat A_{ik} g(\vec x)\right) \dl{\vec x}
+	\int_\Omega f(\vec x) \left(\hat A_{ik}(\vec x) g(\vec x)\right) \dl{\vec x}
 	=
-	\int_\Omega \left(\hat A_{ik}^\dagger f(\vec x)\right) g(\vec x) \dl{\vec x}.
+	\int_\Omega \left(\hat A_{ik}^\dagger (\vec x)f(\vec x)\right) g(\vec x) \dl{\vec x}.
 \end{equation}
 To further simplify this expression, the dependence of $\hat A$ on $p$ must be
 specified.
@@ -584,6 +594,7 @@ implies
 	\diff.f.{\hat A_{ik}(\vec y)}{p}(\vec x)
 	= -\rho^0 \omega^2 \delta_{ik} \delta(\vec x - \vec y)
 	- \partial_j\left(C_{ijkl}^0\delta(\vec x - \vec y) \partial_l \placeholder\right)\\
+	\label{eq:dadp}
 	= -\rho^0 \omega^2 \delta_{ik} \delta(\vec x - \vec y)
 	- 2 C_{ijkl}^0\delta(\vec x - \vec y)\partial_j \partial_l.
 \end{align}
@@ -594,27 +605,27 @@ Plugging this back into the integral in \cref{eq:an_integral} gives
 \end{equation}
 which is comparatively easily evaluated.
 
-% \todoblk{The infamous integral. Still am not entirely sure about it, but I
-% haven't thought more about it since I abandoned that.}
-\tododec{Comment from PB:
-	it might be nice to clarify at which point one can see that the adjoint simulation would result in the solution u tilde
-	you could consider writing a short summary at the end of the chapter where you explain step by step how inverse design is practically done. E.g.: 
-	1. We are solving the system with the regular acoustic field equation for a certain p and receive u
-	2. we are interested in df/dp so that we know how to change p in order to maximize f
-	3. df/dp was calculated in eqn X. 
-	I think this would be instructive for the reader :)
-}
+Summarizing: in order to compute the gradient $\difs.f.{\fobj}{p}(\vec x)$ we first
+run a normal simulation, i.e.\ solve \cref{eq:sim_eq}, to obtain $\vec u$.
+Then we run an adjoint simulation, i.e.\ we solve \cref{eq:adjoint_problem}, to
+obtain $\tilde{\vec u}$.
+Finally, we calculate $\difs.f.{A(\vec y)}{p}(\vec x)$, which is given in
+\cref{eq:dadp} in the case of a linear material parameter dependence on $p$,
+and obtain the gradient through \cref{eq:an_integral}.
+This gradient tells us \emph{at every point in the design} if $p$ should be
+increased or decreased in order to increase $\fobj$.
+The next section will describe more precisely how this is used to optimize the
+design.
 
 \section{Optimization Algorithms}
 
-\todowrt{rephrase first sentence}
-In the last section I painstakingly derived how one can obtain the gradient,
-and in this section I will attempt to justify that by describing how one can use
-the gradient.
-I will begin by describing the advantages of gradient based optimization
+In this section I motivate why the gradient is so useful and how it will be
+used in my algorithm.
+I begin by describing the advantages of gradient based optimization
 algorithms over those that don't use the gradient.
-Following that I describe the algorithm that I used, as well as some of it's
-predecessors.
+Following that I describe gradient descent, the most basic gradient based
+optimization method, as well as \gls{adam}, which is the algorithm that I have
+used.
 
 An optimization algorithm is an algorithm for finding the optimum of a function.
 The function is often called the \emph{objective function} or the \emph{cost
@@ -661,7 +672,14 @@ improvement.
 \subsection{Gradient Descent}
 
 The simplest gradient based optimization algorithm is called \emph{gradient
-descent}.
+descent}.\footnote{%
+	The reason for calling it gradient descent, instead of gradient ascent is
+	simply a convention. Any maximization problem can be made into a
+	minimization problem by multiplying that objective function by $-1$,
+	so which formulation one chooses is arbitrary. However, the convention of
+	talking about gradient descent is so strong that I will stick to that
+	terminology, even though I am solving a maximization problem.%
+}
 Like all of the algorithms I will describe it is an iterative algorithm,
 meaning that it generates a sequence of points that converges to an optimum,
 and the next point in the sequence is derived from the previous ones.
@@ -677,9 +695,9 @@ this method.
 If a too high value is chosen, then the steps taken will be too large and the
 optimium might be missed entirely.
 A too low value results in too small steps which will yield a slow convergence.
-Almost all gradient descent implementations use a so called learning schedule,
+Most gradient descent implementations nowadays use a so called learning schedule,
 which means that $\eta$ is not constant during the optimization.
-This introduces the additional problem of how to choose how fast and between
+This introduces the additional problem of choosing how fast and between
 which values it should change.
 
 \subsection{Adaptive Moment Estimation (ADAM)}
@@ -717,14 +735,26 @@ all cases~\cite{kingma2017adam}.
 	\label{fig:adam_vs_gd}
 \end{figure}
 
+\Cref{lst:adam} shows a pseudocode implementation of the \gls{adam} algorithm,
+which has four important hyperparameters.
+The first is $\alpha$ which controls the order of the step size.
+The next $p$ will never be much further away than $\alpha$ in any dimension.
+$\beta_1$ and $\beta_2$ control how quickly the momentum decays.
+The algorithm basically keeps an exponentially decaying average of the previous
+gradients and previous squared gradients.
+The $\beta$:s set the decay rate for these averages.
+Finally, there is $\epsilon$, which serves to make the algorithm more stable.
+If the average magnitude of the gradient becomes much smaller than $\epsilon$,
+the algorithm will slow down.
+
 \begin{listing}
 	\begin{minted}{Python}
-def adam(theta_0, get_gradient, alpha,
+def adam(p_0, get_gradient, alpha,
 		beta_1, beta_2, epsilon, n_iter):
 
 	m = np.zeros(theta_0.shape)
 	v = np.zeros(theta_0.shape)
-	theta = theta_0
+	p = p_0
 
 	for i in range(n_iter):
 		g = get_gradient(theta)
@@ -737,8 +767,8 @@ def adam(theta_0, get_gradient, alpha,
 		m_hat = m / (1 + beta_1**i)
 		v_hat = v / (1 + beta_2**i)
 
-		# Update theta
-		theta -= alpha * m_hat / (np.sqrt(v_hat) + epsilon)
+		# Update p
+		p += alpha * m_hat / (np.sqrt(v_hat) + epsilon)
 	\end{minted}
 	\caption{%
 		Pseudocode for the ADAM algorithm. See \cite{kingma2017adam} for a more

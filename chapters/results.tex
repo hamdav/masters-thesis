@@ -8,16 +8,21 @@ excites the right mode.
 After that, I present the results of the continuous optimization followed by the
 results for the level-set optimization in \cref{sec:res_cont,sec:res_bin}
 respectively.
-The continuous optimization efforts was plagued by a persistent failure to
-converge, and thus a large part of my work was to try to solve this.
-This failure to converge prevented a gradual shift toward binary devices,
-which would have allowed for a smoother transition to the
-level-set design paradigm.
-Nevertheless, the level-set methods were also tried,
-but with either manually set starting points or suboptimal designs seen in the
-continuous optimization.
-Finally, the continuous optimization did converge and yielded devices which
-transmitted approximately 95 \% of the incoming waves.
+In summary, the continuous optimization yielded near perfect devices with full
+transmission and very little reflection.
+The level-set optimizations never reached quite as good performance, with around
+10\% of the power getting reflected.
+\todoblk{BUT IT IS STILL INCREASING!}
+% The continuous optimization efforts was plagued by a persistent failure to
+% converge, and thus a large part of my work was to try to solve this.
+% This failure to converge prevented a gradual shift toward binary devices,
+% which would have allowed for a smoother transition to the
+% level-set design paradigm.
+% Nevertheless, the level-set methods were also tried,
+% but with either manually set starting points or suboptimal designs seen in the
+% continuous optimization.
+% Finally, the continuous optimization did converge and yielded devices which
+% transmitted approximately 95 \% of the incoming waves.
 
 \section{Long waveguide simulations}\label{sec:long_waveguide}
 
@@ -32,51 +37,11 @@ The waveguide used for these is pictured in \cref{fig:long_waveguide}
 	\includegraphics[width=\textwidth]{chapters/results/long_waveguide_geom.png}
 	% \includegraphics[width=\textwidth]{chapters/results/long_waveguide_v_d=5_s=0.02.png}
 	% \includegraphics[width=\textwidth]{chapters/results/long_waveguide_selections.png}
-	\caption{Thelonwaveide}
+	\caption{%
+		This figure shows the long waveguide used for the \gls{pml} simulations
+		as wells as validating the excitation method.
+	}%
 	\label{fig:long_waveguide}
-\end{figure}
-
-\subsection{PML investigation}
-
-\Cref{fig:pml_sweep1} shows the amplitude of the reflection,
-quantified as the peak height relative to the forward propagating wave,
-for different profiles.
-These figures fit well with the three types of reflection mentioned previously.
-To achieve a short yet functional \gls{pml}, $d=5$, $s=0.03$ and $n=20$ was
-chosen.
-
-\begin{figure}[htpb]
-	\centering
-	\begin{subfigure}[]{\textwidth}
-	\begin{center}
-		\includegraphics{chapters/methods/pml_sweep_sd.pdf}
-	\end{center}
-	\caption{
-		On the left is the reflection amplitude plotted as a function of the
-		\gls{pml} strength $s$ for different $d$.
-		For $d > 4$ there are two sources of reflection:
-		for small $s$ reflection at the end of the \gls{pml} occurs,
-		and for large $s$, there is reflection at the beginning.
-		The right figure makes it clear that it is the slope at the beginning of
-		the \gls{pml} that matters, since the point at which it becomes
-		significant is the same for all $d$.
-	}
-	\label{fig:pml_sweep_sd}
-	\end{subfigure}
-	\begin{subfigure}[]{\textwidth}
-	\begin{center}
-		\includegraphics{chapters/methods/pml_sweep_sn.pdf}
-	\end{center}
-	\caption{
-		This is the same as \cref{fig:pml_sweep_sd} but with varying $n$.
-		For $n=15$, the reflections from the beginning do not subside before the
-		reflections from the end become significant, so at least $n=20$ is
-		necessary.
-	}
-	\label{fig:pml_sweep_sn}
-	\end{subfigure}
-	\caption{}
-	\label{fig:pml_sweep1}
 \end{figure}
 
 \subsection{Excitation}
@@ -110,6 +75,65 @@ desired mode is excited.
 	\label{fig:v_ft}
 \end{figure}
 
+\subsection{PML investigation}
+
+\Cref{fig:pml_sweep1} shows the amplitude of the reflection,
+quantified as the peak height relative to the forward propagating wave,
+for different profiles.
+These figures fit well with the three types of reflection mentioned previously.
+The leftmost plot in \cref{fig:pml_sweep_sd} shows that all of the different
+shapes yield reflections when the derivative at the beginning of the \gls{pml}
+is around \num{3e-4}, which indicates that the reflections are dominated by
+effects from the sudden start of the \gls{pml}.
+On the other end, the increase in reflection amplitude come from
+waves reaching the end of the \gls{pml} and getting reflected there.
+The third type of reflection seems to only be noticeable for $d \leq 4$.
+It is also worth noticing that with lower $d$, the plateau where neither of the
+first two kinds of reflections are significant is broader.
+Since $d=5$ was the lowest $d$ to show no signs of the third type of reflection,
+that was chosen for the shape of the \gls{pml} profile.
+After that, we investigated how short we could make the it while retaining
+low reflections. \Cref{fig:pml_sweep_sn} shows $s$ sweeps for different $n$.
+To achieve a short yet functional \gls{pml}, $d=5$, $s=0.03$ and $n=20$ was
+chosen.
+For $n=15$, reflections from the beginning start to become significant before
+the reflections from the end have waned.
+
+\begin{figure}[htpb]
+	\centering
+	\begin{subfigure}[]{0.99\textwidth}
+	\begin{center}
+		\includegraphics{chapters/results/pml_sweep_sd.pdf}
+	\end{center}
+	\caption{
+		On the left is the reflection amplitude plotted as a function of the
+		\gls{pml} strength $s$ for different $d$.
+		For $d > 4$ there are two sources of reflection:
+		for small $s$ reflection at the end of the \gls{pml} occurs,
+		and for large $s$, there is reflection at the beginning.
+		The right figure makes it clear that it is the slope at the beginning of
+		the \gls{pml} that matters, since the point at which it becomes
+		significant is the same for all $d$.
+	}
+	\label{fig:pml_sweep_sd}
+	\end{subfigure}%
+
+	\begin{subfigure}[]{0.99\textwidth}
+	\begin{center}
+		\includegraphics{chapters/results/pml_sweep_sn.pdf}
+	\end{center}
+	\caption{
+		This is the same as \cref{fig:pml_sweep_sd} but with varying $n$.
+		For $n=15$, the reflections from the beginning do not subside before the
+		reflections from the end become significant, so at least $n=20$ is
+		necessary.
+	}
+	\label{fig:pml_sweep_sn}
+	\end{subfigure}
+	\caption{}
+	\label{fig:pml_sweep1}
+\end{figure}
+
 \section{Continuous optimization}\label{sec:res_cont}
 
 There was a lot of problems with the optimization of the continuous design.
@@ -125,7 +149,7 @@ mode.
 I tested a few different theories on why the algorithm might fail to converge.
 The first one was that perhaps the simulations were unstable for the case when
 $p\approx 0$. To test this I interpolated between $\rho^\text{si}$ and
-\qty{1000}{\kg\per\m} instead. However, convergence was still not reached.
+\qty{1000}{\kg\per\m^3} instead. However, convergence was still not reached.
 The second was that maybe the meshing was too coarse to resolve the design
 field properly. However, this was not the case as increasing the meshing did not
 change the objective function more than a percent or so, so this wasn't the
@@ -153,7 +177,7 @@ expensive.
 		given eight points on the function. Even though the spline approximates
 		the sine function very well, the second derivative approximation is
 		terrible.
-	}
+	}%
 	\label{fig:quad_spline_sine}
 \end{figure}
 
@@ -173,17 +197,26 @@ three stages.
 \begin{figure}[htpb]
 	\centering
 	\includegraphics{chapters/results/conv_22.pdf}
-	\caption{
-		Non-converging optimization example.
-	}
+	\caption{%
+		Non-converging optimization example. The blue curve shows the
+		transmitted power in one of the output arms as a function of iteration,
+		while the yellow shows the power reflected back out through the input.
+		The cases where two times the blue plus the yellow isn't 1.0 is
+		explained by power exiting through a different mode.
+	}%
 	\label{fig:bad_cont_conv}
 \end{figure}
 
 \begin{figure}[htpb]
 	\centering
 	\includegraphics{chapters/results/conv_31.pdf}
-	\missingfigure{Convergence plot}
-	\caption{Similar}
+	\caption{
+		Similar to \cref{fig:bad_cont_conv},
+		but at iteration 467 and 615, a sigmoid function was abruptly applied
+		to the design field, which causes the dips.
+		The final device was a near perfect beamsplitter, with less than 1 \% of
+		the power begin reflected, and nothing being scattered into other modes.
+	}%
 	\label{fig:cont_conv1}
 \end{figure}
 
@@ -191,8 +224,9 @@ three stages.
 	\centering
 	\includegraphics{chapters/results/interpolation_fields_468615830.pdf}
 	\caption{This figure shows the interpolation field at iteration 467, 615,
-		and 830%
-	}
+		and 830. It is clearly seen that the device becomes closer and closer to
+		being binary.
+	}%
 	\label{fig:cont_design1}
 \end{figure}
 
@@ -203,21 +237,26 @@ three stages.
 % have liked.
 The initial contour of the device was taken as the 0.5-isocontour of the final
 design field from the continuous optimization.
-\Cref{fig:bin_conv} shows the convergence plot for the level-set optimization.
-
+\Cref{fig:bin_conv} shows the convergence plot for the level-set optimization,
+and \cref{fig:bin_design} shows the final device.
+Something to note is that the device does seem to be rather sensitive;
+a shift of only a nanometre can greatly change the device performance.
+Therefore the $\alpha$ chosen for the algorithm had to be set as low as
+\qty{0.5}{\nm}.
 
 \begin{figure}[htpb]
 	\centering
-	%\includegraphics{}
-	\missingfigure{Optimal design}
-	\caption{}
-	\label{fig:bin_design}
+	\includegraphics{chapters/results/conv_tmp.pdf}
+	\caption{Still running simulation :D}%
+	\label{fig:bin_conv}
 \end{figure}
 
 \begin{figure}[htpb]
 	\centering
-	%\includegraphics{}
-	\missingfigure{Convergence plot}
-	\caption{}
-	\label{fig:bin_conv}
+	\includegraphics{chapters/results/bin_design_tmp_254.pdf}
+	\caption{%
+		The current best design from the level-set simulations (but they are
+		still running:)
+	}%
+	\label{fig:bin_design}
 \end{figure}

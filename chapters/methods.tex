@@ -84,7 +84,7 @@ Furthermore, all of the excitation of the output waveguide should be in the same
 mode that was excited at the input.
 Therefore, a mode overlap integral is used:
 \begin{equation}
-	I = \int_{\Omega_1} \vec{u}_m^*(\vec{x}) \vec{u}(\vec{x}) \dl{\vec x},
+	I = \int_{\Omega_1} \vec{u}(\vec{x}) \cdot \vec{u}_m^*(\vec{x}) \dl{\vec x},
 \end{equation}
 where $\vec u_m$ is the shape of the mode (\cref{fig:ms1}).
 Because we are not interested in the phase of the output waves,
@@ -93,7 +93,7 @@ function,
 \begin{equation}
 	\fobj = \abs{I}^2 = I I^*.
 \end{equation}
-This will be maximized when the excitation of the mode $m$ in the output
+This will be maximal when the excitation of the mode $m$ in the output
 waveguide is maximized, regardless of which phase it has.
 
 The functional derivative of $\fobj$ with respect to $p$ then becomes
@@ -120,13 +120,16 @@ After applying the excitation and running the simulation,
 the proportion of the excitation that ended up in the desired mode was
 calculated.
 This was done by first calculating the mode overlap integral
-$\int u u_m^* \dl{\vec x}$
+$\int \vec u \vec u_m^* \dl{\vec x}$
 and comparing that to the norm of the displacement field
-$\int u u^* \dl{\vec x}$.
-If $u = a u_m + b u_r$ for some scalars $a$ and $b$, then
-$\int u u^* \dl{\vec x} = a\int u u_m^*\dl{\vec x} + b\int u u_r^*\dl{\vec x}$.
-And assuming $u_r$ is orthogonal to $u_m$,
-$a = \int u u_m^*\dl{\vec x} / \int u_m u_m^*\dl{\vec x}$.
+$\int \vec u \vec u^* \dl{\vec x}$.
+If we write $\vec u$ as $\vec u = a \vec u_m + b \vec u_r$ for some scalars $a$ and $b$,
+then
+$\int \vec u \vec u^* \dl{\vec x} = a\int \vec u \vec u_m^*\dl{\vec x} + b\int
+\vec u \vec u_r^*\dl{\vec x}$.
+And assuming $\vec u_r$ is orthogonal to $\vec u_m$,
+$a = \int \vec u \vec u_m^*\dl{\vec x} / \int \vec u_m \vec u_m^*\dl{\vec x}$,
+which enables us to calculate $b$ as well.
 The result was near perfect ($b < 0.03 a$) excitation of only the desired mode.
 Since energy is proportional to
 the square of the amplitude, $b < 0.03 a$ means that $>99.9 \%$ of the energy was
@@ -139,20 +142,21 @@ fine meshes carries a prohibitively large computational cost.
 
 \subsection{Perfectly Matched Layers (PMLs)}
 
-\tododec{Humour?}
 Ideally, the input and outputs are infinite waveguides.
-Unfortunately, it has been discovered that infinity is big; simulating
-infinite waveguides would take infinite time, and the author would like to be done by
-June.
+Unfortunately, simulating infinite waveguides would take infinite time.
 Instead, \glspl{pml} are placed at the caps of the input and output waveguides.
 The purpose of the \gls{pml} is to absorb any incoming waves without reflection,
 which would make it act as if there was an infinite waveguide on the other side
 into which the waves propagate indefinitely.
 The way to accomplish this is to add an imaginary component to the density of
 the material.
-This needs to be done smoothly, otherwise the abrupt change in material
+\todowrt{why does it work}
+The imaginary part must be introduced smoothly,
+otherwise the abrupt change in material
 parameters would induce reflections anyway.
-Therefore, the imaginary part is taken to be exponentially increasing.
+Therefore, the imaginary part is taken to be exponentially increasing,
+starting at $y_0$ and continuing until the end of the waveguide, $n$ unit cells
+later.
 Furthermore, the curve is shifted vertically such that it is 0 at $y = y_0-n$,
 and rescaled so that it is $\rho_\text{si} s$ at $y=y_0$.
 \begin{equation}
@@ -161,8 +165,6 @@ and rescaled so that it is $\rho_\text{si} s$ at $y=y_0$.
 \end{equation}
 \Cref{fig:pml_profile} shows the effect of changing these parameters on the
 shape of the profile of the imaginary component.
-
-\todowrt{Explain why adding an imag part absorbs waves}
 
 \begin{figure}[htpb]
 	\centering
@@ -215,14 +217,14 @@ reflections occur.
 		\draw[NavyBlue] (5.7, 0.8) pic {reflection};
 		\draw[Orange] (7.9, 0.9) pic {reflection};
 	\end{tikzpicture}
-	\caption{
+	\caption{%
 		For the green curve, the initial sudden increase of the imaginary
 		component of the density at the beginning of the \gls{pml} causes reflections.
 		For the blue curve, the beginning of the \gls{pml} is smooth but there
 		is an increase partway through sharp enough to cause reflections.
 		For the orange curve, the \gls{pml} never becomes strong enough to
 		completely dampen the waves, and they get reflected at the end.
-	}
+	}%
 	\label{fig:pml_reflections}
 \end{figure}
 
@@ -279,7 +281,7 @@ Both of these issues are automatically handled with the level-set method.
 		closer together. Now there are multiple points that need to be removed,
 		marked in red, and the connectivity of the points that remain must be
 		changed such that the two boundaries are merged.
-	}
+	}%
 	\label{fig:direct_troubles}
 \end{figure}
 \begin{figure}[htpb]
@@ -288,7 +290,7 @@ Both of these issues are automatically handled with the level-set method.
 	\caption{%
 		Example of three signed distance functions for three different
 		boundaries.
-	}
+	}%
 	\label{fig:signed_dist_example}
 \end{figure}
 
@@ -302,7 +304,7 @@ See \cref{fig:signed_dist_example} for an example.
 It has the advantage that if one wishes to locally shift the boundary some
 length $s$ in the normal direction, then simply add $s$ to the function there.
 \Cref{fig:add_shift} shows this effect in one dimension.
-\todowrt{
+\todowrt{%
 	Create another figure that shows it in two dimensions.
 	I'm thinking a circular boundary, and adding $s$ in the left half and
 	subtracting $s$ in the right half. Alternatively adding $s\cdot x$ (unit circle
@@ -326,7 +328,8 @@ length $s$ in the normal direction, then simply add $s$ to the function there.
 			node[below] {$s$}
 			(1.1,0);
 	\end{tikzpicture}
-	\caption{Adding $s$ to the signed distance function shifts boundary by $s$.}
+	\caption{Adding $s$ to the signed distance function shifts boundary by
+	$s$.}%
 	\label{fig:add_shift}
 \end{figure}
 
@@ -335,7 +338,7 @@ by simply adding the gradient field to the signed distance field.
 However, there are some pitfalls that must be avoided.
 Firstly, the gradient needs to be rescaled so that the boundary moves
 an appropriate distance.
-This has been done such that the boundary moves maximally \qty{5}{\nm}.
+This has been done such that the boundary moves maximally \qty{1}{\nm}.
 \todoblk[noinline]{check this number before finalizing, I change it every now and then}
 Secondly, since the gradient is occasionally sharply peaked somewhere which may
 not lie near the boundary, only the gradient near the boundary is actually added
@@ -350,11 +353,6 @@ optimization, this is of little concern.
 
 \section{Optimization}\label{sec:m_optimization}
 
-\tododec{%
-	Describe what optimization algorithm was used, as well as how this
-	changed during the simulation. E.g.\ first 200 iterations ADAM; next ADAM
-	but with sigmoid function application; sigmoid + feature size; and finally level-set.
-}
 For the optimization in the case of continuous optimization, the \gls{adam}
 algorithm with one modification: a global learning rate was employed rather than
 individual learning rates. The reasoning for this was that individual learning
@@ -364,13 +362,20 @@ scalar and is set to \mintinline{Python}{(1-beta_2)*np.mean(g**2) + beta_2 * v}
 in \cref{lst:adam}.
 The optimization was run and continually monitored, and once convergence was
 visually confirmed through looking at the plot of $\fobj$ by iteration, it was terminated.
+A few different values for the $\beta$:s were tried, and in the end
+$\beta_1=0.9$ and $\beta_2 = 0.95$ were chose. However, it seemed that the
+evolution were not too sensitive to this choice.
+$\alpha$ was taken to be \num{2e-3}, because that is large enough that $p$
+could change from 0 to 1 in 500 iterations, which was deemed an appropriate
+timescale since that took about one day.
 
-The second step of the optimization was to use level-set for the design.
-Just using the final device of the continuous optimization would be a very large
-change, and there is no reason to expect that the resultant level-set design
+The final step of the optimization was to use level-set for the design.
+However, just using the final device of the continuous optimization for the
+initial point of the level-set optimization would be a very large
+change, and there is no reason to expect that the resulting level-set design
 would be close to a design with good performance.
 Therefore, once the continuous optimization had converged, a sigmoid function
-was applied to the design field $p$ before $\rho$ and $C_{ijkl}$ was set:
+was applied to the design field $p$ before $\rho$ and $C_{ijkl}$ were set:
 \begin{align}
 	\rho(\vec x) &= \rho_\text{si} \sigma_r(p(\vec x)),
 	&
@@ -383,13 +388,17 @@ This makes the design closer and closer to being binary, which means that the
 step to level-set designs aren't as significant and hopefully the initial design
 for the level-set optimization is not too far from a design with good performance.
 
+Once that had been repeated a couple of times, the level-set design was
+initialized using the final design of the continuous optimization, and the
+level-set optimization was run.
+
 \section{Simulations}
 
 In this section I will detail some of the practicalities of performing the
 simulations.
 The simulation software used was COMSOL version 6.0.
 First, a unit cell with periodic boundary conditions was simulated.
-From that was obtained:\tododec{"was obtained" grammatically correct?}
+From that I obtain:
 \begin{itemize}
 	\item the mode shape, used to calculate the component of the displacement
 		field in the desired mode,
@@ -438,13 +447,3 @@ minor differences:
 		Note that as part of the update, the signed distance field was
 		reinitialized so that it would not lose its properties.
 \end{enumerate}
-
-\tododec{
-	How much specifics should I have? Should I write about exporting the
-	gradient to a file and how I calculate the 2D gradient in my matlab scripts
-	from that
-}
-\todowrt{Mesh export / import and why that is done should probably be mentioned
-since it's quite important to get the excitation in the right mode.}
-
-\tododec{Meshing of the level-set designs?}

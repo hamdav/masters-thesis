@@ -1,7 +1,10 @@
-\def \a{0.5}
+\def \a{0.3}
 \def \w{1.0}
-\def \hx{0.13}
-\def \hy{0.3}
+\def \hx{0.08}
+\def \hy{0.25}
+\def \designx{6.0}
+\def \designy{4.0}
+\def \outputh{1.5}
 
 \tikzset{
 	unitcell/.pic={
@@ -10,10 +13,7 @@
 	}
 }
 
-\begin{tikzpicture}[scale=0.7]
-	\def \designx{4.0}
-	\def \designy{4.0}
-	\def \outputh{1.0}
+\begin{tikzpicture}[scale=1.0]
 	\def \nunitcells{16}
 	\def \nnonpmls{10}
 
@@ -44,7 +44,7 @@
 
 	% Design area
 	\draw (0, -\designx / 2) rectangle (\designy, \designx / 2);
-	\node at (\designy / 2, 1) {Design Area};
+	\node at (\designy / 2, \designx / 4) {Design Area};
 	\node[left] at (\designy, 0) {$d_x$};
 	\node[above] at (\designy/2, -\designx/2) {$d_y$};
 
