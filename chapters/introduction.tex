@@ -3,15 +3,8 @@
 \todoblk{References before the dot or after? And space or no space?}
 \todoblk{ctrl+F for all the times when I write I / we and choose one of them...}
 \tododec{Write about why I am using \emph{silicon}}
-
-\tododec{Introduction to quantum acoustics\ldots I need to read more
-literature I think}
-\tododec{Restructure a little... I would like to talk about inverse design first
-and quantum acoustics second. Talk about how inverse design is a concept that
-has been applied to nanophotonics but not to quantum acoustics yet. Then talk
-about why we care about quantum acoustics. It feels a little bit forced to do it
-in that order though, talking about quantum acoustics first might be a better
-idea, since that would naturally lead one to introduce the problem of design.}
+\todowrt{Captialization in section titles}
+\todowrt{rewrite title}
 
 In recent years, the research into quantum devices of different kinds has
 significantly intensified.
@@ -26,7 +19,11 @@ photons,
 so too does acoustic waves and we call those packets phonons.
 Just recently, in 2019, researchers coupled an acoustic resonator to a transmon
 qubit and were able to directly measure the presence or absence of single
-phonons.
+phonons~\cite{arrangoiz-arriola_resolving_2019}.
+\todocit[inline]{From PB: some more citations are appropriate here. e.g. when you say
+	that the research has intensified. maybe find some review article? RVL has
+	one thats called "controlling of phonons at the wavelength scale" i think.
+maybe you can find some valuable refs there}
 
 Possible applications of quantum acoustic devices, also called phononic devices, are many.
 One of them is quantum memory~\cite{sete_high-efficiency_2015}.
@@ -39,6 +36,8 @@ The same goes for quantum computers: storing all of the quantum information in
 the same place where the computation happens is not scalable.
 Instead, a quantum memory could be used to store information while it is not
 directly needed for the computation.
+The reason for using mechanical resonators is that they have been shown to
+achieve very long lifetimes~\cite{maccabe_phononic_2020}.
 Another application of quantum acoustics worth mentioning is
 coherent transduction between microwave and optical photons.
 This would enable communication between physically separated superconducting
@@ -48,9 +47,11 @@ mechanical elements~\cite{qiao2023developing}.
 
 One important problem with such quantum acoustic devices is that they can be hard to design.
 Currently they are often designed by hand,
-through analytically motivated guesswork combined with brute force parameter
-sweeps.
-However, this severely limits the designs that can be investigated.
+through analytical derivations or analytically motivated guesswork,
+combined with brute force parameter sweeps.
+However, this severely limits the designs that can be investigated:
+sometimes analytical derivations are impossible, and brute force parameter
+sweeps quickly become computationally intractable.
 A parameter sweep of just 6 parameters with 10 different values for each
 requires \num{1000000} simulations.
 One can of course use smarter optimization algorithms like bayesian optimization
@@ -95,10 +96,13 @@ However, there is still no standard implementation for phononic beamsplitters,
 though \cite{qiao2023developing} has demonstrated a working beamsplitter for
 surface acoustic waves.
 The two major differences between their design and the one attempted here is
-firstly that they are using surface acoustic waves and I am employing bulk
+firstly that they are using surface acoustic waves while I am employing bulk
 acoustic waves confined in a waveguide, and secondly that their beamsplitter
 reflects one of the arms of the beamsplitter back towards the source, whereas I
 have one input arm and two separate outputs.
+\tododec{PB:is what you are using here really bulk acoustic waves? 
+maybe also mention that you are looking at GHz silicon phonons since they are
+interesting in quantum acoustics.}
 
 \section{Aim and Thesis outline}
 
@@ -121,4 +125,4 @@ this thesis are presented.
 Chapter 4 describes the specifics of the simulations performed in this work:
 both a specification of the skeleton of the devices, how the input wave was excited,
 and how the designs were parametrized.
-
+\todowrt{finish outline}
