@@ -1,10 +1,4 @@
 \chapter{Introduction}
-\todoblk{After thesis is done, check that I've used cref and not ref}
-\todoblk{References before the dot or after? And space or no space?}
-\todoblk{ctrl+F for all the times when I write I / we and choose one of them...}
-\tododec{Write about why I am using \emph{silicon}}
-\todowrt{Captialization in section titles}
-\todowrt{rewrite title}
 
 In recent years, the research into quantum devices of different kinds has
 significantly intensified.
@@ -16,7 +10,7 @@ a growing interest in a different medium for quantum information: sound.
 More precisely, acoustic waves in solid materials.
 Just like how light, or electromagnetic waves, come in quantized packets of energy called
 photons,
-so too does acoustic waves and we call those packets phonons.
+so too does acoustic waves and those packets are called phonons.
 Just recently, in 2019, researchers coupled an acoustic resonator to a transmon
 qubit and were able to directly measure the presence or absence of single
 phonons~\cite{arrangoiz-arriola_resolving_2019}.
@@ -55,7 +49,7 @@ sweeps quickly become computationally intractable.
 A parameter sweep of just 6 parameters with 10 different values for each
 requires \num{1000000} simulations.
 One can of course use smarter optimization algorithms like bayesian optimization
-or particle swarm optimization\cite{schneider2019benchmarking,zhang_compact_2013}
+or particle swarm optimization~\cite{schneider2019benchmarking,zhang_compact_2013}
 to decrease the number of simulations needed, but it will still be of the
 same approximate order.
 
@@ -63,9 +57,10 @@ A different approach that has been gaining some popularity in the field of
 nano-photonics is \emph{inverse design with adjoint
 simulation}~\cite{molesky_inverse_2018}.
 The idea is that if the gradient of the figure of merit
-with respect to the parameters can be calculated, then we can use gradient based
-optimization methods, which converge much faster, even if the number of
-parameters is very large. With these methods, one hopes to be able to search
+with respect to the parameters can be calculated, then gradient based
+optimization methods can be used.
+These converge much faster, even if the number of
+parameters is very large. Thus, one hopes to be able to search
 among a much more general class of designs for the optimal one.
 This has been successfully applied to photonic devices,
 where a wide variety of components have been designed~\cite{spins2019}.
@@ -80,7 +75,7 @@ devices, though there is some work on another type of inverse design of
 phononics using machine learning models~\cite{han_deep-learning-based_2022}.
 
 
-Phononic devices have in general been studied much less than photonic
+Phononic devices have in general been studied less than photonic
 devices, and the library of known devices is very small.
 With this thesis, I explore the possibility of extending the inverse-design paradigm to
 quantum acoustic devices.
@@ -93,18 +88,15 @@ The beamsplitter is conceptually one of the simplest devices imaginable,
 and photonic beamsplitters have been studied in great detail for many years
 and found a multitude of uses in many different experiments.
 However, there is still no standard implementation for phononic beamsplitters,
-though \cite{qiao2023developing} has demonstrated a working beamsplitter for
+though~\cite{qiao2023developing} has demonstrated a working beamsplitter for
 surface acoustic waves.
-The two major differences between their design and the one attempted here is
-firstly that they are using surface acoustic waves while I am employing bulk
-acoustic waves confined in a waveguide, and secondly that their beamsplitter
-reflects one of the arms of the beamsplitter back towards the source, whereas I
-have one input arm and two separate outputs.
-\tododec{PB:is what you are using here really bulk acoustic waves? 
-maybe also mention that you are looking at GHz silicon phonons since they are
-interesting in quantum acoustics.}
+There are two major differences between their design and the one attempted here.
+Firstly, they are using surface acoustic waves while I am using wave propagating
+through patterned silicon waveguides.
+Secondly, their beamsplitter reflects one of the arms of the beamsplitter back towards
+the source, whereas I have one input waveguide and two separate outputs.
 
-\section{Aim and Thesis outline}
+\section{Aim and Thesis Outline}
 
 The aims of this thesis are:
 \begin{itemize}
@@ -117,12 +109,15 @@ The aims of this thesis are:
 Chapter 2 presents some of the theory on solid mechanics and acoustic waves needed to
 understand the thesis.
 A band diagram over the modes of the waveguide used is also shown there.
-In chapter 3, the inverse design process is presented. First, the general
-adjoint method is showcased, followed by a derivation in the specific case of
-acoustics.
+In chapter 3, the inverse design process is presented.
+First, the general adjoint method is showcased,
+followed by a derivation in the specific case of acoustics.
 Then, gradient based optimization algorithms are discussed and the ones used in
 this thesis are presented.
 Chapter 4 describes the specifics of the simulations performed in this work:
 both a specification of the skeleton of the devices, how the input wave was excited,
-and how the designs were parametrized.
-\todowrt{finish outline}
+and how the designs were parametrized. It also describes the specifics of the
+optimization algorithm, including parameter values.
+Chapter 5 then presents and analyzes the results of the simulations performed
+and Chapter 6 summarizes the conclusions drawn from the results and describes
+possible future research.

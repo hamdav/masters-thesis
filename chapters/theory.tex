@@ -1,4 +1,4 @@
-\chapter{Acoustic waves and waveguides}
+\chapter{Acoustic Waves and Waveguides}
 
 In this chapter, the theory of the physics behind my simulations is given.
 \Cref{sec:acoustics} gives a review of solid mechanics in the frequency domain,
@@ -8,10 +8,10 @@ simulation.
 external forces for infinite periodic structures can be obtained from simulating
 a single unit cell of the structure.
 Lastly, the solutions for the specific periodic structure used for the inputs
-and outputs in this thesis is shown with a band diagram as well as the shapes of
+and outputs in this thesis are shown with a band diagram as well as the shapes of
 the modes.
 
-\section{The frequency domain acoustic equation}\label{sec:acoustics}
+\section{The Frequency Domain Acoustic Equation}\label{sec:acoustics}
 
 In order to efficiently model the deformation and stresses in a solid material,
 a linear elasticity model is often assumed.
@@ -55,16 +55,18 @@ Inserting this in \cref{eq:lin_el} gives
 	-\rho \omega^2 \vec{u} = \nabla \cdot \sigma + \vec F.
 \end{equation}
 
-To combine \cref{eq:stress,eq:strain,eq:lin_el,eq:lin_el2} into one equation that can be solved for $\vec{u}$ we first
-rewrite them in index notation to make calculations clearer:
+To combine \cref{eq:stress,eq:strain,eq:lin_el,eq:lin_el2} into one equation
+that can be solved for $\vec{u}$, we first
+rewrite them in index notation to make calculations clearer.
+Note that throughout this thesis, the Einstein summation convention is used,
+meaning that repeated indices are summed. %Example?
 \begin{align}
 	\epsilon_{ij} &= \frac12(\partial_i u_j + \partial_j u_i)\\
 	\label{eq:double_scalar_product_index_not}
 	\sigma_{ij} &= C_{ijkl} \epsilon_{kl}\\
-				&= \frac12\left(C_{ijkl} \partial_k u_l + C_{ijkl} \partial_l
-				u_k\right)\\
-				&= C_{ijkl} \partial_k u_l\text{ because of the symmetry
-				$C_{ijkl}=C_{ijlk}$}
+				&= \frac12\left(C_{ijkl} \partial_k u_l + C_{ijkl} \partial_k
+				u_l\right)\\
+				&= C_{ijkl} \partial_k u_l\text{ because of the symmetry $C_{ijkl}=C_{ijlk}$}
 \end{align}
 which gives
 \begin{align}
@@ -75,8 +77,6 @@ which gives
 		   \partial_j \left(C_{ijkl} \partial_l \placeholder\right)\right) u_k
 \end{align}
 where the indices $i,j,k,l$ go over the spatial dimensions $x,y,z$.
-Note that throughout this thesis, the Einstein summation convention is used,
-meaning that repeated indices are summed.
 All of the tensors in the equation above are really tensor fields, i.e.\ they are
 functions of $\vec{x}$.
 Defining the operator
@@ -87,7 +87,7 @@ Defining the operator
 \end{equation}
 we can write
 \begin{equation}\label{eq:gov_eq}
-	\hat A_{ik} u_k = F_i
+	\hat A_{ik} u_k = F_i.
 \end{equation}
 Solving this equation for $\vec u$ thus gives the response of the system to
 periodically varying force $\vec F(\vec x, t) = \vec F(\vec x) e^{i\omega t}$.
@@ -112,10 +112,10 @@ integer, then this operator commutes with the translation operator
 $\hat T_{\vec a}[\vec u(\vec x)] = \vec u(\vec x + \vec a)$.
 This means that there is a basis of simultaneous eigenstates of both operators.
 The eigenfunctions of the translation operator are
-$\vec f(x, z)\exp(i k_y y)$, where $\vec f$ is an arbitrary function,
-and the eigenvalues are $\exp(i k_y a)$.
+$\vec f(x, z)e^{i k_y y}$, where $\vec f$ is an arbitrary function,
+and the eigenvalues are $e^{i k_y a}$.
 Defining the reciprocal lattice constant $b = 2 \pi / a$, we see
-that the functions $\vec f(x, z) \exp(i (k_y + m b) y)$ for integer values
+that the functions $\vec f(x, z) e^{i (k_y + m b) y}$ for integer values
 of $m$ all have the same eigenvalue, which means that they form a degenerate
 subspace of eigenfunctions.
 This also means that we can restrict ourselves to the first Brillouin zone:
@@ -134,11 +134,11 @@ The solutions to these eigenvalue equations are often called modes, and each
 mode has both a frequency and a wave vector. This gives rise to a band diagram,
 where the frequency is plotted as a function of the wave vector.
 
-\subsection{Concrete example of phononic crystal}
+\subsection{Concrete Example of a Phononic Crystal}
 
 In this work, a rectangular silicon waveguide patterned with elliptic holes is used.
-The structure is clamped at the bottom (meaning that we use a fixed boundary
-condition there, enforcing $\vec u = 0$) while the other sides are free.
+The structure is clamped at the bottom (meaning that a fixed boundary
+condition is used there, enforcing $\vec u = 0$) while the other sides are free.
 A top down schematic of the unit cell can be seen in \cref{fig:unitcell}.
 The reason for using this specific unit cell is that it has been shown to
 enable good coupling between optical and mechanical modes while still being
@@ -176,7 +176,11 @@ properties~\cite{kolvik_clamped_2023}.
 	\draw[<->] (0,0) -- node[below] {$h_x$} (0.95*\hy, 0);
 \end{tikzpicture}
 \end{center}
-\caption{Top down view of unit cell of a phononic crystal.}%
+\caption{%
+	Top down view of unit cell of a phononic crystal.
+	The periodicity of the waveguide is $a$, the width is $w$ and $h_x$ and
+	$h_y$ are the major and minor radii of the elliptic hole.
+}%
 \label{fig:unitcell}
 \end{figure}
 
@@ -285,11 +289,11 @@ the desired characteristics.
 These desired characteristics are quantified through what is called an objective
 function%
 \footnote{Also called \emph{figure of merit (FoM)}.}%
-, which I will denote $\fobj$,
+, which we will denote $\fobj$,
 that should be maximized.
 When coupled with \emph{adjoint simulation}, which is a clever way to compute
 gradients, and gradient based optimization
-algorithms, this is a very powerful methodology.
+algorithms this becomes a very powerful methodology.
 
 An overview of the design process is as follows:
 \begin{enumerate}
@@ -364,7 +368,7 @@ Thus solving for $\difs{v}{p}$ from equation \cref{eq:direct_dvdp_solve}
 means solving for an $n \times m$ matrix, which much more computationally
 expensive than solving for just a vector of dimension $n$.
 
-\subsection{Specific derivation with acoustics}\label{sec:spec_der}
+\subsection{Specific Derivation with Acoustics}\label{sec:spec_der}
 
 Now we turn to the specific case of acoustic devices.
 Here $A v = b$ is replaced by the acoustic field equation (\cref{eq:gov_eq}):
@@ -445,7 +449,7 @@ The functional derivative is defined by
 	= \diff*{F[f + \varepsilon \varphi]}{\varepsilon}
 \end{equation}
 where $F$ is a functional of $f$ and $\varphi$ is an arbitrary test function.
-I will use two properties of the functional derivative:
+We will use two properties of the functional derivative:
 \begin{itemize}
 	\item If $F$ is the functional $F[f](y) = f(y)$,
 		then $\difs.f.{F(y)}{f}(x) = \delta(y-x)$.
@@ -460,7 +464,7 @@ I will use two properties of the functional derivative:
 \end{itemize}
 \end{mybox}
 
-For simplicity I will limit myself to the case where the objective function is
+For simplicity we will limit ourselves to the case where the objective function is
 an overlap integral of the displacement field $u_k(\vec x)$ with some function
 $\varphi_k^*(\vec x)$:
 \begin{equation}
@@ -474,7 +478,7 @@ Analogously to the general derivation in \cref{sec:general_derivation},
 the chain rule is used to expand
 $\difs.f.{\fobj}{p}(\vec x)$, see \cref{box:functionals} for the form of the
 chain rule for the functional derivative.
-However, because $\vec u$ is in general complex, I will split it into its real and
+However, because $\vec u$ is in general complex, we will split it into its real and
 imaginary components: $\vec u = \vec v + i \vec w$.
 \begin{equation}
 	\label{eq:chain_rule}

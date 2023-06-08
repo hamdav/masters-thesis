@@ -1,14 +1,19 @@
 \chapter{Methods}\label{sec:methods}
 
-The aim of this thesis is to use inverse design to find a phononic beamsplitter,
-a task that can be divided into three parts: 
-First, some definitions of what
-should be designed and what constitutes a ``good'' design needs to be made.
-Second, we need a way to calculate the gradient of the ``goodness'' with respect
-to the design.
-And lastly, we need a gradient based optimization algorithm to find the optimal
-design.
-All of this will be described in this chapter.
+% The aim of this thesis is to use inverse design to find a phononic beamsplitter,
+% a task that can be divided into three parts: 
+% First, some definitions of what
+% should be designed and what constitutes a ``good'' design needs to be made.
+% Second, a way to calculating the gradient of the ``goodness'' with respect
+% to the design is needed.
+% And lastly, we need a gradient based optimization algorithm to find the optimal
+% design.
+% All of this will be described in this chapter.
+The aim of this thesis was to use inverse design to find a phononic
+beamsplitter. In this section I describe how that was accomplished. First I
+specify the skeleton of the device, i.e.\ the parts that were fixed, as well as
+the objective function. I then go on to specify how the simulations and
+optimization was done.
 
 \section{Design}
 
@@ -19,7 +24,7 @@ The values for the parameters in the sketch are given in \cref{tab:params}.
 The reason for using this mode in this waveguide is that it has been shown to be
 interesting for avoiding mechanical leakage into the substrate on which it is
 clamped, as well as retaining a high optomechanical
-coupling.\cite{kolvik_clamped_2023}
+coupling~\cite{kolvik_clamped_2023}.
 
 Inside the design area, there can be one of two kinds of designs.
 The first is a \emph{continuous design}, meaning that the material parameters
@@ -76,7 +81,7 @@ modeled, and the other half is extrapolated with a symmetry boundary condition.
 	\end{tabular}
 \end{table}
 
-\subsection{Objective function}
+\subsection{Objective Function}
 
 The figure of merit of the device is how much of the input excitation gets transmitted
 into the output beams.
@@ -87,7 +92,7 @@ Therefore, a mode overlap integral is used:
 	I = \int_{\Omega_1} \vec{u}(\vec{x}) \cdot \vec{u}_m^*(\vec{x}) \dl{\vec x},
 \end{equation}
 where $\vec u_m$ is the shape of the mode (\cref{fig:ms1}).
-Because we are not interested in the phase of the output waves,
+Because I am not interested in the phase of the output waves,
 the absolute value squared of the overlap integral is taken as the objective
 function,
 \begin{equation}
@@ -115,7 +120,7 @@ mode, since that is the only permitted mode close by as seen in the band diagram
 in \cref{fig:banddiagram}.
 
 In order to confirm that the excitation was indeed fully in the desired mode, a
-separate model with only a waveguide with 200 unitcells was created.
+separate model with only a waveguide with 200 unit cells was created.
 After applying the excitation and running the simulation,
 the proportion of the excitation that ended up in the desired mode was
 calculated.
@@ -123,11 +128,12 @@ This was done by first calculating the mode overlap integral
 $\int \vec u \vec u_m^* \dl{\vec x}$
 and comparing that to the norm of the displacement field
 $\int \vec u \vec u^* \dl{\vec x}$.
-If we write $\vec u$ as $\vec u = a \vec u_m + b \vec u_r$ for some scalars $a$ and $b$,
+If $\vec u$ is written as $\vec u = a \vec u_m + b \vec u_r$ where $a$ and $b$
+are scalars and $\vec u_r$ is orthogonal to $\vec u_m$,
 then
 $\int \vec u \vec u^* \dl{\vec x} = a\int \vec u \vec u_m^*\dl{\vec x} + b\int
 \vec u \vec u_r^*\dl{\vec x}$.
-And assuming $\vec u_r$ is orthogonal to $\vec u_m$,
+And since $\vec u_r$ is orthogonal to $\vec u_m$,
 $a = \int \vec u \vec u_m^*\dl{\vec x} / \int \vec u_m \vec u_m^*\dl{\vec x}$,
 which enables us to calculate $b$ as well.
 The result was near perfect ($b < 0.03 a$) excitation of only the desired mode.
@@ -135,7 +141,7 @@ Since energy is proportional to
 the square of the amplitude, $b < 0.03 a$ means that $>99.9 \%$ of the energy was
 in the correct mode.
 To obtain such high fidelity, it was important that the mesh used for the
-unitcells in the wave guide was the same as the mesh in the unit cell
+unit cells in the wave guide was the same as the mesh in the unit cell
 simulation.
 High fidelity was also achieved if both meshes were made very fine, but such
 fine meshes carries a prohibitively large computational cost.
@@ -148,7 +154,7 @@ Instead, \glspl{pml} are placed at the caps of the input and output waveguides.
 The purpose of the \gls{pml} is to absorb any incoming waves without reflection,
 which would make it act as if there was an infinite waveguide on the other side
 into which the waves propagate indefinitely.
-The way to accomplish this is to add an imaginary component to the density of
+One way to accomplish this is to add an imaginary component to the density of
 the material.
 \todowrt{why does it work}
 The imaginary part must be introduced smoothly,
@@ -236,9 +242,9 @@ transform of the displacement field was made.
 The parameters controlling the shape of the $\rho_\text{im}$ curve were then
 varied and an appropriate value was selected.
 
-\subsection{Level-set}\label{sec:level-set}
+\subsection{Level-Set}\label{sec:level-set}
 
-Ultimately, we want our device to consist of regions of material and regions of
+Ultimately, the device should consist of regions of material and regions of
 no material.
 There are basically two ways of doing this.
 The first, and perhaps most intuitive,
@@ -267,7 +273,6 @@ boundary. Furthermore, if two boundaries merge, or if one splits in two, points
 need to be removed and the connectivities changed, which is quite complex.
 \Cref{fig:direct_troubles} illustrates these problems with direct storage concretely.
 Both of these issues are automatically handled with the level-set method.
-\tododec{How? (Isn't it obvious?)}
 
 \begin{figure}[htpb]
 	\centering
