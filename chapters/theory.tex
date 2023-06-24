@@ -1,6 +1,6 @@
 \chapter{Acoustic Waves and Waveguides}
 
-In this chapter, the theory of the physics behind my simulations is given.
+This chapter presents the theory of the physics behind our simulations.
 \Cref{sec:acoustics} gives a review of solid mechanics in the frequency domain,
 culminating in \cref{eq:gov_eq}, which is the equation that is solved each
 simulation.
@@ -13,12 +13,11 @@ the modes.
 
 \section{The Frequency Domain Acoustic Equation}\label{sec:acoustics}
 
-In order to efficiently model the deformation and stresses in a solid material,
+To efficiently model the deformation and stresses in a solid material,
 a linear elasticity model is often assumed.
 This means the force is assumed to be linear with displacement, which is a valid
 approximation for small displacements.
-The basic equation is Hooke's law, $F = kx$ for ideal springs, that everybody
-learns in their first mechanics course.
+The basic equation is Hooke's law, $F = kx$ for ideal springs.
 Since we are dealing with solid elements in three dimensions rather than ideal
 springs in one dimension, the equation changes slightly but the essence is still
 the same.
@@ -31,7 +30,8 @@ rank four tensor that is a property of the material,
 \begin{equation}\label{eq:strain}
 	\epsilon \coloneqq \frac12(\nabla \vec u + (\nabla \vec u)^\transpose)
 \end{equation}
-is the strain tensor, and $:$ denotes double scalar product%
+is the strain tensor, $\vec{u}$ is the displacement,
+and $:$ denotes double scalar product%
 \footnote{%
 	See \cref{eq:double_scalar_product_index_not} for what the double scalar
 	product means in this case. It is in general a product that contracts two
@@ -44,12 +44,12 @@ is obtained:
 \begin{equation}\label{eq:lin_el}
 	\rho \ddot{\vec{u}} = \nabla \cdot \sigma + \vec F,
 \end{equation}
-where $\rho$ is the density, $\vec{u}$ is the displacement and $\vec F$ is the
+where $\rho$ is the density and $\vec F$ is the
 externally applied force.
 If the force is sinusoidally varying with some frequency $\omega$,
 $\vec F(\vec x, t) = \vec F(\vec x) e^{i\omega t}$,
 then $\vec u$ is also expected to be oscillating with that same frequency:
-$\vec u(\vec x, t) = \vec u(x) e^{i \omega t}$.
+$\vec u(\vec x, t) = \vec u(\vec x) e^{i \omega t}$.
 Inserting this in \cref{eq:lin_el} gives
 \begin{equation}\label{eq:lin_el2}
 	-\rho \omega^2 \vec{u} = \nabla \cdot \sigma + \vec F.
@@ -60,12 +60,13 @@ that can be solved for $\vec{u}$, we first
 rewrite them in index notation to make calculations clearer.
 Note that throughout this thesis, the Einstein summation convention is used,
 meaning that repeated indices are summed. %Example?
+In index notation the equations become
 \begin{align}
 	\epsilon_{ij} &= \frac12(\partial_i u_j + \partial_j u_i)\\
 	\label{eq:double_scalar_product_index_not}
 	\sigma_{ij} &= C_{ijkl} \epsilon_{kl}\\
-				&= \frac12\left(C_{ijkl} \partial_k u_l + C_{ijkl} \partial_k
-				u_l\right)\\
+				&= \frac12\left(C_{ijkl} \partial_k u_l + C_{ijkl} \partial_l
+				u_k\right)\\
 				&= C_{ijkl} \partial_k u_l\text{ because of the symmetry $C_{ijkl}=C_{ijlk}$}
 \end{align}
 which gives
@@ -77,7 +78,7 @@ which gives
 		   \partial_j \left(C_{ijkl} \partial_l \placeholder\right)\right) u_k
 \end{align}
 where the indices $i,j,k,l$ go over the spatial dimensions $x,y,z$.
-All of the tensors in the equation above are really tensor fields, i.e.\ they are
+The tensors in the equation above are really tensor fields, i.e.\ they are
 functions of $\vec{x}$.
 Defining the operator
 \begin{equation}\label{eq:A_def}
@@ -142,8 +143,12 @@ condition is used there, enforcing $\vec u = 0$) while the other sides are free.
 A top down schematic of the unit cell can be seen in \cref{fig:unitcell}.
 The reason for using this specific unit cell is that it has been shown to
 enable good coupling between optical and mechanical modes while still being
-clamped to a substrate, which improves thermal
-properties~\cite{kolvik_clamped_2023}.
+clamped to a substrate,
+which potentially makes it more scalable for phononic circuitry than suspended
+designs~\cite{kolvik_clamped_2023}.
+For our proof-of-concept device, we do not model the substrate to which the
+waveguide would be clamped, instead using a fixed boundary condition on the
+bottom.
 
 \begin{figure}[htpb]
 \begin{center}
@@ -188,13 +193,13 @@ An infinite waveguide can be simulated with just one unit cell using periodic
 boundary conditions at the edge where the unit cell would be attached to the
 next one.
 As \cref{sec:bloch} showed,
-waves with any $\vec k$ can be investigated with a single unit cell since $\vec
-u$ is a phase factor $e^{i\vec k \cdot \vec x}$ times some function with the
+waves with any $\vec k$ can be investigated with a single unit cell since
+$\vec u$ is a phase factor $e^{i\vec k \cdot \vec x}$ times some function with the
 same periodicity as the unit cell.
 Enforcing a wave vector $\vec k = k\hat{\vec y}$
 thus entails using periodic boundary conditions with a specified phase shift
 over the unit cell.
-These are called \emph{floquet periodic boundary conditions} in COMSOL, which is
+These are called \emph{Floquet periodic boundary conditions} in COMSOL, which is
 the simulation software used throughout this thesis.
 Running simulations with different $k$
 to find the eigenmodes with their
@@ -280,9 +285,9 @@ $k=0.9 \pi / a$.
 	\label{fig:modeshapes}
 \end{figure}
 \tododec{At some point write about phonons? I haven't really had to care about
-the fact that excitations are discrete so if I talk about it it'd just for applications...}
+the fact that excitations are discrete so if I talk about it, it'd just for applications...}
 
-\chapter{Inverse Design}
+\chapter{Inverse Design in Acoustics}
 
 Inverse design is a design paradigm where the design of a device is guided fully by
 the desired characteristics.
@@ -293,7 +298,7 @@ function%
 that should be maximized.
 When coupled with \emph{adjoint simulation}, which is a clever way to compute
 gradients, and gradient based optimization
-algorithms this becomes a very powerful methodology.
+algorithms, this becomes a powerful methodology.
 
 An overview of the design process is as follows:
 \begin{enumerate}
@@ -308,9 +313,9 @@ An overview of the design process is as follows:
 
 Adjoint simulation is a way to compute the gradient of $\fobj$ with respect to
 the design, which in our case means with respect to the material parameters.
-I will in this section first give a general derivation, following
+We will in this section first give a general derivation, following
 reference~\cite{giles_introduction_2000}.
-In \cref{sec:spec_der} I will then derive the specifics when applying this to
+In \cref{sec:spec_der}, we will then derive the specifics when applying this to
 acoustics.
 
 \subsection{General Derivation}\label{sec:general_derivation}
@@ -321,13 +326,18 @@ $A v = b$, where $b$ is a fixed vector and $A$ is a matrix that depends on a
 vector of design parameters $p$.
 This could be the acoustics equation, but it might also be the analogous
 equation for photonics, or something completely different like fluid dynamics.
-I will refer to the process of solving this equation as a simulation, since for
+We will refer to the process of solving this equation as a simulation, since for
 this thesis it is solved through the simulation software COMSOL.
 The overall goal is to find the parameters $p$ that maximize the objective
 function $\fobj$.
-The goal of adjoint simulation is to find $\diff{\fobj}{p}$.
+The goal of adjoint simulation is to find $\diff{\fobj}{p}$%
+\footnote{%
+	Note that this is a total derivative, not a partial one. In our case this is
+	obvious since $\fobj$ only depends on $v$ but in general it could also
+	depend directly on $p$.
+}.
 This can be expanded through the chain rule as
-\begin{equation}
+\begin{equation}\label{eq:chain}
 	\diff{\fobj}{p} = \diff{\fobj}{v} \diff{v}{p}.
 \end{equation}
 To find the latter factor we do
@@ -336,11 +346,14 @@ To find the latter factor we do
 						&\implies A\diff{v}{p} = -\diff{A}{p}
 						v.\label{eq:direct_dvdp_solve}
 \end{align}
-Thus, if we can find a $\tilde v$ such that
+This almost gives us the right thing, but we need to rewrite \cref{eq:chain} a
+little.
+If we define a $\tilde v$ through the equation
 \begin{equation}\label{eq:vtilde}
 	\diff{\fobj}{v} = \tilde v A
 \end{equation}
-then
+then plugging this into \cref{eq:chain} and using \cref{eq:direct_dvdp_solve} we
+obtain
 \begin{align}
 	\label{eq:dfdp_vtilde}
 	\diff{\fobj}{p} &=
@@ -355,9 +368,11 @@ Finding $\tilde v$ from \cref{eq:vtilde} amounts to solving the so called
 \end{equation}
 hence the name adjoint method.
 As it turns out, $A$ is in many cases symmetric (or self-adjoint) which means that this is simply a normal
-simulation but with $\difs{\fobj}{v}^\dagger$ as the source.
-Thus, to obtain the derivative we just need to run an additional
-simulation with a different input.
+simulation but with $\difs{\fobj}{v}^\dagger$ as the source, and even if it
+isn't, solving the adjoint problem isn't more computationally expensive than
+running a normal simulation.
+Thus, the derivative can be obtained with just twice the simulation time
+compared to an ordinary simulation.
 
 Now you might be wondering: what have we gained by this?
 Let $n$ be the dimension of $v$, $m$ the dimension of $p$ and $l$ the dimension
@@ -365,7 +380,7 @@ of $b$.
 This means that $A$ is a matrix with dimension $l\times n$ and $\difs{A}{p}$ is
 a rank three tensor with dimension $m\times l\times n$.
 Thus solving for $\difs{v}{p}$ from equation \cref{eq:direct_dvdp_solve}
-means solving for an $n \times m$ matrix, which much more computationally
+means solving for an $n \times m$ matrix, which is much more computationally
 expensive than solving for just a vector of dimension $n$.
 
 \subsection{Specific Derivation with Acoustics}\label{sec:spec_der}
@@ -377,7 +392,7 @@ Here $A v = b$ is replaced by the acoustic field equation (\cref{eq:gov_eq}):
 \end{equation}
 Instead of vectors, like we saw in \cref{sec:general_derivation}, these quantities are now functions%
 \footnote{%
-	Vector-valued funcitons, but that is not the important part here.
+	Vector-valued functions, but that is not the important part here.
 }
 of $\vec x$.
 Analogously to the vector of design parameters we now have a \emph{design field}
@@ -395,14 +410,14 @@ For a quick overview of functionals and their derivatives, see
 		putting it in a box like this.
 		Alternatively, I could put it in an appendix.
 	}
-Our $\fobj$ is no longer a function, but rather a \emph{functional}, and thus
+The $\fobj$ is no longer a function, but rather a \emph{functional}, and thus
 we need to use the functional derivative instead of the ordinary derivative.
 One can think of a functional as a function of a function,
 i.e.\ something that maps an element of a function space to a scalar number.
 There are also functionals which depend on both a function and a real number,
 or on multiple functions.
-Below I will give an overview of the notational conventions I use,
-and then give the definition of the functional derivative as well as some useful
+Below we will give an overview of the notational conventions used,
+and give the definition of the functional derivative, as well as some useful
 properties of it.
 
 Let $\mathcal{Y}$ be a function space of functions $\R \to \R$.
@@ -559,23 +574,24 @@ To find $\difs.f.{u_i(\bm y)}{p}(\bm x)$ we apply $\difs.f.{}{p(\bm x)}$ to
 Just like \cref{eq:dfdp_vtilde},
 we want an adjoint field $\tilde{\vec u}$
 such that the integral in \cref{eq:dfdp_as_dudp_integral} is
-\begin{equation}\label{eq:phi_dudp_integral}
+\begin{align}
+	\label{eq:phi_dudp_integral}
 	\int_\Omega \dl{\bm y}\,
 	\varphi_i^*(\bm y)
 	\diff.f.{u_i(\bm y)}{p}(\bm x)
-	=
+	&=
 	\int_\Omega \dl{\bm y}\,
 	\tilde u_i(\bm y)
 	\hat A_{ik}(\vec y)
 	\diff.f.{u_k(\bm y)}{p}(\bm x)
-\end{equation}
-which by \cref{eq:dAdpu_Adudp} is equal to
-\begin{equation}\label{eq:an_integral}
+	\\
+	&=
+	\label{eq:an_integral}
 	-\int_\Omega \dl{\bm y}\,
 	\tilde u_i(\bm y)
 	\diff.f.{\hat A_{ik}(\vec y)}{p}(\vec x)
 	u_k(\bm y).
-\end{equation}
+\end{align}
 The adjoint field is found by solving the adjoint problem:
 \begin{equation}\label{eq:adjoint_problem}
 	\hat A_{ik}^\dagger \tilde{u}_k = \varphi^*_i,
@@ -593,7 +609,7 @@ complicated dependences is rather easy.
 Taking $\rho(\vec y) = \rho^0 p(\vec y)$
 and $C_{ijkl}(\vec y) = C_{ijkl}^0 p(\vec y)$
 in the definition of $\hat A_{ik}$ from \cref{eq:A_def}
-implies 
+implies
 \begin{align}
 	\diff.f.{\hat A_{ik}(\vec y)}{p}(\vec x)
 	= -\rho^0 \omega^2 \delta_{ik} \delta(\vec x - \vec y)
@@ -609,7 +625,7 @@ Plugging this back into the integral in \cref{eq:an_integral} gives
 \end{equation}
 which is comparatively easily evaluated.
 
-Summarizing: in order to compute the gradient $\difs.f.{\fobj}{p}(\vec x)$ we first
+To summarize: in order to compute the gradient $\difs.f.{\fobj}{p}(\vec x)$ we first
 run a normal simulation, i.e.\ solve \cref{eq:sim_eq}, to obtain $\vec u$.
 Then we run an adjoint simulation, i.e.\ we solve \cref{eq:adjoint_problem}, to
 obtain $\tilde{\vec u}$.
@@ -623,12 +639,12 @@ design.
 
 \section{Optimization Algorithms}
 
-In this section I motivate why the gradient is so useful and how it will be
-used in my algorithm.
-I begin by describing the advantages of gradient based optimization
+In this section we motivate why the gradient is so useful and how it will be
+used in our algorithm.
+We begin by describing the advantages of gradient based optimization
 algorithms over those that don't use the gradient.
-Following that I describe gradient descent, the most basic gradient based
-optimization method, as well as \gls{adam}, which is the algorithm that I have
+Following that, we describe gradient descent, the most basic gradient based
+optimization method, as well as \gls{adam}, which is the algorithm that we have
 used.
 
 An optimization algorithm is an algorithm for finding the optimum of a function.
@@ -684,7 +700,7 @@ descent}.\footnote{%
 	talking about gradient descent is so strong that I will stick to that
 	terminology, even though I am solving a maximization problem.%
 }
-Like all of the algorithms I will describe it is an iterative algorithm,
+Like all of the algorithms we will describe, it's an iterative algorithm,
 meaning that it generates a sequence of points that converges to an optimum,
 and the next point in the sequence is derived from the previous ones.
 In the case of gradient descent, the next point is gotten by
@@ -697,7 +713,7 @@ For ordinary gradient descent the learning rate would be fixed,
 and choosing an appropriate value for this parameter is one of the problems of
 this method.
 If a too high value is chosen, then the steps taken will be too large and the
-optimium might be missed entirely.
+optimum might be missed entirely.
 A too low value results in too small steps which will yield a slow convergence.
 Most gradient descent implementations nowadays use a so called learning schedule,
 which means that $\eta$ is not constant during the optimization.
@@ -716,9 +732,9 @@ It has three main differences:
 \Cref{fig:adam_vs_gd} shows the difference in performance between \gls{adam}
 and \gls{gd}.
 With a slightly too large learning rate, the \gls{gd} algorithm gets stuck in an
-oscillation and makes very little progress towards the minimum.
+oscillation and makes little progress towards the minimum.
 If the learning rate is decreased, the oscillations disappear but the stepsize
-is now too small to make it all the way to the true minimum. 
+is now too small to make it all the way to the true minimum.
 Since the \gls{adam} algorithm has some momentum, the motion along the valley
 gets compounded while the motion perpendicular gets dampened which means that
 the oscillations are not as much of a problem.
@@ -742,14 +758,14 @@ all cases~\cite{kingma2017adam}.
 \Cref{lst:adam} shows a pseudocode implementation of the \gls{adam} algorithm,
 which has four important hyperparameters.
 The first is $\alpha$ which controls the order of the step size.
-The next $p$ will never be much further away than $\alpha$ in any dimension.
+The step will never be much larger than $\alpha$ in any dimension.
 $\beta_1$ and $\beta_2$ control how quickly the momentum decays.
 The algorithm basically keeps an exponentially decaying average of the previous
 gradients and previous squared gradients.
 The $\beta$:s set the decay rate for these averages.
 Finally, there is $\epsilon$, which serves to make the algorithm more stable.
 If the average magnitude of the gradient becomes much smaller than $\epsilon$,
-the algorithm will slow down.
+the step size of the algorithm will decrease.
 
 \begin{listing}
 	\begin{minted}{Python}

@@ -12,32 +12,36 @@ Just like how light, or electromagnetic waves, come in quantized packets of ener
 photons,
 so too does acoustic waves and those packets are called phonons.
 Just recently, in 2019, researchers coupled an acoustic resonator to a transmon
-qubit and were able to directly measure the presence or absence of single
-phonons~\cite{arrangoiz-arriola_resolving_2019}.
-\todocit[inline]{From PB: some more citations are appropriate here. e.g. when you say
-	that the research has intensified. maybe find some review article? RVL has
-	one thats called "controlling of phonons at the wavelength scale" i think.
-maybe you can find some valuable refs there}
+qubit and were able to directly resolve the number of phonons~\cite{arrangoiz-arriola_resolving_2019}.
+Acoustic or mechanical wave devices, also called phononic devices, have already
+found a multitude of applications in radio-signal processing and sensing, and
+research into new and better devices for these applications continues in
+parallel with devices for quantum applications~\cite{laer_controlling_2019}.
 
-Possible applications of quantum acoustic devices, also called phononic devices, are many.
+Possible quantum applications of phononic devices are many.
 One of them is quantum memory~\cite{sete_high-efficiency_2015}.
 Regular computers have both memory and a processing unit that
 retrieves data from memory, applies operations on it, and then returns it to
 memory.
-Keeping all of the data inside the processing unit would be very inefficient,
+Keeping the data inside the processing unit would be inefficient,
 since the processing unit would then have to be very large.
-The same goes for quantum computers: storing all of the quantum information in
+The same goes for quantum computers: storing the quantum information in
 the same place where the computation happens is not scalable.
 Instead, a quantum memory could be used to store information while it is not
 directly needed for the computation.
-The reason for using mechanical resonators is that they have been shown to
-achieve very long lifetimes~\cite{maccabe_phononic_2020}.
+The reason for using mechanical resonators as memory is that long lifetimes, on
+the order of seconds at \qty{5}{\giga\hertz}, have been achieved in such
+resonators.
+Additionally, acoustic waves have a much smaller wavelength compared to
+electromagnetic waves at the same frequency, meaning that devices can be more
+compact~\cite{maccabe_phononic_2020}.
 Another application of quantum acoustics worth mentioning is
 coherent transduction between microwave and optical photons.
 This would enable communication between physically separated superconducting
 circuit based quantum computers~\cite{laer_controlling_2019}.
 A third possible application is doing quantum information processing purely in
 mechanical elements~\cite{qiao2023developing}.
+\todocit{raphael doesn't like this ref}
 
 One important problem with such quantum acoustic devices is that they can be hard to design.
 Currently they are often designed by hand,
@@ -48,16 +52,17 @@ sometimes analytical derivations are impossible, and brute force parameter
 sweeps quickly become computationally intractable.
 A parameter sweep of just 6 parameters with 10 different values for each
 requires \num{1000000} simulations.
-One can of course use smarter optimization algorithms like bayesian optimization
+One can of course use smarter optimization algorithms like Bayesian optimization
 or particle swarm optimization~\cite{schneider2019benchmarking,zhang_compact_2013}
-to decrease the number of simulations needed, but it will still be of the
-same approximate order.
+to decrease the number of simulations needed,
+but they will still struggle with high dimensional
+problems~\cite{chen_measuring_2015}.
 
 A different approach that has been gaining some popularity in the field of
 nano-photonics is \emph{inverse design with adjoint
 simulation}~\cite{molesky_inverse_2018}.
-The idea is that if the gradient of the figure of merit
-with respect to the parameters can be calculated, then gradient based
+The idea is that if the gradient of the figure of merit of the device
+with respect to the design parameters can be calculated, then gradient based
 optimization methods can be used.
 These converge much faster, even if the number of
 parameters is very large. Thus, one hopes to be able to search
@@ -67,41 +72,45 @@ where a wide variety of components have been designed~\cite{spins2019}.
 In some cases, for example the waveguide bend, the inverse-designed device could
 be made much more compact than conventionally designed
 bends~\cite{jensen_systematic_2004}.
-In other cases, for example the vertically-incident wavelength-demultiplexing
+In other cases, for example the vertically incident wavelength-demultiplexing
 grating coupler, there are no other known conventional methods of designing the
 device~\cite{piggott_inverse_2014}.
-However, to our knowledge, no one has yet applied this method to phononic
-devices, though there is some work on another type of inverse design of
-phononics using machine learning models~\cite{han_deep-learning-based_2022}.
-
+Before their application in nano-photonics, closely related methods were used in
+structural mechanics under the name of topology
+optimization, for example to optimize the stiffness with limited material~\cite{sigmund_topology_2013}.
+It has also been used for engineering some properties (e.g.\ bandgap) of
+phononic crystals~\cite{yi_comprehensive_2016}.
+However, to our knowledge, it has not yet been used for traveling-wave phononic devices.
 
 Phononic devices have in general been studied less than photonic
-devices, and the library of known devices is very small.
-With this thesis, I explore the possibility of extending the inverse-design paradigm to
-quantum acoustic devices.
+devices, and the library of known devices is smaller.
+With this thesis, we explore the possibility of extending the inverse-design paradigm to
+traveling-wave phononic devices.
 Since both acoustics and electromagnetics are wave phenomena, there are many
 analogies to be drawn, but there are also important differences.
-I have in this work shown that the adjoint method is applicable to the case of
-acoustics, as well as derived the form of the equations.
-As a proof of concept, I attempt to design a phononic 50/50 beamsplitter.
+For example, the different boundary conditions mean that acoustics support surface waves
+while electromagnetics does not.
+We show in this work that the adjoint method is applicable to traveling-wave phononics,
+and derive the form of the equations.
+As a proof of concept, we attempt to design a phononic 50/50 beamsplitter.
 The beamsplitter is conceptually one of the simplest devices imaginable,
-and photonic beamsplitters have been studied in great detail for many years
-and found a multitude of uses in many different experiments.
+and photonic beamsplitters have been studied in great detail for decades
+and found a multitude of uses in different experiments.
 However, there is still no standard implementation for phononic beamsplitters,
 though~\cite{qiao2023developing} has demonstrated a working beamsplitter for
 surface acoustic waves.
 There are two major differences between their design and the one attempted here.
-Firstly, they are using surface acoustic waves while I am using wave propagating
+Firstly, they are using surface acoustic waves while we are using waves propagating
 through patterned silicon waveguides.
 Secondly, their beamsplitter reflects one of the arms of the beamsplitter back towards
-the source, whereas I have one input waveguide and two separate outputs.
+the source, whereas we have one input waveguide and two separate outputs.
 
 \section{Aim and Thesis Outline}
 
 The aims of this thesis are:
 \begin{itemize}
 	\item Rederive the equations for inverse design with adjoint simulation in
-		the case of acoustics and confirm that the methods are theoretically
+		the case of phononics and confirm that the methods are theoretically
 		applicable.
 	\item Implement the methods and use them to design a phononic beamsplitter.
 \end{itemize}

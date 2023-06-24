@@ -8,25 +8,26 @@
 \section*{\abstractname}
 Phononic devices could enable and improve a broad range of functions in
 the realm of classical and quantum information processing.
-However, such devices are currently often designed by hand, combined with brute force
+However, such devices are often designed through analytic methods, combined with brute-force
 parameter sweeps, which severely limits the designs that can be investigated.
-This work presents a method for inverse-design of phononic devices,
+This work presents a method for inverse-design of traveling-wave phononic devices,
 allowing a vastly larger design space to be explored.
 At the heart of the method lies a fast calculation of gradients using the
 adjoint method, whereby the gradient computation costs no more than a single
-normal simulation.
+simulation.
 I show that this method is theoretically applicable to phononic devices,
 and demonstrate that it works in simulation.
-As a proof of concept, I attempt to design a phononic beamsplitter.
+As a proof-of-concept, I attempt to design a phononic beamsplitter.
 The design process consists of two steps:
 one with continuously varying materials which is non-physical,
 but easier to optimize;
 and one with binary devices, accomplished through level-set methods.
-The first step yielded near perfect performance, achieving less than one percent
-reflection and almost nothing being scattered into other modes.
-The second step never reached quite as good performance, though still a 45/45
-split was obtained with less than 10 \% of the power reflected.
-With some tweaking of the second step,
+The first step yields near perfect performance, achieving less than one percent
+reflection and almost nothing scattering into other modes.
+The second step never reached as good performance, though still a 46/46
+split was obtained with around 8~\% of the power reflected.
+Though the resulting designs have some problems with small features and
+sensitive performance,
 this method looks promising for use in the design of future phononic devices.
 
 \if\thesisType M

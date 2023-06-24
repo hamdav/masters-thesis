@@ -1,4 +1,4 @@
-\chapter{Methods}\label{sec:methods}
+\chapter{Numerical Methods for Acoustic Inverse Design}\label{sec:methods}
 
 % The aim of this thesis is to use inverse design to find a phononic beamsplitter,
 % a task that can be divided into three parts: 
@@ -10,15 +10,15 @@
 % design.
 % All of this will be described in this chapter.
 The aim of this thesis was to use inverse design to find a phononic
-beamsplitter. In this section I describe how that was accomplished. First I
+beamsplitter. In this section we describe how that was accomplished. First I
 specify the skeleton of the device, i.e.\ the parts that were fixed, as well as
-the objective function. I then go on to specify how the simulations and
+the objective function. We then go on to specify how the simulations and
 optimization was done.
 
 \section{Design}
 
-The device design to be optimized can be seen in \cref{fig:bs-design}.
-The input and output waveguides consists of unit cells like the one in
+The skeleton of the device to be optimized can be seen in \cref{fig:bs-design}.
+The input and output waveguides consist of unit cells like the one in
 \cref{fig:unitcell}.
 The values for the parameters in the sketch are given in \cref{tab:params}.
 The reason for using this mode in this waveguide is that it has been shown to be
@@ -26,30 +26,28 @@ interesting for avoiding mechanical leakage into the substrate on which it is
 clamped, as well as retaining a high optomechanical
 coupling~\cite{kolvik_clamped_2023}.
 
-Inside the design area, there can be one of two kinds of designs.
-The first is a \emph{continuous design}, meaning that the material parameters
-$\rho$ and $C_{ijkl}$ are continuously varying. The range of values that they
+The design placed in the design area was one of two types.
+The first was a \emph{continuous design}, meaning that the material parameters
+$\rho$ and $C_{ijkl}$ varied continuously. The range of values that they
 can take are between the density and elasticity of pure silicon and that of air.
-Any in-between values are obviously not something that can be physically
-realized, but it is useful as a first step in the optimization.
-This is parametrized through the \emph{design field}, $p$, which takes values
-between 0, which means pure air, and 1, which means pure silicon.
-The second kind is a binary design, where each point either has silicon or not
-and there are no in-between values.
-This is accomplished using level-set methods, which will be explained in
+realized, but was useful as a first step in the optimization.
+This was parametrized through the \emph{design field}, $p$, which took values
+between 0, pure air, and 1, pure silicon.
+The second kind was a binary design, where each point either had silicon or not
+with no in-between values.
+This was accomplished using level-set methods, which will be explained in
 \cref{sec:level-set}.
-
-Because the device is completely symmetric, only one half of it needs to be
-modeled, and the other half is extrapolated with a symmetry boundary condition.
+Because the device was completely symmetric, only one half of it needed to be
+modeled, and the other half extrapolated through a symmetry boundary condition.
 
 \begin{figure}[htpb]
 	\centering
 	\input{chapters/methods/bs-design.tex}
 	\caption{
 		Device design to be optimized.
-		At the red line, a wave traveling right is excited.
-		The output is measured over the blue unit cells.
-		The dashed unit cells are \glspl{pml}.
+		At the red line, a wave traveling right was excited.
+		The output was measured over the blue unit cells.
+		The dashed unit cells marks \glspl{pml}.
 		The large, rectangular design area has dimensions $d_x \times d_y \times
 		h$.
 	}
@@ -83,23 +81,25 @@ modeled, and the other half is extrapolated with a symmetry boundary condition.
 
 \subsection{Objective Function}
 
-The figure of merit of the device is how much of the input excitation gets transmitted
+The figure of merit of the device was the fraction of the input power transmitted
 into the output beams.
-Furthermore, all of the excitation of the output waveguide should be in the same
-mode that was excited at the input.
-Therefore, a mode overlap integral is used:
+Furthermore, the power in the output beams was to exit in the same mode as was
+excited at the input.
+Therefore, a mode overlap integral was used:
 \begin{equation}
 	I = \int_{\Omega_1} \vec{u}(\vec{x}) \cdot \vec{u}_m^*(\vec{x}) \dl{\vec x},
 \end{equation}
 where $\vec u_m$ is the shape of the mode (\cref{fig:ms1}).
-Because I am not interested in the phase of the output waves,
-the absolute value squared of the overlap integral is taken as the objective
+Because we were not interested in the phase of the output waves,
+the absolute value squared of the overlap integral was taken as the objective
 function,
 \begin{equation}
 	\fobj = \abs{I}^2 = I I^*.
 \end{equation}
-This will be maximal when the excitation of the mode $m$ in the output
+This is maximal when the excitation of the mode $m$ in the output
 waveguide is maximized, regardless of which phase it has.
+Note that because symmetry is enforced, the power through both outputs will be
+the same, and the outgoing waves will have the same phases.
 
 The functional derivative of $\fobj$ with respect to $p$ then becomes
 \begin{align}
@@ -111,11 +111,30 @@ The derivative of $I$ was derived in \cref{sec:spec_der}.
 
 \subsection{Excitation}\label{sec:excitation_method}
 
-In order to excite the input waveguide in the desired mode,
+\tododec{JK thinks a figure or more is apt here?}
+\tododec{%
+	\emph{%
+		RVL: As we discussed once, I feel you actually need more than one
+		boundary to excite exactly one mode, or you don't have wavevector
+		information on the incoming mode? I presume this is why you get a backward
+		propagation mode at excitation point? Please add some explanation.
+	}
+	\\
+	We don't need (and shouldn't have I think) more boundaries. The wavevector
+	information is partly given through frequency and partly through the profile
+	of the force added. The reason for the backward propagating mode is that the
+	boundary stress would be the same for a backward traveling wave. One could
+	add a force on the next boundary over to cancel the backward
+	propagating wave from the first boundary load, but then that would create
+	another backward propagating wave. Perhaps this would be of smaller
+	magnitude
+}
+
+To excite the input waveguide in the desired mode,
 the stress on the boundary of a unit cell was exported from a unit cell
 eigenmode simulation with $k=0.9 \pi / a$ and applied to the boundary marked in red in
 \cref{fig:bs-design}.
-Since the frequency is perfectly controlled, this should excite only the desired
+Since the frequency was perfectly controlled, this excites only the desired
 mode, since that is the only permitted mode close by as seen in the band diagram
 in \cref{fig:banddiagram}.
 
@@ -149,9 +168,10 @@ fine meshes carries a prohibitively large computational cost.
 \subsection{Perfectly Matched Layers (PMLs)}
 
 Ideally, the input and outputs are infinite waveguides.
-Unfortunately, simulating infinite waveguides would take infinite time.
-Instead, \glspl{pml} are placed at the caps of the input and output waveguides.
-The purpose of the \gls{pml} is to absorb any incoming waves without reflection,
+Unfortunately, infinitely large models require infinite simulation time, which
+is problematic.
+Instead, \glspl{pml} were placed at the caps of the input and output waveguides.
+The purpose of the \gls{pml} was to absorb any incoming waves without reflection,
 which would make it act as if there was an infinite waveguide on the other side
 into which the waves propagate indefinitely.
 One way to accomplish this is to add an imaginary component to the density of
@@ -160,15 +180,14 @@ the material.
 The imaginary part must be introduced smoothly,
 otherwise the abrupt change in material
 parameters would induce reflections anyway.
-Therefore, the imaginary part is taken to be exponentially increasing,
-starting at $y_0$ and continuing until the end of the waveguide, $n$ unit cells
-later.
-Furthermore, the curve is shifted vertically such that it is 0 at $y = y_0-n$,
-and rescaled so that it is $\rho_\text{si} s$ at $y=y_0$.
-\begin{equation}
+Therefore, the imaginary part was taken to be exponentially increasing,
+\begin{equation}\label{eq:rho_im}
 	\rho_\text{im} = \rho_\text{si} \cdot s \cdot
-	\frac{e^{-\abs{y-y_0} / d} - e^{-n/d}}{1 - e^{-n/d}}
+	\frac{e^{-\abs{y-y_0} / d} - e^{-n/d}}{1 - e^{-n/d}}.
 \end{equation}
+In this equation, $y_0$ is the point where the waveguide ends,
+$n$ is the length of the \gls{pml}, $d$ decides the steepness of the
+exponential and $s$ the final value.
 \Cref{fig:pml_profile} shows the effect of changing these parameters on the
 shape of the profile of the imaginary component.
 
@@ -176,7 +195,8 @@ shape of the profile of the imaginary component.
 	\centering
 	\includegraphics{chapters/methods/pml_profile.pdf}
 	\caption{%
-		This figure shows the effect of changing different parameters.
+		This figure shows the effect of changing the different parameters in
+		\cref{eq:rho_im}.
 		The green curves shows changing $d$ while keeping the other parameters
 		fixed, and the orange and blue show $s$ and $n$ respectively.
 		Darker colour means higher value, and the last green curve coincides
@@ -185,11 +205,11 @@ shape of the profile of the imaginary component.
 	\label{fig:pml_profile}
 \end{figure}
 
-There are three possible sources of reflections.
+There are three possible sources of reflections from the \gls{pml} region.
 Firstly, if the transition from no imaginary component to some imaginary
 component is too abrupt, that causes reflections.
 Secondly, if the imaginary component is too small, the waves will not be
-dampened completely when they reach the end of the \gls{pml} and thus reflect
+completely dampened when they reach the end of the \gls{pml} and thus reflect
 off of that.
 And lastly, if $d$ is small then there can be reflections from the steep
 increase that happens some distance away from the beginning of the \gls{pml}.
@@ -219,6 +239,8 @@ reflections occur.
 			plot (\x,{0.10*(exp(\x/4)-exp(1/4))});
 		\draw[color=NavyBlue, very thick] (0,0) -- (1,0) --
 			plot (\x,{0.02*exp(2.0*(\x-4))});
+		\draw[color=Red, very thick] (0,0) -- (1,0) --
+			plot (\x,{0.04*(exp(\x/2)-exp(1/2))});
 		\draw[ForestGreen] (1.0, 0.3) pic {reflection};
 		\draw[NavyBlue] (5.7, 0.8) pic {reflection};
 		\draw[Orange] (7.9, 0.9) pic {reflection};
@@ -230,12 +252,17 @@ reflections occur.
 		is an increase partway through sharp enough to cause reflections.
 		For the orange curve, the \gls{pml} never becomes strong enough to
 		completely dampen the waves, and they get reflected at the end.
+		The red curve balances all these, yielding a perfect, reflectionless
+		\gls{pml}.
 	}%
 	\label{fig:pml_reflections}
 \end{figure}
 
-It is desirable to make $n$ as small as possible while still eliminating all
-reflections. In order to do so, a long waveguide with the same parameters as
+It was desirable to make $n$ as small as possible while still eliminating all
+reflections.
+This was because a smaller $n$ meant a smaller model which resulted in shorter
+simulation times.
+In order to do so, a long waveguide with the same parameters as
 used for the input and output waveguides in the beamsplitter design was created.
 To discern where there was some component of the wave reflected, a fourier
 transform of the displacement field was made.
@@ -244,18 +271,20 @@ varied and an appropriate value was selected.
 
 \subsection{Level-Set}\label{sec:level-set}
 
-Ultimately, the device should consist of regions of material and regions of
+Ultimately, we wanted the device to consist of regions of material and regions of
 no material.
-There are basically two ways of doing this.
-The first, and perhaps most intuitive,
-is to simply store the coordinates of the boundary between the filled and empty
-regions.
+Such a design is defined by the boundary between filled and empty regions.
+How to best implement a method of storing and evolving this boundary requires
+some thought.
+The first, and perhaps most intuitive implementation,
+would be to simply store the coordinates of evenly spaced points on the boundary.
 In addition to storing the coordinates, one must also store which points
 neighbour which.
-The second method, which is the one used in this report, is called
+A different method, which is the one used in this report, is called
 the \emph{level-set method}.
-In this method, the boundary is not directly stored, but rather is stored via an
-\emph{implicit function}, $\phi(x)$, defined such that the boundary is the
+With this method, the boundary is not directly stored, but is rather stored via an
+\emph{implicit function}, $\phi(x)$,
+and the boundary is recovered as the
 0-isocontour of $\phi$, i.e.\ the points $x$ where $\phi(x)=0$.
 
 There are two main advantages of using the level-set method rather than
@@ -269,10 +298,11 @@ a constant to the implicit function.
 Secondly, while the boundary is changing, the resolution in one part might need
 to be increased while the resolution in another needs to be decreased. Deciding
 where and when to add new points is non-trivial when directly storing the
-boundary. Furthermore, if two boundaries merge, or if one splits in two, points
-need to be removed and the connectivities changed, which is quite complex.
+boundary. Furthermore, if two domains merge, or if one splits, points
+need to be removed and the connectivities changed, which is difficult.
 \Cref{fig:direct_troubles} illustrates these problems with direct storage concretely.
-Both of these issues are automatically handled with the level-set method.
+Both of these issues are automatically handled with the level-set method, as
+shown in \cref{fig:signed_dist_example}.
 
 \begin{figure}[htpb]
 	\centering
@@ -293,8 +323,13 @@ Both of these issues are automatically handled with the level-set method.
 	\centering
 	\includegraphics{chapters/methods/signed_dist_example.pdf}
 	\caption{%
-		Example of three signed distance functions for three different
-		boundaries.
+		Signed distance function for the boundaries in
+		\cref{fig:direct_troubles}. The resolution of the boundary depends only
+		on the resolution of the signed distance field, and not on how the
+		boundary moves, so evolving boundaries will never become poorly
+		resolved. Additionally,
+		topological changes are also smoothly handled since there is no need to
+		explicitly specify connectivities.
 	}%
 	\label{fig:signed_dist_example}
 \end{figure}
@@ -338,45 +373,49 @@ length $s$ in the normal direction, then simply add $s$ to the function there.
 	\label{fig:add_shift}
 \end{figure}
 
-Using a signed distance function means that a gradient descent step can be taken
+Using a signed distance function means that a gradient descent step could be taken
 by simply adding the gradient field to the signed distance field.
-However, there are some pitfalls that must be avoided.
-Firstly, the gradient needs to be rescaled so that the boundary moves
+However, there are some pitfalls that had to be avoided.
+Firstly, the gradient needed to be rescaled so that the boundary moved
 an appropriate distance.
-This has been done such that the boundary moves maximally \qty{1}{\nm}.
-\todoblk[noinline]{check this number before finalizing, I change it every now and then}
-Secondly, since the gradient is occasionally sharply peaked somewhere which may
-not lie near the boundary, only the gradient near the boundary is actually added
+This was done such that the boundary moves at most \qty{1}{\nm}.
+\todoblk[noinline]{check this number before finalizing, we change it every now and then}
+Secondly, since the gradient was occasionally sharply peaked somewhere
+far from the boundary, only the gradient near the boundary is actually added
 to the signed distance field.
-After performing this addition, what was previously a signed distance field will
-now no longer be that, and thus the signed distance field is recalculated from
-the new boundary.
-This recalculation comes with a performance penalty, but since the COMSOL
-simulations are orders of magnitude slower than all other parts of the
-optimization, this is of little concern.
+After performing this addition, what was previously a signed distance field
+would now no longer be that, and thus the signed distance field was recalculated from
+the new, shifted boundary.
+This recalculation came with a performance penalty, but since the COMSOL
+simulations were orders of magnitude slower than all other parts of the
+optimization, this was of little concern.
 
 
 \section{Optimization}\label{sec:m_optimization}
 
-For the optimization in the case of continuous optimization, the \gls{adam}
-algorithm with one modification: a global learning rate was employed rather than
-individual learning rates. The reasoning for this was that individual learning
-rates would give jagged contours, which wouldn't be properly resolved by the
+For the optimization, we used the \gls{adam}
+algorithm with one modification:
+a global learning rate was employed rather than
+separate learning rates for each dimension.
+The reasoning for this was that separate learning
+rates would give jagged contours, which might not be properly resolved by the
 meshing. Practically this modification means that \mintinline{Python}+v+ is a
 scalar and is set to \mintinline{Python}{(1-beta_2)*np.mean(g**2) + beta_2 * v}
 in \cref{lst:adam}.
 The optimization was run and continually monitored, and once convergence was
 visually confirmed through looking at the plot of $\fobj$ by iteration, it was terminated.
 A few different values for the $\beta$:s were tried, and in the end
-$\beta_1=0.9$ and $\beta_2 = 0.95$ were chose. However, it seemed that the
-evolution were not too sensitive to this choice.
+$\beta_1=0.9$ and $\beta_2 = 0.95$ were chosen.
+However, it seemed that the evolution were not too sensitive to this choice.
 $\alpha$ was taken to be \num{2e-3}, because that is large enough that $p$
 could change from 0 to 1 in 500 iterations, which was deemed an appropriate
-timescale since that took about one day.
+timescale as the time per iteration was about 4 minutes.
+A too large $\alpha$ would lead to poor convergence, while a too low value would
+result in slow progress.
 
 The final step of the optimization was to use level-set for the design.
-However, just using the final device of the continuous optimization for the
-initial point of the level-set optimization would be a very large
+However, just using the $p=0.5$ boundary of the final optimized continuous
+design as the initial point of the level-set optimization would be an abrupt
 change, and there is no reason to expect that the resulting level-set design
 would be close to a design with good performance.
 Therefore, once the continuous optimization had converged, a sigmoid function
@@ -389,21 +428,23 @@ was applied to the design field $p$ before $\rho$ and $C_{ijkl}$ were set:
 	\sigma_r(p) = \frac{1}{1+e^{-(p-0.5)/r}}.
 \end{align}
 and then the optimization was restarted.
-This makes the design closer and closer to being binary, which means that the
-step to level-set designs aren't as significant and hopefully the initial design
-for the level-set optimization is not too far from a design with good performance.
-
-Once that had been repeated a couple of times, the level-set design was
-initialized using the final design of the continuous optimization, and the
-level-set optimization was run.
+The sigmoid results in fewer values close to 0.5, effectively making the device
+closer to being binary, which means that the step to level-set designs wasn't as
+abrupt.
+Note that the parameter $r$ controls how much values are shifted, and with
+$r\to 0$, $\sigma_r$ becomes a step function.
+Once that had been repeated a couple of times with decreasing $r$,
+the level-set design was
+initialized using the $p=0.5$ boundary of the final optimized design,
+and the level-set optimization was run.
 
 \section{Simulations}
 
-In this section I will detail some of the practicalities of performing the
+In this section we detail some of the practicalities of performing the
 simulations.
-The simulation software used was COMSOL version 6.0.
-First, a unit cell with periodic boundary conditions was simulated.
-From that I obtain:
+For finite element simulations we used COMSOL version 6.0.
+First, a unit cell with periodic boundary conditions was simulated,
+from which we obtained:
 \begin{itemize}
 	\item the mode shape, used to calculate the component of the displacement
 		field in the desired mode,
@@ -418,19 +459,19 @@ For the continuous optimization, the basic procedure went
 \begin{enumerate}
 	\item Through the COMSOL-Matlab API, a beamsplitter model was made.
 		The excitation force profile as well as the unit cell mesh and the mode
-		shape was imported from the unit cell simulation.
+		shape were imported from the unit cell simulation.
 	\item A semi-random initial design field $p$ was created. This was done by
-		drawing a sample from a gaussian process, which means that the characteristic
+		drawing a sample from a Gaussian process, which means that the characteristic
 		length scale that the design varies on could be controlled.
 	\item\label{it:sigmoid} If the sigmoid function was to be used in this optimization, it was
 		applied to the design field, and the result was saved to a different
-		variable, that I call the interpolation field.
+		variable, that we call the interpolation field.
 	\item The interpolation field was imported to the COMSOL model, and the
 		material parameters adjusted proportional to said field.
 	\item Both forward and backward simulations were run and the gradient was
 		calculated and exported to Matlab.
 	\item With the gradient, the design field was updated and the algorithm
-		returns to step~\ref{it:sigmoid}.
+		returned to step~\ref{it:sigmoid}.
 \end{enumerate}
 
 For the level-set optimization, the procedure was basically the same, with some

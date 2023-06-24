@@ -9,9 +9,9 @@ After that, I present the results of the continuous optimization followed by the
 results for the level-set optimization in \cref{sec:res_cont,sec:res_bin}
 respectively.
 In summary, the continuous optimization yielded near perfect devices with full
-transmission and very little reflection.
+transmission and minimal reflection.
 The level-set optimizations never reached quite as good performance, reaching a
-45/45 splitter with around 10\% of the power getting reflected.
+46/46 splitter with around 8~\% of the power getting reflected.
 
 \section{Long Waveguide Simulations}\label{sec:long_waveguide}
 
@@ -40,7 +40,7 @@ in two ways.
 Firstly, as detailed in \cref{sec:excitation_method}, $a$ and $b$ in $u = a u_m
 + b u_r$ was computed.
 The result was that $a = 1.166$ and $b = 0.0327$.
-Thus $99.92\%$ of the energy was in the desired mode.
+Thus $99.92~\%$ of the energy was in the desired mode.
 Secondly, a fourier transform of the y-component of the displacement field was
 made.
 This can be seen in \cref{fig:v_ft}.
@@ -98,7 +98,7 @@ the reflections from the end have waned.
 		On the left is the reflection amplitude plotted as a function of the
 		\gls{pml} strength $s$ for different $d$.
 		For $d > 4$ there are two sources of reflection:
-		for small $s$ reflection at the end of the \gls{pml} occurs,
+		for small $s$, reflection at the end of the \gls{pml} occurs,
 		and for large $s$, there is reflection at the beginning.
 		The right figure makes it clear that it is the slope at the beginning of
 		the \gls{pml} that matters, since the point at which it becomes
@@ -230,7 +230,7 @@ design field from the continuous optimization.
 \Cref{fig:bin_conv} shows the convergence plot for the level-set optimization,
 and \cref{fig:bin_design} shows the final device.
 The performance did reach quite high values: splitting the input power roughly
-45/45, though it never achieved the perfect 50/50 that was seen after the
+46/46, though it never achieved the perfect 50/50 that was seen after the
 continuous optimization.
 Something to note is that the device does seem to be rather sensitive;
 a shift of only a nanometre can greatly change the device performance.
