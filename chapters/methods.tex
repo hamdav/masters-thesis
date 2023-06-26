@@ -30,14 +30,16 @@ The design placed in the design area was one of two types.
 The first was a \emph{continuous design}, meaning that the material parameters
 $\rho$ and $C_{ijkl}$ varied continuously. The range of values that they
 can take are between the density and elasticity of pure silicon and that of air.
-realized, but was useful as a first step in the optimization.
 This was parametrized through the \emph{design field}, $p$, which took values
 between 0, pure air, and 1, pure silicon.
+Any in-between values are not something we can physically realize, but it is
+useful as a first step in the optimization. This is because it makes the
+optimization landscape smoother which leads to better convergence.
 The second kind was a binary design, where each point either had silicon or not
 with no in-between values.
 This was accomplished using level-set methods, which will be explained in
 \cref{sec:level-set}.
-Because the device was completely symmetric, only one half of it needed to be
+Because the device was symmetric, only one half of it needed to be
 modeled, and the other half extrapolated through a symmetry boundary condition.
 
 \begin{figure}[htpb]

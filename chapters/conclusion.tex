@@ -1,25 +1,26 @@
 \chapter{Concluding Remarks}
 
-Phononics have the potential to become a vital part of both quantum  and
+Phononics has the potential to become a vital part of both quantum and
 classical information processing architecture, but devices are still limited to
 those that can be investigated through analytical means and/or be optimized with
 brute force methods. This study set out to investigate whether inverse design
 with adjoint simulation could be used to design so far unrealized devices and
 enable little explored applications.
 
-I first examined theoretically the applicability of adjoint simulation on
-phononics, from which I concluded that the methods should work in theory.
+We first examined theoretically the applicability of adjoint simulation on
+phononics, from which we concluded that the methods should work.
 The second aim of this thesis was to demonstrate the utility of this method by
-designing a phononic beamsplitter.
+designing a phononic beamsplitter as a proof-of-concept.
 To do that, the process was split into two stages, a first where the material
-was allowed to vary continuously, and a second where a binary design was
+was allowed to vary continuously, to obtain an approximate design as the
+starting point for the second stage, where a binary design was
 enforced using level-set methods.
 The continuous optimization yielded near perfect performance, validating the
 theoretical derivations.
 The level-set optimization never did achieve perfect performance, but
 good performance was still reached.
-These results indicate that the inverse design concept can be very useful for
-designing phononic devices going forward.
+These results indicate that the inverse design concept can be useful for
+designing traveling-wave phononic devices going forward.
 We remain hopeful that the problems with the latter stage can be solved
 though, which would be a major step forward.
 
@@ -38,6 +39,12 @@ to obtain the objective function.
 Another potential path of exploration is the limiting of the feature size.
 This could be done by augmenting the objective function, adding
 a pure part that punishes small features.
+
+After these issues have been solved, one could make the model more realistic,
+for example by adding a substrate instead of the fixed bottom used in this
+thesis.
+Ultimately, the designs need to be fabricated and measured experimentally as
+well to confirm that the designed devices are functional.
 
 In addition to method improvements, another path is to apply this to designing
 other types of devices. For example, waveguide bends seem to be well suited for

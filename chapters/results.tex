@@ -1,4 +1,4 @@
-\chapter{Results and Discussion}
+\chapter{Numerical Results and Discussion}
 
 In this chapter I present and discuss the results of my work.
 The first section, \cref{sec:long_waveguide}, presents the simulations needed to
@@ -126,6 +126,8 @@ the reflections from the end have waned.
 \section{Continuous Optimization}\label{sec:res_cont}
 
 There was a lot of problems with the optimization of the continuous design.
+We encountered and addressed several problems with the continuous design
+optimization.
 Many optimization runs would end up looking like \cref{fig:bad_cont_conv},
 reaching a somewhat performant beamsplitter but invariably declining after some
 point.
@@ -133,7 +135,7 @@ The figure shows the evolution of the transmitted power in one of the
 output arms, as well as the reflected power back into the input.
 This has been normalized such that 1 is the power in through the input waveguide.
 Thus, an optimal beamsplitter would reach a transmission of 0.5.
-If the powers do not add up, it is because energy is flowing out in a different
+Where the powers do not add up, it is because energy is flowing out in a different
 mode.
 
 \begin{figure}[htpb]
@@ -149,23 +151,24 @@ mode.
 	\label{fig:bad_cont_conv}
 \end{figure}
 
-I tested a few different theories on why the algorithm might fail to converge.
+We tested a few different theories on why the algorithm might fail to converge.
 The first one was that perhaps the simulations were unstable for the case when
-$p\approx 0$. To test this I interpolated between $\rho^\text{si}$ and
+$p\approx 0$. To test this we interpolated between $\rho^\text{si}$ and
 \qty{1000}{\kg\per\m^3} instead. However, convergence was still not reached.
 The second was that maybe the meshing was too coarse to resolve the design
 field properly. However, this was not the case as increasing the meshing did not
 change the objective function more than a percent or so.
-The last thing I thought of was that comsol was using quadratic shape functions
-for the fields. This means that on each finite element of the mesh, the fields
+Finally, we realized that comsol uses quadratic shape functions
+for the fields by default.
+This means that on each finite element of the mesh, the fields
 are approximated with quadratic polynomials. Thus, if one computes any third
 order spatial derivative, it will be 0 everywhere, and the second order
 derivatives will not be very accurate.
-In \cref{fig:quad_spline_sine} I show how quadratic splines can give a very good
-approximation to a function, while still being a terrible approximation to its
+In \cref{fig:quad_spline_sine} we exemplify how quadratic splines can give an
+excellent approximation to a function, while still being a terrible approximation to its
 second derivative.
-Since I used second derivates in computing my gradient, that also wasn't very
-reliable.
+Since we used second derivates in computing the gradient,
+it was not accurate.
 One way of solving this is to use higher order shape functions, however this
 greatly increases the degrees of freedom, making the problem too computationally
 expensive, at least with our hardware and geometry.
@@ -202,7 +205,8 @@ three stages.
 	\caption{%
 		Similar to \cref{fig:bad_cont_conv},
 		but at iteration 467 and 615, a sigmoid function was abruptly applied
-		to the design field, which causes the dips.
+		to the design field, which causes the performance to dip as the design is
+		perturbed.
 		The final device was a near perfect beamsplitter, with less than 1 \% of
 		the power begin reflected, and nothing being scattered into other modes.
 	}%
@@ -256,7 +260,7 @@ so the starting point is very important for how high performance can be reached.
 	\includegraphics{chapters/results/bin_design_tmp_254.pdf}
 	\caption{%
 		This figure shows the final optimized design for the level-set
-		optimization. The device performs a roughly 45/45 split of the incoming
+		optimization. The device performs a roughly 46/46 split of the incoming
 		power, with the rest of the power being reflected.
 	}%
 	\label{fig:bin_design}
