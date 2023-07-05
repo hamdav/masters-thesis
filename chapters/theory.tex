@@ -97,7 +97,7 @@ periodically varying force $\vec F(\vec x, t) = \vec F(\vec x) e^{i\omega t}$.
 
 With no external forces, i.e.\ $F_i = 0$, \cref{eq:gov_eq} can be written as
 \begin{equation}
-	\frac 1 \rho \partial_j \left(C_{ijkl} \partial_l u_k\right) = \omega^2 u_i,
+	\frac 1 \rho \partial_j \left(C_{ijkl} \partial_k u_l\right) = -\omega^2 u_i,
 \end{equation}
 which is an eigenvalue equation for the operator
 $\hat O_{ik} = \frac 1 \rho\partial_j \left(C_{ijkl} \partial_l \placeholder\right)$
@@ -134,6 +134,16 @@ $\vec a$ by construction~\cite{joannopoulos2008photonic}.
 The solutions to these eigenvalue equations are often called modes, and each
 mode has both a frequency and a wave vector. This gives rise to a band diagram,
 where the frequency is plotted as a function of the wave vector.
+Because the operator $\hat O$ is Hermitian, modes with different frequencies
+$\omega$ but the same $k_y$ are orthogonal, meaning that if there are two modes
+$\vec u_{k_y, \omega_1^2}(\vec x)$ and 
+$\vec u_{k_y, \omega_2^2}(\vec x)$, where $\omega_1 \neq \omega_2$
+then
+\begin{equation}
+	\int_\Omega \vec u_{k_y, \omega_1^2}(\vec x)
+	\cdot\vec u^*_{k_y, \omega_2^2}(\vec x) \dl x = 0,
+\end{equation}
+where $\Omega$ is a unit cell~\cite{joannopoulos2008photonic}.
 
 \subsection{Concrete Example of a Phononic Crystal}
 
@@ -300,22 +310,60 @@ When coupled with \emph{adjoint simulation}, which is a clever way to compute
 gradients, and gradient based optimization
 algorithms, this becomes a powerful methodology.
 
-An overview of the design process is as follows:
+These methods were first developed under the name of topology optimization and
+used for optimizing macroscopic mechanical structures.
+For example, they've been used to optimize the distribution of material in
+cantilevers, and bridges and car floors~\cite{Bendse1995}.
+For these mechanical applications, the amount of material is usually limited e.g. due to
+the weight of the car needing to be kept low.
+The objective function usually involves limiting the maximum stress in the
+material, or minimizing the compliance due to some load.
+
+In the last two decades, as computing power has increased and manufacturing
+techniques have advanced, the methods have found applications in more areas.
+In the late 00s, topology optimization for the design of photonic crystals was
+researched.
+In this application, the material distribution inside a unit cell of a periodic crystal was
+optimized.
+The objective could be to design a crystal with a large bandgap,
+so the size of the bandgap was used as the objective function to be
+maximized~\cite{jensen_topology_2011}.
+Topology optimization has also been used to design functional photonic devices, such
+as mode converters and wavelength demultiplexers~\cite{molesky_inverse_2018},
+though there rebranded as inverse design.
+These methods enabled researchers to design devices that were previously
+unattainable, and improve the known devices by making them smaller while
+retaining performance.
+The methods have also been used to design unit cells of phononic
+crystals~\cite{yi_comprehensive_2016,li_topology_2019}, though there have been
+less research into functional phononic devices, where the material
+distribution in a limited design region is optimized to obtain some
+functionality, rather than optimizing the unit cell of a periodic crystal.
+
+An overview of the inverse design process is as follows:
 \begin{enumerate}
 	\item Initialize a random device design.
-	\item\label{it:grad} Calculate the gradient of the design through the adjoint method.
+	\item\label{it:grad} Calculate the gradient of the objective function with
+		respect to the design through the adjoint method.
 	\item Update the device design using the gradient according to the optimization algorithm.
 	\item If the device performance is good enough, terminate optimization, else
 		return to step~\ref{it:grad}.
 \end{enumerate}
 
+What a design means depends on what type of device one is trying to design, and
+the specific of this in our case is deferred to \cref{sec:methods}, but in
+general the design is parametrized through some number of parameters which we collect
+into a vector called $p$.
+This chapter describes steps two and three: calculating the gradient and
+updating the design.
+
 \section{Adjoint Simulation}
 
 Adjoint simulation is a way to compute the gradient of $\fobj$ with respect to
 the design, which in our case means with respect to the material parameters.
-We will in this section first give a general derivation, following
-reference~\cite{giles_introduction_2000}.
-In \cref{sec:spec_der}, we will then derive the specifics when applying this to
+We will in this section first give a general derivation,
+following~\cite{giles_introduction_2000}.
+In \cref{sec:spec_der}, we then derive the specifics when applying this to
 acoustics.
 
 \subsection{General Derivation}\label{sec:general_derivation}
@@ -326,6 +374,7 @@ $A v = b$, where $b$ is a fixed vector and $A$ is a matrix that depends on a
 vector of design parameters $p$.
 This could be the acoustics equation, but it might also be the analogous
 equation for photonics, or something completely different like fluid dynamics.
+Generally, $A$ describes the physical equations and $b$ the sources.
 We will refer to the process of solving this equation as a simulation, since for
 this thesis it is solved through the simulation software COMSOL.
 The overall goal is to find the parameters $p$ that maximize the objective
@@ -363,25 +412,34 @@ obtain
 \end{align}
 Finding $\tilde v$ from \cref{eq:vtilde} amounts to solving the so called
 \emph{adjoint problem}:
-\begin{equation}
+\begin{equation}\label{eq:gen_adjoint_problem}
 	A^\dagger \tilde v^\dagger = \diff{\fobj}{v}^\dagger
 \end{equation}
 hence the name adjoint method.
+Comparing this to the simulation equation $Av = b$ we note two differences.
+Firstly, the source $b$ has been replaced by $\diff{\fobj}{v}^\dagger$.
+Secondly, the matrix representing the physics, $A$, has been replaced by it's
+adjoint.
 As it turns out, $A$ is in many cases symmetric (or self-adjoint) which means that this is simply a normal
 simulation but with $\difs{\fobj}{v}^\dagger$ as the source, and even if it
 isn't, solving the adjoint problem isn't more computationally expensive than
 running a normal simulation.
 Thus, the derivative can be obtained with just twice the simulation time
-compared to an ordinary simulation.
+of an ordinary simulation.
 
-Now you might be wondering: what have we gained by this?
+Now you might be wondering: what have we gained by computing the gradient
+through this adjoint field?
+The answer is efficiency.
 Let $n$ be the dimension of $v$, $m$ the dimension of $p$ and $l$ the dimension
 of $b$.
 This means that $A$ is a matrix with dimension $l\times n$ and $\difs{A}{p}$ is
 a rank three tensor with dimension $m\times l\times n$.
 Thus solving for $\difs{v}{p}$ from equation \cref{eq:direct_dvdp_solve}
 means solving for an $n \times m$ matrix, which is much more computationally
-expensive than solving for just a vector of dimension $n$.
+expensive than solving for just a vector of dimension $n$, which is what we do
+in \cref{eq:gen_adjoint_problem}.
+And trying to approximate the gradient with a finite difference would require at
+least $m$ simulations, which is even more costly.
 
 \subsection{Specific Derivation with Acoustics}\label{sec:spec_der}
 
@@ -459,15 +517,31 @@ placed after the fraction, the argument is placed in the denominator:
 \end{equation}
 
 The functional derivative is defined by
-\begin{equation}
+\begin{equation}\label{eq:func_der_def}
 	\int \diff.f.{F}{f} (x) \varphi(x) \dl x
-	= \diff*{F[f + \varepsilon \varphi]}{\varepsilon}
+	\equiv \diff*{F[f + \varepsilon \varphi]}{\varepsilon}
 \end{equation}
-where $F$ is a functional of $f$ and $\varphi$ is an arbitrary test function.
+where $F$ is a functional of $f$ and $\varphi$ is an arbitrary test
+function~\cite{field_greiner_1996}.
 We will use two properties of the functional derivative:
 \begin{itemize}
 	\item If $F$ is the functional $F[f](y) = f(y)$,
 		then $\difs.f.{F(y)}{f}(x) = \delta(y-x)$.
+		This can be shown by inserting $F$ into \cref{eq:func_der_def}, giving
+		\begin{equation}
+			\int \diff.f.{F(y)}{f}(x) \varphi(x) \dl x
+			\equiv
+			\diff*{F[f + \varepsilon \varphi](y)}{\varepsilon}
+			=
+			\varphi(y)
+		\end{equation}
+		which can be compared to a defining property of the dirac delta
+		function:
+		\begin{equation}
+			\int \delta(x) \varphi(x) \dl x
+			=
+			\varphi(0)
+		\end{equation}
 	\item The chain rule: if $F$ is a functional with one function argument,
 		$G$ is a functional with one function and one real argument,
 		and $H$ is the functional defined as $H[f] = F[G[f](y)]$,
@@ -476,6 +550,8 @@ We will use two properties of the functional derivative:
 			\diff.f.{H}{f}(x)
 			= \int \diff.f.{F}{G[f]}(y) \diff{G(y)}{f}(x) \dl{y}
 		\end{equation}
+		The proof of this relation follows the proof in ordinary differential
+		calculus~\cite{field_greiner_1996}.
 \end{itemize}
 \end{mybox}
 
@@ -741,8 +817,8 @@ the oscillations are not as much of a problem.
 The adaptive learning rate also means that the algorithm doesn't get stuck
 prematurely due to the small gradient at the bottom of the valley.
 Admittedly, this objective function is specifically chosen to showcase the
-advantages of \gls{adam}, but it has been shown to outperform \gls{gd} in almost
-all cases~\cite{kingma2017adam}.
+advantages of \gls{adam}, but it has been shown to outperform \gls{gd} in a wide
+range of non-convex optimization problems~\cite{kingma2017adam}.
 \begin{figure}[htpb]
 	\centering
 	\includegraphics{chapters/theory/adam_vs_gd_plot.pdf}

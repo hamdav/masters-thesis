@@ -236,12 +236,20 @@ and \cref{fig:bin_design} shows the final device.
 The performance did reach quite high values: splitting the input power roughly
 46/46, though it never achieved the perfect 50/50 that was seen after the
 continuous optimization.
+The absolute value of the displacement during operation can be seen in
+\cref{fig:bin_design_disp}.
+This figure further confirms that the beamsplitter works as intended, and that
+the output waveguide is excited with the right mode.
+We would expect the amplitude of oscillations at the output to be smaller than
+the input by a factor of $\sqrt{2}$, since power is proportional to the square
+of the amplitude.
+Looking at \cref{fig:bin_design_disp}, this does seem to be the case.
 Something to note is that the device does seem to be rather sensitive;
 a shift of only a nanometre can greatly change the device performance.
 Therefore the $\alpha$ chosen for the algorithm had to be set as low as
 \qty{0.5}{\nm}.
 Another important note is that the final design is rather close to the initial,
-so the starting point is very important for how high performance can be reached.
+so the starting point is important for how high performance can be reached.
 
 \begin{figure}[htpb]
 	\centering
@@ -264,4 +272,17 @@ so the starting point is very important for how high performance can be reached.
 		power, with the rest of the power being reflected.
 	}%
 	\label{fig:bin_design}
+\end{figure}
+
+\begin{figure}[htpb]
+	\centering
+	\includegraphics[width=\textwidth]{chapters/results/final_bs_disp.png}
+	\caption{%
+		This figure shows the magnitude of the displacement of the device in
+		action. As mentioned previously, only half of the device was simulated
+		due to the symmetry. This gives further confirmation that the output
+		waveguide is excited in the correct mode, and that the beamsplitter
+		works as intended.
+	}%
+	\label{fig:bin_design_disp}
 \end{figure}

@@ -1,14 +1,5 @@
 \chapter{Numerical Methods for Acoustic Inverse Design}\label{sec:methods}
 
-% The aim of this thesis is to use inverse design to find a phononic beamsplitter,
-% a task that can be divided into three parts: 
-% First, some definitions of what
-% should be designed and what constitutes a ``good'' design needs to be made.
-% Second, a way to calculating the gradient of the ``goodness'' with respect
-% to the design is needed.
-% And lastly, we need a gradient based optimization algorithm to find the optimal
-% design.
-% All of this will be described in this chapter.
 The aim of this thesis was to use inverse design to find a phononic
 beamsplitter. In this section we describe how that was accomplished. First I
 specify the skeleton of the device, i.e.\ the parts that were fixed, as well as
@@ -92,7 +83,11 @@ Therefore, a mode overlap integral was used:
 	I = \int_{\Omega_1} \vec{u}(\vec{x}) \cdot \vec{u}_m^*(\vec{x}) \dl{\vec x},
 \end{equation}
 where $\vec u_m$ is the shape of the mode (\cref{fig:ms1}).
-Because we were not interested in the phase of the output waves,
+The effect of this integral is to single out the component of the excitation in
+mode $m$, removing all orthogonal components.
+So if $\vec u(\vec x) = a \vec u_m(\vec x) + b \vec u_{m'}(\vec x)$,
+then $I \propto a$.
+Because we were not interested in the phase of the output waves, just the magnitude,
 the absolute value squared of the overlap integral was taken as the objective
 function,
 \begin{equation}
@@ -139,6 +134,9 @@ eigenmode simulation with $k=0.9 \pi / a$ and applied to the boundary marked in 
 Since the frequency was perfectly controlled, this excites only the desired
 mode, since that is the only permitted mode close by as seen in the band diagram
 in \cref{fig:banddiagram}.
+It does also excite a backward propagating wave in the same mode, since that has the same
+frequency and stress profile, but that wave simply propagates toward the
+beginning of the input waveguide and is absorbed there.
 
 In order to confirm that the excitation was indeed fully in the desired mode, a
 separate model with only a waveguide with 200 unit cells was created.
