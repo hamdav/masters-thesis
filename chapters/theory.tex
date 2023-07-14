@@ -395,21 +395,21 @@ To find the latter factor we do
 						&\implies A\diff{v}{p} = -\diff{A}{p}
 						v.\label{eq:direct_dvdp_solve}
 \end{align}
-This almost gives us the right thing, but we need to rewrite \cref{eq:chain} a
-little.
-If we define a $\tilde v$ through the equation
-\begin{equation}\label{eq:vtilde}
-	\diff{\fobj}{v} = \tilde v A
+If $A$ is invertible, then this gives
+\begin{equation}
+	\label{eq:direct_dvdp_solve2}
+	\diff{v}{p} = -A^{-1}\diff{A}{p} v
 \end{equation}
-then plugging this into \cref{eq:chain} and using \cref{eq:direct_dvdp_solve} we
-obtain
-\begin{align}
-	\label{eq:dfdp_vtilde}
-	\diff{\fobj}{p} &=
-	\tilde v A \diff{v}{p}\\
-	&=
-	-\tilde v \diff{A}{p} v.
-\end{align}
+which results in
+\begin{equation}
+	\diff{\fobj}{p} = -\diff{\fobj}{v} A^{-1} \diff{A}{p} v
+\end{equation}
+when plugged into \cref{eq:chain}.
+Focusing of the product of the first two factors, we can see that this is the
+solution to the equation
+\begin{equation}\label{eq:vtilde}
+	\diff{\fobj}{v} = \tilde v A.
+\end{equation}
 Finding $\tilde v$ from \cref{eq:vtilde} amounts to solving the so called
 \emph{adjoint problem}:
 \begin{equation}\label{eq:gen_adjoint_problem}
@@ -424,8 +424,27 @@ As it turns out, $A$ is in many cases symmetric (or self-adjoint) which means th
 simulation but with $\difs{\fobj}{v}^\dagger$ as the source, and even if it
 isn't, solving the adjoint problem isn't more computationally expensive than
 running a normal simulation.
+Once the adjoint field $\tilde v$ is calculated, the total derivative is
+obtained through
+\begin{equation}
+	\label{eq:dfdp_vtilde}
+	\diff{\fobj}{p} =
+	-\tilde v \diff{A}{p} v.
+\end{equation}
 Thus, the derivative can be obtained with just twice the simulation time
 of an ordinary simulation.
+
+Though we assumed that $A$ was invertible above, this isn't necessary.
+This can be seen by plugging \cref{eq:vtilde} into \cref{eq:chain}, obtaining
+\begin{equation}
+	\diff{\fobj}{p} =
+	\tilde v A \diff{v}{p},
+\end{equation}
+and then using \cref{eq:direct_dvdp_solve} to again get
+\begin{equation}
+	\diff{\fobj}{p} =
+	-\tilde v \diff{A}{p} v.
+\end{equation}
 
 Now you might be wondering: what have we gained by computing the gradient
 through this adjoint field?
@@ -434,7 +453,7 @@ Let $n$ be the dimension of $v$, $m$ the dimension of $p$ and $l$ the dimension
 of $b$.
 This means that $A$ is a matrix with dimension $l\times n$ and $\difs{A}{p}$ is
 a rank three tensor with dimension $m\times l\times n$.
-Thus solving for $\difs{v}{p}$ from equation \cref{eq:direct_dvdp_solve}
+Thus solving for $\difs{v}{p}$ from equation \cref{eq:direct_dvdp_solve2}
 means solving for an $n \times m$ matrix, which is much more computationally
 expensive than solving for just a vector of dimension $n$, which is what we do
 in \cref{eq:gen_adjoint_problem}.
